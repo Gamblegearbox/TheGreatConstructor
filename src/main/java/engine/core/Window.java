@@ -103,17 +103,13 @@ public class Window {
         glfwShowWindow(windowHandle);
 
         Arrays.fill(KeyboardInput.keys, KeyboardInput.IDLE_STATE); // init all keys with idle state
+        KeyboardInput.currentWindowHandle = getWindowHandle();
         GL.createCapabilities();
     }
 
     public long getWindowHandle()
     {
         return windowHandle;
-    }
-
-    public boolean isKeyPressed(int keyCode)
-    {
-        return glfwGetKey(windowHandle, keyCode) == GLFW_PRESS;
     }
 
     public boolean windowShouldClose()

@@ -13,7 +13,6 @@ import engine.mesh.Mesh;
 import engine.scene.Scene;
 import engine.scene.SceneLight;
 import engine.shading.Material;
-import engine.texture.Texture;
 import engine.utils.OBJLoader;
 import org.joml.Math;
 import org.joml.Vector2f;
@@ -29,16 +28,10 @@ public class Game implements IGameLogic {
 
     private static final float CAMERA_SPEED = 5f;
     private static final float CAMERA_SPEED_FAST = 10f;
-    private static final float FOLLOW_CAMERA_LERP_SPEED = 5f;
-    private static final float MAX_CAMERA_DISTANCE = 100;
-    private static final float MIN_CAMERA_DISTANCE = 2.5f;
 
     private final Renderer renderer;
     private final Camera camera;
     private final Vector3f cameraIncrement;
-
-    private int cameraMode;
-    private float followCameraDistance = 5f;
 
     private Vector3f lightDirection;
     private float directionalLightAngle;
@@ -75,11 +68,6 @@ public class Game implements IGameLogic {
         setupLight();
         setupCamera();
         setupHUD();
-
-        if(EngineOptions.DEBUG)
-        {
-            EngineOptions.printInfo();
-        }
     }
 
     private void setupGameObjects() throws Exception
@@ -87,7 +75,7 @@ public class Game implements IGameLogic {
         ArrayList<GameEntity> gameEntities = new ArrayList<>();
 
         // load color palette and apply it to material
-        Texture texture = new Texture("/textures/colorsFromPicture.png");
+        //Texture texture = new Texture("/textures/colorsFromPicture.png");
 
         Mesh mesh = OBJLoader.loadMesh("/models/REF_ONE_CUBIC_METER.obj");
         mesh.setMaterial(new Material(new Vector3f(0.7f, 0.02f, 0.03f), 0.5f));
@@ -104,7 +92,6 @@ public class Game implements IGameLogic {
         allSpark_01.setPosition(0f, 1f, 0);
         allSpark_02.setPosition(-1f, -1f, 0);
         allSpark_03.setPosition(1f, -1f, 0);
-
 
         gameEntities.add(allSpark_01);
         gameEntities.add(allSpark_02);
@@ -124,7 +111,8 @@ public class Game implements IGameLogic {
         sceneLight.setAmbientLight(new Vector3f(0.2f, 0.2f, 0.2f));
 
         lightDirection = new Vector3f(0, 1, 1);
-        DirectionalLight directionalLight = new DirectionalLight(new Vector3f(1, 1, 1), lightDirection, 1f);
+        Vector3f lightColor = new Vector3f(1,1,1);
+        DirectionalLight directionalLight = new DirectionalLight(lightColor, lightDirection, 1f);
 
         sceneLight.setDirectionalLight(directionalLight);
         scene.setSceneLight(sceneLight);
@@ -137,74 +125,52 @@ public class Game implements IGameLogic {
 
     private void setupCamera()
     {
-        camera.setPosition(0, followCameraDistance, followCameraDistance);
+        camera.setPosition(0, 10, 10);
         camera.setRotation(45,0,0);
-        cameraMode = 0;
     }
 
     @Override
     public void input(Window window, MouseInput mouseInput)
     {
-        // Camera controls
-        float cameraSpeed = window.isKeyPressed(GLFW_KEY_LEFT_SHIFT) ? CAMERA_SPEED_FAST : CAMERA_SPEED;
-        cameraIncrement.set(0, 0, 0);
-
-        if (window.isKeyPressed(GLFW_KEY_W)) { cameraIncrement.z = -cameraSpeed; }
-        else if (window.isKeyPressed(GLFW_KEY_S)) { cameraIncrement.z = cameraSpeed; }
-
-        if (window.isKeyPressed(GLFW_KEY_A)) { cameraIncrement.x = -cameraSpeed; }
-        else if (window.isKeyPressed(GLFW_KEY_D)) { cameraIncrement.x = cameraSpeed; }
-
-        if (window.isKeyPressed(GLFW_KEY_Q)) { cameraIncrement.y = -cameraSpeed; }
-        else if (window.isKeyPressed(GLFW_KEY_E)) { cameraIncrement.y = cameraSpeed; }
-
-        if(KeyboardInput.isKeyReleased(GLFW_KEY_C))
-        {
-            cameraMode++;
-            cameraMode %= 2;
-            if(EngineOptions.DEBUG)
-            {
-                System.out.println("CameraMode: " + cameraMode);
-            }
-        }
-
-        if(cameraMode == 1)
-        {
-            float distanceIncrease = 0.1f;
-            if (window.isKeyPressed(GLFW_KEY_R))
-            {
-                if(followCameraDistance > MIN_CAMERA_DISTANCE)
-                {
-                    followCameraDistance -= distanceIncrease;
-                }
-            }
-            else if (window.isKeyPressed(GLFW_KEY_F))
-            {
-                if(followCameraDistance < MAX_CAMERA_DISTANCE)
-                {
-                    followCameraDistance += distanceIncrease;
-                }
-            }
-        }
-
-        // Light
-        if(window.isKeyPressed(GLFW_KEY_1)) { directionalLightAngle += 1.0f; }
-        else if(window.isKeyPressed(GLFW_KEY_2)) { directionalLightAngle -= 1.0f;}
-
-        if(KeyboardInput.isKeyReleased(GLFW_KEY_ESCAPE))
-        {
-            glfwSetWindowShouldClose(window.getWindowHandle(), true);
-        }
-
         if(EngineOptions.DEBUG)
         {
             totalInputCalls++;
         }
+
+        //QUIT?
+        if(KeyboardInput.isKeyReleased(GLFW_KEY_ESCAPE) && EngineOptions.QUIT_ON_ESCAPE)
+        {
+            glfwSetWindowShouldClose(window.getWindowHandle(), true);
+        }
+
+        // Camera controls
+        float cameraSpeed = KeyboardInput.isKeyHoldDown(GLFW_KEY_LEFT_SHIFT) ? CAMERA_SPEED_FAST : CAMERA_SPEED;
+        cameraIncrement.set(0, 0, 0);
+
+        if (KeyboardInput.isKeyHoldDown(GLFW_KEY_W)) { cameraIncrement.z = -cameraSpeed; }
+        else if (KeyboardInput.isKeyHoldDown(GLFW_KEY_S)) { cameraIncrement.z = cameraSpeed; }
+
+        if (KeyboardInput.isKeyHoldDown(GLFW_KEY_A)) { cameraIncrement.x = -cameraSpeed; }
+        else if (KeyboardInput.isKeyHoldDown(GLFW_KEY_D)) { cameraIncrement.x = cameraSpeed; }
+
+        if (KeyboardInput.isKeyHoldDown(GLFW_KEY_Q)) { cameraIncrement.y = -cameraSpeed; }
+        else if (KeyboardInput.isKeyHoldDown(GLFW_KEY_E)) { cameraIncrement.y = cameraSpeed; }
+
+        // Light
+        if(KeyboardInput.isKeyHoldDown(GLFW_KEY_1)) { directionalLightAngle += 1.0f; }
+        else if(KeyboardInput.isKeyHoldDown(GLFW_KEY_2)) { directionalLightAngle -= 1.0f;}
+
+
     }
 
     @Override
     public void update(float interval, MouseInput mouseInput)
     {
+        if(EngineOptions.DEBUG)
+        {
+            totalUpdates++;
+        }
+
         updateCamera(mouseInput, interval);
         hud.updateCompass(camera.getRotation().y);
         updateDirectionalLight();
@@ -218,11 +184,6 @@ public class Game implements IGameLogic {
         allSpark_01.setRotation(xRot,yRot,zRot);
         allSpark_02.setRotation(yRot,zRot,xRot);
         allSpark_03.setRotation(zRot,xRot,yRot);
-
-        if(EngineOptions.DEBUG)
-        {
-            totalUpdates++;
-        }
     }
 
     private void updateCamera(MouseInput mouseInput, float interval)
@@ -233,13 +194,6 @@ public class Game implements IGameLogic {
             camera.moveRotation(rotVec.x * MOUSE_SENSITIVITY, rotVec.y * MOUSE_SENSITIVITY, 0);
         }
 
-        if(cameraMode == 1)
-        {
-            Vector3f position = camera.getPosition();
-            Vector3f targetPosition = allSpark_01.getPosition();
-            position.x += (targetPosition.x - position.x) * FOLLOW_CAMERA_LERP_SPEED * interval;
-            position.z += (targetPosition.z + followCameraDistance - position.z) * FOLLOW_CAMERA_LERP_SPEED * interval;
-        }
         camera.movePosition(cameraIncrement.x * interval, cameraIncrement.y * interval, cameraIncrement.z * interval);
     }
 
@@ -311,13 +265,13 @@ public class Game implements IGameLogic {
     @Override
     public void render(Window window)
     {
-        hud.updateSize(window);
-        renderer.render(window, camera, scene, hud);
-
         if(EngineOptions.DEBUG)
         {
             totalRenderCycles++;
         }
+
+        hud.updateSize(window);
+        renderer.render(window, camera, scene, hud);
     }
 
     @Override

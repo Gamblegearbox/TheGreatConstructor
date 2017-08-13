@@ -9,12 +9,13 @@ public class EngineOptions {
     public static final String OPERATING_SYSTEM = System.getProperty("os.name");;
     public static final String TITLE = "GAME";
 
-    public static final int WINDOW_WIDTH = 1800;
-    public static final int WINDOW_HEIGHT = 1000;
+    public static final int WINDOW_WIDTH = 1600;
+    public static final int WINDOW_HEIGHT = 900;
 
     public static final int TARGET_FPS = 60;
-    public static final int TARGET_UPS = 75;
+    public static final int TARGET_UPS = 60;
 
+    public static final boolean QUIT_ON_ESCAPE = true;
     public static final boolean DEBUG = true;
     public static final boolean ANTIALIASING = true;
     public static final boolean V_SYNC = true;
@@ -22,7 +23,7 @@ public class EngineOptions {
     public static boolean SHOW_TRIANGLES = false;
     public static boolean CULLFACE = true;
 
-    public static void printInfo()
+    public static void printAllInfo()
     {
         printGeneralInfo();
         printResolutionAndTimerSettings();

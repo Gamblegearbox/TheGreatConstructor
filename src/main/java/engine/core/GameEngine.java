@@ -1,8 +1,12 @@
 package engine.core;
 
 
+import engine.input.KeyboardInput;
 import engine.input.MouseInput;
 import engine.interfaces.IGameLogic;
+
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
+import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
 
 public class GameEngine implements Runnable{
 
@@ -24,11 +28,6 @@ public class GameEngine implements Runnable{
     public void start()
     {
         String osName = EngineOptions.OPERATING_SYSTEM;
-
-        if(EngineOptions.DEBUG)
-        {
-            System.out.println("OPERATING SYSTEM: " + osName);
-        }
 
         if(osName.contains("Mac"))
         {
@@ -64,6 +63,8 @@ public class GameEngine implements Runnable{
         timer.init();
         mouseInput.init(window);
         gameLogic.init(window);
+
+        if(EngineOptions.DEBUG) { EngineOptions.printAllInfo(); }
     }
 
     protected void gameLoop()
@@ -72,15 +73,12 @@ public class GameEngine implements Runnable{
         float accumulator = 0f;
         float interval = 1f / EngineOptions.TARGET_UPS;
 
-        boolean running = true;
-
-        while(running && !window.windowShouldClose())
+        while(!window.windowShouldClose())
         {
             elapsedTime = timer.getElapsedTime();
             accumulator += elapsedTime;
 
             input();
-
             while(accumulator >= interval)
             {
                 update(interval);
