@@ -36,7 +36,7 @@ public class Game implements IGameLogic {
     private Vector3f lightDirection;
     private float directionalLightAngle;
     private boolean isNight = false;
-
+    private boolean pause = false;
     private Scene scene;
     private Hud hud;
 
@@ -137,10 +137,16 @@ public class Game implements IGameLogic {
             totalInputCalls++;
         }
 
-        //QUIT?
-        if(KeyboardInput.isKeyReleased(GLFW_KEY_ESCAPE) && EngineOptions.QUIT_ON_ESCAPE)
+        if(KeyboardInput.isKeyReleased(GLFW_KEY_ESCAPE))
         {
-            glfwSetWindowShouldClose(window.getWindowHandle(), true);
+            if(EngineOptions.QUIT_ON_ESCAPE)
+            {
+                glfwSetWindowShouldClose(window.getWindowHandle(), true);
+            }
+            else
+            {
+                pause = !pause;
+            }
         }
 
         // Camera controls
@@ -166,24 +172,30 @@ public class Game implements IGameLogic {
     @Override
     public void update(float interval, MouseInput mouseInput)
     {
-        if(EngineOptions.DEBUG)
+        if(!pause)
         {
-            totalUpdates++;
+            if (EngineOptions.DEBUG) {
+                totalUpdates++;
+            }
+
+            updateCamera(mouseInput, interval);
+            hud.updateCompass(camera.getRotation().y);
+            updateDirectionalLight();
+
+            hud.setStatusText("Welcome, Omnidimensional Creator");
+
+            xRot += 0.1f;
+            yRot += 1f;
+            zRot += 0.2f;
+
+            allSpark_01.setRotation(xRot, yRot, zRot);
+            allSpark_02.setRotation(yRot, zRot, xRot);
+            allSpark_03.setRotation(zRot, xRot, yRot);
         }
-
-        updateCamera(mouseInput, interval);
-        hud.updateCompass(camera.getRotation().y);
-        updateDirectionalLight();
-
-        hud.setStatusText("Welcome, Omnidimensional Creator");
-
-        xRot += 0.1f;
-        yRot += 1f;
-        zRot += 0.2f;
-
-        allSpark_01.setRotation(xRot,yRot,zRot);
-        allSpark_02.setRotation(yRot,zRot,xRot);
-        allSpark_03.setRotation(zRot,xRot,yRot);
+        else
+        {
+            hud.setStatusText("Game paused!");
+        }
     }
 
     private void updateCamera(MouseInput mouseInput, float interval)

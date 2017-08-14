@@ -91,7 +91,6 @@ public class GameEngine implements Runnable{
             {
                 sync();
             }
-
         }
     }
 

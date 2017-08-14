@@ -15,7 +15,7 @@ public class EngineOptions {
     public static final int TARGET_FPS = 60;
     public static final int TARGET_UPS = 60;
 
-    public static final boolean QUIT_ON_ESCAPE = true;
+    public static final boolean QUIT_ON_ESCAPE = false;
     public static final boolean DEBUG = true;
     public static final boolean ANTIALIASING = true;
     public static final boolean V_SYNC = true;
@@ -30,7 +30,7 @@ public class EngineOptions {
         printOptionStatus();
     }
 
-    private static void printGeneralInfo()
+    public static void printGeneralInfo()
     {
         System.out.println();
         System.out.println("OPERATING SYSTEM:   " + OPERATING_SYSTEM);
@@ -40,7 +40,7 @@ public class EngineOptions {
         System.out.println("GLSL VERSION:       " + glGetString(GL_SHADING_LANGUAGE_VERSION));
     }
 
-    private static void printResolutionAndTimerSettings()
+    public static void printResolutionAndTimerSettings()
     {
         System.out.println();
         System.out.println("RESOLUTION:         " + WINDOW_WIDTH + " x " + WINDOW_HEIGHT);
@@ -48,7 +48,7 @@ public class EngineOptions {
         System.out.println("TARGET UPS:         " + TARGET_UPS);
     }
 
-    private static void printOptionStatus()
+    public static void printOptionStatus()
     {
         System.out.println();
         System.out.println("DEBUG MODE:         " + convertBooleanToEnabledOrDisabled(DEBUG));
