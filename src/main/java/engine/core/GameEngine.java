@@ -1,12 +1,7 @@
 package engine.core;
 
-
-import engine.input.KeyboardInput;
 import engine.input.MouseInput;
 import engine.interfaces.IGameLogic;
-
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
-import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
 
 public class GameEngine implements Runnable{
 

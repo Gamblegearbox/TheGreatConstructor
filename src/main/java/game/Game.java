@@ -150,21 +150,21 @@ public class Game implements IGameLogic {
         }
 
         // Camera controls
-        float cameraSpeed = KeyboardInput.isKeyHoldDown(GLFW_KEY_LEFT_SHIFT) ? CAMERA_SPEED_FAST : CAMERA_SPEED;
+        float cameraSpeed = KeyboardInput.isKeyPressed(GLFW_KEY_LEFT_SHIFT) ? CAMERA_SPEED_FAST : CAMERA_SPEED;
         cameraIncrement.set(0, 0, 0);
 
-        if (KeyboardInput.isKeyHoldDown(GLFW_KEY_W)) { cameraIncrement.z = -cameraSpeed; }
-        else if (KeyboardInput.isKeyHoldDown(GLFW_KEY_S)) { cameraIncrement.z = cameraSpeed; }
+        if (KeyboardInput.isKeyPressed(GLFW_KEY_W)) { cameraIncrement.z = -cameraSpeed; }
+        else if (KeyboardInput.isKeyPressed(GLFW_KEY_S)) { cameraIncrement.z = cameraSpeed; }
 
-        if (KeyboardInput.isKeyHoldDown(GLFW_KEY_A)) { cameraIncrement.x = -cameraSpeed; }
-        else if (KeyboardInput.isKeyHoldDown(GLFW_KEY_D)) { cameraIncrement.x = cameraSpeed; }
+        if (KeyboardInput.isKeyPressed(GLFW_KEY_A)) { cameraIncrement.x = -cameraSpeed; }
+        else if (KeyboardInput.isKeyPressed(GLFW_KEY_D)) { cameraIncrement.x = cameraSpeed; }
 
-        if (KeyboardInput.isKeyHoldDown(GLFW_KEY_Q)) { cameraIncrement.y = -cameraSpeed; }
-        else if (KeyboardInput.isKeyHoldDown(GLFW_KEY_E)) { cameraIncrement.y = cameraSpeed; }
+        if (KeyboardInput.isKeyPressed(GLFW_KEY_Q)) { cameraIncrement.y = -cameraSpeed; }
+        else if (KeyboardInput.isKeyPressed(GLFW_KEY_E)) { cameraIncrement.y = cameraSpeed; }
 
         // Light
-        if(KeyboardInput.isKeyHoldDown(GLFW_KEY_1)) { directionalLightAngle += 1.0f; }
-        else if(KeyboardInput.isKeyHoldDown(GLFW_KEY_2)) { directionalLightAngle -= 1.0f;}
+        if(KeyboardInput.isKeyPressed(GLFW_KEY_1)) { directionalLightAngle += 1.0f; }
+        else if(KeyboardInput.isKeyPressed(GLFW_KEY_2)) { directionalLightAngle -= 1.0f;}
 
 
     }

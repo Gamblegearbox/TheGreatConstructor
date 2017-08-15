@@ -103,7 +103,6 @@ public class Window {
         glfwShowWindow(windowHandle);
 
         Arrays.fill(KeyboardInput.keys, KeyboardInput.IDLE_STATE); // init all keys with idle state
-        KeyboardInput.currentWindowHandle = getWindowHandle();
         GL.createCapabilities();
     }
 
