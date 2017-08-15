@@ -20,11 +20,6 @@ public class Window {
     private int width;
     private int height;
     private long windowHandle;
-
-    private GLFWErrorCallback errorCallback;
-    private GLFWKeyCallback keyCallback;
-    private GLFWWindowSizeCallback windowSizeCallback;
-
     private boolean resized;
 
     public Window(String title, int width, int height)
@@ -39,10 +34,11 @@ public class Window {
     {
         // Setup an error callback. The default implementation
         // will print the error message in System.err.
-        glfwSetErrorCallback(errorCallback = GLFWErrorCallback.createPrint(System.err));
+        glfwSetErrorCallback(GLFWErrorCallback.createPrint(System.err));
 
         // Initialize GLFW. Most GLFW functions will not work before doing this.
-        if (!glfwInit()) {
+        if (!glfwInit())
+        {
             throw new IllegalStateException("Unable to initialize GLFW");
         }
 
@@ -53,7 +49,6 @@ public class Window {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-
 
         // Antialiasing
         if (EngineOptions.ANTIALIASING) {
@@ -68,7 +63,7 @@ public class Window {
         }
 
         // Setup resize callback
-        glfwSetWindowSizeCallback(windowHandle, windowSizeCallback = new GLFWWindowSizeCallback()
+        glfwSetWindowSizeCallback(windowHandle, new GLFWWindowSizeCallback()
         {
             @Override
             public void invoke(long window, int width, int height) {
@@ -79,7 +74,7 @@ public class Window {
         });
 
         // Setup a key callback. It will be called every time a key is pressed, repeated or released.
-        glfwSetKeyCallback(windowHandle, keyCallback = new KeyboardInput());
+        glfwSetKeyCallback(windowHandle, new KeyboardInput());
 
         // Get the resolution of the primary monitor
         GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());

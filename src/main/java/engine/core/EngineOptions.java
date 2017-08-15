@@ -17,7 +17,7 @@ public class EngineOptions {
 
     public static final boolean QUIT_ON_ESCAPE = false;
     public static final boolean DEBUG = true;
-    public static final boolean ANTIALIASING = true;
+    public static final boolean ANTIALIASING = false;
     public static final boolean V_SYNC = true;
 
     public static boolean SHOW_TRIANGLES = false;

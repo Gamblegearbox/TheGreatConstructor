@@ -61,7 +61,7 @@ public class Renderer {
             glPolygonMode(GL_FRONT_FACE, GL_FILL);
         }
 
-        if(EngineOptions.CULLFACE && !EngineOptions.DEBUG)
+        if(EngineOptions.CULLFACE)
         {
             glEnable(GL_CULL_FACE);
             glCullFace(GL_BACK);

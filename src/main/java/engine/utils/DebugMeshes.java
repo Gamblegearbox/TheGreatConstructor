@@ -48,8 +48,8 @@ public class DebugMeshes {
         {
             float x = (float)Math.cos(Math.toRadians(currentAngle));
             float y = (float)Math.sin(Math.toRadians(currentAngle));
-            positions[i] = x;
-            positions[i+1] = y;
+            positions[i] = y;
+            positions[i+1] = x;
             positions[i+2] = depth;
 
             normals[i] = 0;
@@ -62,7 +62,7 @@ public class DebugMeshes {
 
             currentAngle += stepAngle;
         }
-        indices[indices.length-1] = 0; // the last index needs to corrected to create a closed circle
+        indices[indices.length-1] = 0; // the last index needs to be corrected to create a closed circle
 
         for(int i = 0; i < texCoords.length; i++)
         {
