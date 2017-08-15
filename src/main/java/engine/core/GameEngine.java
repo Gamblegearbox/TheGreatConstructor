@@ -115,7 +115,7 @@ public class GameEngine implements Runnable{
     protected void input()
     {
         mouseInput.input(window);
-        gameLogic.input(window, mouseInput);
+        gameLogic.input(mouseInput);
     }
 
     protected void update(float interval)
@@ -125,7 +125,7 @@ public class GameEngine implements Runnable{
 
     protected void render()
     {
-        gameLogic.render(window);
+        gameLogic.render();
         window.update();
     }
 }

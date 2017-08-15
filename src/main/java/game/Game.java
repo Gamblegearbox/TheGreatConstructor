@@ -29,6 +29,7 @@ public class Game implements IGameLogic {
     private static final float CAMERA_SPEED = 5f;
     private static final float CAMERA_SPEED_FAST = 10f;
 
+    private Window window;
     private final Renderer renderer;
     private final Camera camera;
     private final Vector3f cameraIncrement;
@@ -61,6 +62,7 @@ public class Game implements IGameLogic {
     @Override
     public void init(Window window) throws Exception
     {
+        this.window = window;
         renderer.init();
         scene = new Scene();
 
@@ -130,7 +132,7 @@ public class Game implements IGameLogic {
     }
 
     @Override
-    public void input(Window window, MouseInput mouseInput)
+    public void input(MouseInput mouseInput)
     {
         if(EngineOptions.DEBUG)
         {
@@ -141,11 +143,19 @@ public class Game implements IGameLogic {
         {
             if(EngineOptions.QUIT_ON_ESCAPE)
             {
-                glfwSetWindowShouldClose(window.getWindowHandle(), true);
+                quitGame();
             }
             else
             {
                 pause = !pause;
+            }
+        }
+
+        if(pause)
+        {
+            if(KeyboardInput.isKeyReleased(GLFW_KEY_Q))
+            {
+                quitGame();
             }
         }
 
@@ -165,8 +175,6 @@ public class Game implements IGameLogic {
         // Light
         if(KeyboardInput.isKeyPressed(GLFW_KEY_1)) { directionalLightAngle += 1.0f; }
         else if(KeyboardInput.isKeyPressed(GLFW_KEY_2)) { directionalLightAngle -= 1.0f;}
-
-
     }
 
     @Override
@@ -194,7 +202,7 @@ public class Game implements IGameLogic {
         }
         else
         {
-            hud.setStatusText("Game paused!");
+            hud.setStatusText("Game paused, hit \"Q\" to quit or \"ESC\" to get back.");
         }
     }
 
@@ -274,8 +282,13 @@ public class Game implements IGameLogic {
         }
     }
 
+    private void quitGame()
+    {
+        glfwSetWindowShouldClose(window.getWindowHandle(), true);
+    }
+
     @Override
-    public void render(Window window)
+    public void render()
     {
         if(EngineOptions.DEBUG)
         {
@@ -300,5 +313,4 @@ public class Game implements IGameLogic {
             System.out.println("Render Cycles: " + totalRenderCycles);
         }
     }
-
 }
