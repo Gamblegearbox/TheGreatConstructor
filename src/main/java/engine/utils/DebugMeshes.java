@@ -91,14 +91,14 @@ public class DebugMeshes {
                 0, 0, 1,
                 0, 0, 1
         };
-        int[] indices = new int[]{0, 1, 2, 0, 2, 3};
+        int[] indices = new int[]{0, 2, 1, 0, 3, 2};
 
         return new Mesh(positions, texCoords, normals, indices);
     }
 
-    public static Mesh buildQuad()
+    public static Mesh buildQuad(float size)
     {
-        float halfSize = 0.5f;
+        float halfSize = size * 0.5f;
 
         float[] positions = new float[]{
                 -halfSize, 0.0f, -halfSize,

@@ -7,7 +7,7 @@ import static org.lwjgl.opengl.GL20.GL_SHADING_LANGUAGE_VERSION;
 public class EngineOptions {
 
     public static final String OPERATING_SYSTEM = System.getProperty("os.name");;
-    public static final String TITLE = "GAME";
+    public static final String TITLE = "Television 2000";
 
     public static final int WINDOW_WIDTH = 1600;
     public static final int WINDOW_HEIGHT = 900;
@@ -15,11 +15,11 @@ public class EngineOptions {
     public static final int TARGET_FPS = 60;
     public static final int TARGET_UPS = 60;
 
-    public static final boolean QUIT_ON_ESCAPE = false;
     public static final boolean DEBUG = true;
-    public static final boolean ANTIALIASING = false;
+    public static final boolean ANTIALIASING = true;
     public static final boolean V_SYNC = true;
 
+    public static boolean CAP_MATERIAL = false;
     public static boolean SHOW_TRIANGLES = false;
     public static boolean CULLFACE = true;
 

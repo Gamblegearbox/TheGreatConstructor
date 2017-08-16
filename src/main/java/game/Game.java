@@ -13,6 +13,7 @@ import engine.mesh.Mesh;
 import engine.scene.Scene;
 import engine.scene.SceneLight;
 import engine.shading.Material;
+import engine.utils.DebugMeshes;
 import engine.utils.OBJLoader;
 import org.joml.Math;
 import org.joml.Vector2f;
@@ -44,7 +45,7 @@ public class Game implements IGameLogic {
     private GameEntity allSpark_01;
     private GameEntity allSpark_02;
     private GameEntity allSpark_03;
-    private float xRot = 0, yRot = 0, zRot = 0;
+    private GameEntity groundPlane;
 
     //DEBUG VALUES
     private int totalUpdates = 0;
@@ -80,24 +81,32 @@ public class Game implements IGameLogic {
         //Texture texture = new Texture("/textures/colorsFromPicture.png");
 
         Mesh mesh = OBJLoader.loadMesh("/models/REF_ONE_CUBIC_METER.obj");
-        mesh.setMaterial(new Material(new Vector3f(0.7f, 0.02f, 0.03f), 0.5f));
+        mesh.setMaterial(Materials.RED);
         allSpark_01 = new GameEntity(mesh);
 
         mesh = OBJLoader.loadMesh("/models/REF_ONE_CUBIC_METER.obj");
-        mesh.setMaterial(new Material(new Vector3f(0.2f, 0.5f, 0.3f), 0.5f));
+        mesh.setMaterial(Materials.GREEN);
         allSpark_02 = new GameEntity(mesh);
 
         mesh = OBJLoader.loadMesh("/models/REF_ONE_CUBIC_METER.obj");
-        mesh.setMaterial(new Material(new Vector3f(0.3f, 0.5f, 0.6f), 0.5f));
+        mesh.setMaterial(Materials.BLUE);
         allSpark_03 = new GameEntity(mesh);
 
-        allSpark_01.setPosition(0f, 1f, 0);
-        allSpark_02.setPosition(-1f, -1f, 0);
-        allSpark_03.setPosition(1f, -1f, 0);
+        mesh = DebugMeshes.buildQuad(10f);
+        mesh.setMaterial(Materials.WHITE);
+        groundPlane = new GameEntity(mesh);
+
+        allSpark_01.setPosition(0f, 1.5f, 0.1f);
+        allSpark_02.setPosition(-0.65f, 0.5f, 0);
+        allSpark_03.setPosition(0.65f, 0.5f, -0.25f);
+        allSpark_01.setRotation(0f, 3f, 0f);
+        allSpark_02.setRotation(0f, -15f, 0);
+        allSpark_03.setRotation(0f, 25f, 0f);
 
         gameEntities.add(allSpark_01);
         gameEntities.add(allSpark_02);
         gameEntities.add(allSpark_03);
+        gameEntities.add(groundPlane);
 
         if(EngineOptions.DEBUG)
         {
@@ -137,18 +146,16 @@ public class Game implements IGameLogic {
         if(EngineOptions.DEBUG)
         {
             totalInputCalls++;
+
+            if(KeyboardInput.isKeyReleased(GLFW_KEY_X))
+            {
+                EngineOptions.CAP_MATERIAL = !EngineOptions.CAP_MATERIAL;
+            }
         }
 
         if(KeyboardInput.isKeyReleased(GLFW_KEY_ESCAPE))
         {
-            if(EngineOptions.QUIT_ON_ESCAPE)
-            {
-                quitGame();
-            }
-            else
-            {
-                pause = !pause;
-            }
+            pause = !pause;
         }
 
         if(pause)
@@ -192,13 +199,6 @@ public class Game implements IGameLogic {
 
             hud.setStatusText("Welcome, Omnidimensional Creator");
 
-            xRot += 0.1f;
-            yRot += 1f;
-            zRot += 0.2f;
-
-            allSpark_01.setRotation(xRot, yRot, zRot);
-            allSpark_02.setRotation(yRot, zRot, xRot);
-            allSpark_03.setRotation(zRot, xRot, yRot);
         }
         else
         {

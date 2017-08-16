@@ -9,6 +9,7 @@ import engine.scene.Scene;
 import engine.scene.SceneLight;
 import engine.shading.ShaderProgram;
 import engine.utils.Utils;
+import game.Materials;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
@@ -26,10 +27,11 @@ public class Renderer {
     private static final float Z_NEAR = 0.01f;
     private static final float Z_FAR = 1000.f;
 
-    private final float specularPower = 64f;
+    private static final float specularPower = 64f;
     private final Transformation transformation;
 
     private ShaderProgram sceneShaderProgram;
+    private ShaderProgram wireframeShaderProgram;
     private ShaderProgram hudShaderProgram;
 
     public Renderer()
@@ -40,7 +42,7 @@ public class Renderer {
     public void init() throws Exception
     {
         setupOpenGL();
-        setupSceneShader();
+        setupShader();
         setupHudShader();
     }
 
@@ -68,18 +70,26 @@ public class Renderer {
         }
     }
 
-    private void setupSceneShader() throws Exception
+    private void setupShader() throws Exception
     {
-        // Create shading
+        // Create shader
         sceneShaderProgram = new ShaderProgram();
         sceneShaderProgram.createVertexShader(Utils.loadResource("/shaders/scene.vs"));
         sceneShaderProgram.createFragmentShader(Utils.loadResource("/shaders/scene.fs"));
         sceneShaderProgram.link();
 
+        wireframeShaderProgram = new ShaderProgram();
+        wireframeShaderProgram.createVertexShader(Utils.loadResource("/shaders/solidColor.vs"));
+        wireframeShaderProgram.createFragmentShader(Utils.loadResource("/shaders/solidColor.fs"));
+        wireframeShaderProgram.link();
+
         // Create uniforms for modelView and projection matrices
         sceneShaderProgram.createUniform("projectionMatrix");
         sceneShaderProgram.createUniform("modelViewMatrix");
         sceneShaderProgram.createUniform("texture_sampler");
+
+        wireframeShaderProgram.createUniform("projectionMatrix");
+        wireframeShaderProgram.createUniform("modelViewMatrix");
 
         // Create uniform for material
         sceneShaderProgram.createMaterialUniform("material");
@@ -88,7 +98,6 @@ public class Renderer {
         sceneShaderProgram.createUniform("specularPower");
         sceneShaderProgram.createUniform("ambientLight");
         sceneShaderProgram.createDirectionalLightUniform("directionalLight");
-
     }
 
     private void setupHudShader() throws Exception
@@ -129,20 +138,27 @@ public class Renderer {
 
         Matrix4f projectionMatrix = transformation.getProjectionMatrix();
         sceneShaderProgram.setUniform("projectionMatrix", projectionMatrix);
+
         Matrix4f viewMatrix = transformation.getViewMatrix();
 
         SceneLight sceneLight = scene.getSceneLight();
         renderLights(viewMatrix, sceneLight);
 
         sceneShaderProgram.setUniform("texture_sampler", 0);
+        Map<Mesh, List<GameEntity>> mapMeshes = scene.getGameMeshes();
 
         // Render each mesh with the associated game Items
-        Map<Mesh, List<GameEntity>> mapMeshes = scene.getGameMeshes();
         for (Mesh mesh : mapMeshes.keySet())
         {
-            sceneShaderProgram.setUniform("material", mesh.getMaterial());
+            if(EngineOptions.CAP_MATERIAL)
+            {
+                sceneShaderProgram.setUniform("material", Materials.CAP_MAT);
+            }
+            else
+            {
+                sceneShaderProgram.setUniform("material", mesh.getMaterial());
+            }
             glActiveTexture(GL_TEXTURE2);
-
             mesh.renderList(mapMeshes.get(mesh), (GameEntity gameEntity) ->
                 {
                     Matrix4f modelMatrix = transformation.buildModelMatrix(gameEntity);
@@ -151,7 +167,6 @@ public class Renderer {
                 }
             );
         }
-
         sceneShaderProgram.unbind();
     }
 
