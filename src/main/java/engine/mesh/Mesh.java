@@ -1,5 +1,6 @@
 package engine.mesh;
 
+import engine.core.EngineOptions;
 import engine.gameEntities.GameEntity;
 import engine.shading.Material;
 import engine.texture.Texture;
@@ -142,7 +143,7 @@ public class Mesh {
         endRender();
     }
 
-    public void renderList(List<GameEntity> gameEntities, Consumer<GameEntity> consumer)
+    public void renderList(int mode, List<GameEntity> gameEntities, Consumer<GameEntity> consumer)
     {
         initRender();
 
@@ -150,7 +151,7 @@ public class Mesh {
             // Set up data requiered by gameEntity
             consumer.accept(gameEntity);
             // Render this game item
-            glDrawElements(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0);
+            glDrawElements(mode, getVertexCount(), GL_UNSIGNED_INT, 0);
         }
 
         endRender();

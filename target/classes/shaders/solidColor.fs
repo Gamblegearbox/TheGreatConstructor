@@ -8,10 +8,11 @@ in mat4 outModelViewMatrix;
 
 out vec4 fragColor;
 
+uniform vec3 color;
+
 void main()
 {
-    vec4 baseColour = vec4(1,1,1,1);
+    vec4 baseColour = vec4(color,1);
 
     fragColor = baseColour;
-
 }

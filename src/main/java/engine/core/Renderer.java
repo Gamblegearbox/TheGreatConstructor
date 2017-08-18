@@ -13,6 +13,7 @@ import game.Materials;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
+import sun.security.provider.SHA;
 
 import java.util.List;
 import java.util.Map;
@@ -31,7 +32,7 @@ public class Renderer {
     private final Transformation transformation;
 
     private ShaderProgram sceneShaderProgram;
-    private ShaderProgram wireframeShaderProgram;
+    private ShaderProgram solidColorShaderProgram;
     private ShaderProgram hudShaderProgram;
 
     public Renderer()
@@ -48,18 +49,23 @@ public class Renderer {
 
     private void setupOpenGL()
     {
-        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_STENCIL_TEST);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glPointSize(EngineOptions.POINT_SIZE);
 
         if(EngineOptions.SHOW_TRIANGLES)
         {
+            glClearColor(0.19f, 0.74f, 1.0f, 1.0f);
+            glDepthFunc(GL_LEQUAL);
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
         }
         else
         {
+            glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+            glDepthFunc(GL_LESS);
             glPolygonMode(GL_FRONT_FACE, GL_FILL);
         }
 
@@ -78,18 +84,19 @@ public class Renderer {
         sceneShaderProgram.createFragmentShader(Utils.loadResource("/shaders/scene.fs"));
         sceneShaderProgram.link();
 
-        wireframeShaderProgram = new ShaderProgram();
-        wireframeShaderProgram.createVertexShader(Utils.loadResource("/shaders/solidColor.vs"));
-        wireframeShaderProgram.createFragmentShader(Utils.loadResource("/shaders/solidColor.fs"));
-        wireframeShaderProgram.link();
+        solidColorShaderProgram = new ShaderProgram();
+        solidColorShaderProgram.createVertexShader(Utils.loadResource("/shaders/solidColor.vs"));
+        solidColorShaderProgram.createFragmentShader(Utils.loadResource("/shaders/solidColor.fs"));
+        solidColorShaderProgram.link();
 
         // Create uniforms for modelView and projection matrices
         sceneShaderProgram.createUniform("projectionMatrix");
         sceneShaderProgram.createUniform("modelViewMatrix");
         sceneShaderProgram.createUniform("texture_sampler");
 
-        wireframeShaderProgram.createUniform("projectionMatrix");
-        wireframeShaderProgram.createUniform("modelViewMatrix");
+        solidColorShaderProgram.createUniform("projectionMatrix");
+        solidColorShaderProgram.createUniform("modelViewMatrix");
+        solidColorShaderProgram.createUniform("color");
 
         // Create uniform for material
         sceneShaderProgram.createMaterialUniform("material");
@@ -124,7 +131,9 @@ public class Renderer {
         transformation.updateViewMatrix(camera);
 
         renderScene(scene);
-        renderHud(window, hud);
+        if(!EngineOptions.SHOW_TRIANGLES) {
+            renderHud(window, hud);
+        }
     }
 
     public void clear()
@@ -134,40 +143,72 @@ public class Renderer {
 
     public void renderScene(Scene scene)
     {
-        sceneShaderProgram.bind();
-
-        Matrix4f projectionMatrix = transformation.getProjectionMatrix();
-        sceneShaderProgram.setUniform("projectionMatrix", projectionMatrix);
-
-        Matrix4f viewMatrix = transformation.getViewMatrix();
-
-        SceneLight sceneLight = scene.getSceneLight();
-        renderLights(viewMatrix, sceneLight);
-
-        sceneShaderProgram.setUniform("texture_sampler", 0);
-        Map<Mesh, List<GameEntity>> mapMeshes = scene.getGameMeshes();
-
-        // Render each mesh with the associated game Items
-        for (Mesh mesh : mapMeshes.keySet())
+        if(EngineOptions.SHOW_TRIANGLES)
         {
-            if(EngineOptions.CAP_MATERIAL)
-            {
-                sceneShaderProgram.setUniform("material", Materials.CAP_MAT);
+            solidColorShaderProgram.bind();
+
+            Matrix4f projectionMatrix = transformation.getProjectionMatrix();
+            solidColorShaderProgram.setUniform("projectionMatrix", projectionMatrix);
+
+            Matrix4f viewMatrix = transformation.getViewMatrix();
+
+            Map<Mesh, List<GameEntity>> mapMeshes = scene.getGameMeshes();
+
+            // Render each mesh with the associated game Items
+            for (Mesh mesh : mapMeshes.keySet()) {
+
+                solidColorShaderProgram.setUniform("color", EngineOptions.LINE_COLOR);
+                mesh.renderList(GL_TRIANGLES, mapMeshes.get(mesh), (GameEntity gameEntity) ->
+                        {
+                            Matrix4f modelMatrix = transformation.buildModelMatrix(gameEntity);
+                            Matrix4f modelViewMatrix = transformation.buildModelViewMatrix(modelMatrix, viewMatrix);
+                            solidColorShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                        }
+                );
+                solidColorShaderProgram.setUniform("color", EngineOptions.POINT_COLOR);
+                mesh.renderList(GL_POINTS, mapMeshes.get(mesh), (GameEntity gameEntity) ->
+                        {
+                            Matrix4f modelMatrix = transformation.buildModelMatrix(gameEntity);
+                            Matrix4f modelViewMatrix = transformation.buildModelViewMatrix(modelMatrix, viewMatrix);
+                            solidColorShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                        }
+                );
             }
-            else
-            {
-                sceneShaderProgram.setUniform("material", mesh.getMaterial());
-            }
-            glActiveTexture(GL_TEXTURE2);
-            mesh.renderList(mapMeshes.get(mesh), (GameEntity gameEntity) ->
-                {
-                    Matrix4f modelMatrix = transformation.buildModelMatrix(gameEntity);
-                    Matrix4f modelViewMatrix = transformation.buildModelViewMatrix(modelMatrix, viewMatrix);
-                    sceneShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                }
-            );
+            solidColorShaderProgram.unbind();
         }
-        sceneShaderProgram.unbind();
+        else
+        {
+            sceneShaderProgram.bind();
+
+            Matrix4f projectionMatrix = transformation.getProjectionMatrix();
+            sceneShaderProgram.setUniform("projectionMatrix", projectionMatrix);
+
+            Matrix4f viewMatrix = transformation.getViewMatrix();
+
+            SceneLight sceneLight = scene.getSceneLight();
+            renderLights(viewMatrix, sceneLight);
+
+            sceneShaderProgram.setUniform("texture_sampler", 0);
+            Map<Mesh, List<GameEntity>> mapMeshes = scene.getGameMeshes();
+
+            // Render each mesh with the associated game Items
+            for (Mesh mesh : mapMeshes.keySet()) {
+                if (EngineOptions.CAP_MATERIAL) {
+                    sceneShaderProgram.setUniform("material", Materials.CAP_MAT);
+                } else {
+                    sceneShaderProgram.setUniform("material", mesh.getMaterial());
+                }
+                glActiveTexture(GL_TEXTURE2);
+                mesh.renderList(GL_TRIANGLES, mapMeshes.get(mesh), (GameEntity gameEntity) ->
+                        {
+                            Matrix4f modelMatrix = transformation.buildModelMatrix(gameEntity);
+                            Matrix4f modelViewMatrix = transformation.buildModelViewMatrix(modelMatrix, viewMatrix);
+                            sceneShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                        }
+                );
+            }
+            sceneShaderProgram.unbind();
+        }
     }
 
     private void renderLights(Matrix4f viewMatrix, SceneLight sceneLight)
