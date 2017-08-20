@@ -12,7 +12,6 @@ import engine.light.DirectionalLight;
 import engine.mesh.Mesh;
 import engine.scene.Scene;
 import engine.scene.SceneLight;
-import engine.shading.Material;
 import engine.utils.DebugMeshes;
 import engine.utils.OBJLoader;
 import org.joml.Math;
@@ -151,6 +150,12 @@ public class Game implements IGameLogic {
             {
                 EngineOptions.CAP_MATERIAL = !EngineOptions.CAP_MATERIAL;
             }
+            if(KeyboardInput.isKeyReleased(GLFW_KEY_C) && EngineOptions.WIREFRAME_MODE == true)
+            {
+                EngineOptions.CULL_BACK_FACE = !EngineOptions.CULL_BACK_FACE;
+                renderer.switchBackFaceCulling();
+            }
+
         }
 
         if(KeyboardInput.isKeyReleased(GLFW_KEY_ESCAPE))

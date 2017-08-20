@@ -21,14 +21,14 @@ public class EngineOptions {
 
     public static final boolean ANTIALIASING = true;
     public static final boolean V_SYNC = true;
-    public static final boolean CULLFACE = false;
+    public static final boolean WIREFRAME_MODE = true;
 
-    public static final boolean SHOW_TRIANGLES = false;
     public static final float POINT_SIZE = 5f;
-    public static final Vector3f LINE_COLOR = new Vector3f(1.3f,1.3f,1.3f);
+    public static final Vector3f LINE_COLOR = new Vector3f(1.0f,1.0f,1.0f);
     public static final Vector3f POINT_COLOR = new Vector3f(0.0f,0.0f,0.0f);
 
     public static boolean CAP_MATERIAL = false;
+    public static boolean CULL_BACK_FACE = !WIREFRAME_MODE;
 
     public static void printAllInfo()
     {
@@ -61,8 +61,7 @@ public class EngineOptions {
         System.out.println("DEBUG MODE:         " + convertBooleanToEnabledOrDisabled(DEBUG));
         System.out.println("ANTIALIASING:       " + convertBooleanToEnabledOrDisabled(ANTIALIASING));
         System.out.println("VSYNC:              " + convertBooleanToEnabledOrDisabled(V_SYNC));
-        System.out.println("WIREFRAME MODE:     " + convertBooleanToEnabledOrDisabled(SHOW_TRIANGLES));
-        System.out.println("CULLFACE:           " + convertBooleanToEnabledOrDisabled(CULLFACE));
+        System.out.println("WIREFRAME MODE:     " + convertBooleanToEnabledOrDisabled(WIREFRAME_MODE));
         System.out.println();
     }
 
