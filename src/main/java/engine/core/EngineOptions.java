@@ -21,7 +21,7 @@ public class EngineOptions {
 
     public static final boolean ANTIALIASING = true;
     public static final boolean V_SYNC = true;
-    public static final boolean WIREFRAME_MODE = true;
+    public static final boolean WIREFRAME_MODE = false;
 
     public static final float POINT_SIZE = 5f;
     public static final Vector3f LINE_COLOR = new Vector3f(1.0f,1.0f,1.0f);

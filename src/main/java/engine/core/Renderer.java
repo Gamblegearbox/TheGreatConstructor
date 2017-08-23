@@ -32,6 +32,7 @@ public class Renderer {
 
     private ShaderProgram sceneShaderProgram;
     private ShaderProgram solidColorShaderProgram;
+    private ShaderProgram depthShaderProgram;
     private ShaderProgram hudShaderProgram;
 
     public Renderer()
@@ -42,7 +43,9 @@ public class Renderer {
     public void init() throws Exception
     {
         setupOpenGL();
-        setupShader();
+        setupSceneShader();
+        setupSolidColorShader();
+        setupDepthShader();
         setupHudShader();
     }
 
@@ -72,7 +75,7 @@ public class Renderer {
         }
     }
 
-    private void setupShader() throws Exception
+    private void setupSceneShader() throws Exception
     {
         // Create shader
         sceneShaderProgram = new ShaderProgram();
@@ -80,19 +83,10 @@ public class Renderer {
         sceneShaderProgram.createFragmentShader(Utils.loadResource("/shaders/scene.fs"));
         sceneShaderProgram.link();
 
-        solidColorShaderProgram = new ShaderProgram();
-        solidColorShaderProgram.createVertexShader(Utils.loadResource("/shaders/solidColor.vs"));
-        solidColorShaderProgram.createFragmentShader(Utils.loadResource("/shaders/solidColor.fs"));
-        solidColorShaderProgram.link();
-
         // Create uniforms for modelView and projection matrices
         sceneShaderProgram.createUniform("projectionMatrix");
         sceneShaderProgram.createUniform("modelViewMatrix");
         sceneShaderProgram.createUniform("texture_sampler");
-
-        solidColorShaderProgram.createUniform("projectionMatrix");
-        solidColorShaderProgram.createUniform("modelViewMatrix");
-        solidColorShaderProgram.createUniform("color");
 
         // Create uniform for material
         sceneShaderProgram.createMaterialUniform("material");
@@ -101,6 +95,29 @@ public class Renderer {
         sceneShaderProgram.createUniform("specularPower");
         sceneShaderProgram.createUniform("ambientLight");
         sceneShaderProgram.createDirectionalLightUniform("directionalLight");
+    }
+
+    private void setupSolidColorShader() throws Exception
+    {
+        solidColorShaderProgram = new ShaderProgram();
+        solidColorShaderProgram.createVertexShader(Utils.loadResource("/shaders/solidColor.vs"));
+        solidColorShaderProgram.createFragmentShader(Utils.loadResource("/shaders/solidColor.fs"));
+        solidColorShaderProgram.link();
+
+        solidColorShaderProgram.createUniform("projectionMatrix");
+        solidColorShaderProgram.createUniform("modelViewMatrix");
+        solidColorShaderProgram.createUniform("color");
+    }
+
+    private void setupDepthShader() throws Exception
+    {
+        depthShaderProgram = new ShaderProgram();
+        depthShaderProgram.createVertexShader(Utils.loadResource("/shaders/depth_vertex.vs"));
+        depthShaderProgram.createFragmentShader(Utils.loadResource("/shaders/depth_fragment.fs"));
+        depthShaderProgram.link();
+
+        depthShaderProgram.createUniform("orthoProjectionMatrix");
+        depthShaderProgram.createUniform("modelLightViewMatrix");
     }
 
     private void setupHudShader() throws Exception
