@@ -82,10 +82,10 @@ C  [lwjgl_opengl.dll+0xf137]
 Java frames: (J=compiled Java code, j=interpreted, Vv=VM code)
 j  org.lwjgl.opengl.GL11.nglGetString(I)J+0
 j  org.lwjgl.opengl.GL11.glGetString(I)Ljava/lang/String;+1
-j  engine.core.EngineOptions.printGeneralInfo()V+51
+j  oldEngineStuff.engine.core.EngineOptions.printGeneralInfo()V+51
 j  printAllInfo()V+0
-j  engine.core.GameEngine.start()V+29
-j  game.Main.main([Ljava/lang/String;)V+26
+j  oldEngineStuff.engine.core.GameEngine.start()V+29
+j  oldEngineStuff.game.Main.main([Ljava/lang/String;)V+26
 v  ~StubRoutines::call_stub
 
 ---------------  P R O C E S S  ---------------
@@ -230,7 +230,7 @@ Dynamic libraries:
 
 VM Arguments:
 jvm_args: -Dorg.lwjgl.util.Debug=true -javaagent:C:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2017.2\lib\idea_rt.jar=52757:C:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2017.2\bin -Dfile.encoding=UTF-8 
-java_command: game.Main
+java_command: oldEngineStuff.game.Main
 java_class_path (initial): C:\Program Files\Java\jdk1.8.0_72\jre\lib\charsets.jar;C:\Program Files\Java\jdk1.8.0_72\jre\lib\deploy.jar;C:\Program Files\Java\jdk1.8.0_72\jre\lib\ext\access-bridge-64.jar;C:\Program Files\Java\jdk1.8.0_72\jre\lib\ext\cldrdata.jar;C:\Program Files\Java\jdk1.8.0_72\jre\lib\ext\dnsns.jar;C:\Program Files\Java\jdk1.8.0_72\jre\lib\ext\jaccess.jar;C:\Program Files\Java\jdk1.8.0_72\jre\lib\ext\jfxrt.jar;C:\Program Files\Java\jdk1.8.0_72\jre\lib\ext\localedata.jar;C:\Program Files\Java\jdk1.8.0_72\jre\lib\ext\nashorn.jar;C:\Program Files\Java\jdk1.8.0_72\jre\lib\ext\sunec.jar;C:\Program Files\Java\jdk1.8.0_72\jre\lib\ext\sunjce_provider.jar;C:\Program Files\Java\jdk1.8.0_72\jre\lib\ext\sunmscapi.jar;C:\Program Files\Java\jdk1.8.0_72\jre\lib\ext\sunpkcs11.jar;C:\Program Files\Java\jdk1.8.0_72\jre\lib\ext\zipfs.jar;C:\Program Files\Java\jdk1.8.0_72\jre\lib\javaws.jar;C:\Program Files\Java\jdk1.8.0_72\jre\lib\jce.jar;C:\Program Files\Java\jdk1.8.0_72\jre\lib\jfr.jar;C:\Program Files\Java\jdk1.8.0_72\jre\lib\jfxswt.jar;C:\Program Files\Java\jdk1.8.0_72\jre\lib\jsse.jar;C:\Program Files\Java\jdk1.8.0_72\jre\lib\management-agent.jar;C:\Program Files\Java\jdk1.8.0_72\jre\lib\plugin.jar;C:\Program Files\Java\jdk1.8.0_72\jre\lib\resources.jar;C:\Program Files\Java\jdk1.8.0_72\jre\lib\rt.jar;C:\Users\Peter\Documents\GitHub\TheGreatConstructor\target\classes;C:\Users\Peter\.m2\repository\org\lwjgl\lwjgl\3.1.1\lwjgl-3.1.1.jar;C:\Users\Peter\.m2\repository\org\lwjgl\lwjgl-glfw\3.1.1\lwjgl-glfw-3.1.1.jar;C:\Users\Peter\.m2\repository\org\lwjgl\lwjgl-jemalloc\3.1.1\lwjgl-jemalloc-3.1.1.jar;C:\Users\Peter\.m2\repository\org\lwjgl\lwjgl-openal\3.1.1\lwjgl-openal-3.1.1.jar;C:\Users\Peter\.m2\repository\org\lwjgl\lwjgl-opengl\3.1.1\lwjgl-opengl-3.1.1.jar;C:\Users\Peter\.m2\repository\org\lwjgl\lwjgl-stb\3.1.1\lwjgl-stb-3.1.1.jar;C:\Users\Peter\.m2\repository\org\lwjgl\lwjgl\3.1.1\lwjgl-3.1.1-natives-windows.jar;C:\Users\Peter\.m2\repository\org\lwjgl\lwjgl-glf
 Launcher Type: SUN_STANDARD
 
