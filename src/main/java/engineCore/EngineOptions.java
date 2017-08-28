@@ -11,11 +11,10 @@ public class EngineOptions {
     public static final String OPERATING_SYSTEM = System.getProperty("os.name");;
     public static final String TITLE = "Television 2000";
 
-    public static final int WINDOW_WIDTH = 1600;
-    public static final int WINDOW_HEIGHT = 900;
+    public static final int WINDOW_WIDTH = 500;
+    public static final int WINDOW_HEIGHT = 500;
 
     public static final int TARGET_FPS = 60;
-    public static final int TARGET_UPS = 60;
 
     public static final boolean DEBUG = true;
 
@@ -52,7 +51,6 @@ public class EngineOptions {
         System.out.println();
         System.out.println("RESOLUTION:         " + WINDOW_WIDTH + " x " + WINDOW_HEIGHT);
         System.out.println("TARGET FPS:         " + TARGET_FPS);
-        System.out.println("TARGET UPS:         " + TARGET_UPS);
     }
 
     public static void printOptionStatus()

@@ -34,6 +34,16 @@ public class GameEngine implements Runnable{
         }
     }
 
+    protected void init() throws Exception
+    {
+        window.init();
+        timer.init();
+        mouseInput.init(window);
+        gameLogic.init(window);
+
+        if(EngineOptions.DEBUG) { EngineOptions.printAllInfo(); }
+    }
+
     @Override
     public void run()
     {
@@ -50,16 +60,6 @@ public class GameEngine implements Runnable{
         {
             cleanup();
         }
-    }
-
-    protected void init() throws Exception
-    {
-        window.init();
-        timer.init();
-        mouseInput.init(window);
-        gameLogic.init(window);
-
-        if(EngineOptions.DEBUG) { EngineOptions.printAllInfo(); }
     }
 
     protected void gameLoop()

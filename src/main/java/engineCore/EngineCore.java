@@ -2,22 +2,78 @@ package engineCore;
 
 public class EngineCore implements Runnable{
 
-    public EngineCore(){}
+    private final Thread gameLoopThread;
+    private final Window window;
 
-    public void init(){}
+    public EngineCore()
+    {
+        gameLoopThread = new Thread(this, "GAME_LOOP_THREAD");
+        window = new Window(engineCore.EngineOptions.TITLE, engineCore.EngineOptions.WINDOW_WIDTH, EngineOptions.WINDOW_WIDTH);
+    }
 
-    public void gameloop(){}
+    public void start()
+    {
+        String osName = EngineOptions.OPERATING_SYSTEM;
 
-    public void start(){}
+        if(osName.contains("Mac"))
+        {
+            gameLoopThread.run();
+        }
+        else
+        {
+            gameLoopThread.start();
+        }
+    }
 
     @Override
-    public void run() {}
+    public void run()
+    {
+        initSubSystems();
+        startGameloop();
+        cleanup();
+    }
 
-    public void cleanup(){}
+    public void initSubSystems()
+    {
+        window.init();
+        if(EngineOptions.DEBUG) { EngineOptions.printAllInfo(); }
+    }
 
-    private void input(){}
+    public void startGameloop()
+    {
+        double lastTime = System.nanoTime() / 1000_000_000.0;
+        while(!window.windowShouldClose())
+        {
+            double currentTime = System.nanoTime() / 1000_000_000.0;
+            double deltaTime = currentTime - lastTime;
 
-    private void update(float deltaTime){}
+            input();
+            update((float)deltaTime);
+            render();
 
-    private void render(){}
+            lastTime = currentTime;
+        }
+    }
+
+    private void input()
+    {
+
+    }
+
+    private void update(float deltaTime)
+    {
+        System.out.println("TIME DELTA: " + deltaTime);
+    }
+
+    private void render()
+    {
+        window.update();
+    }
+
+    public void cleanup()
+    {
+        System.out.println("...cleanup...");
+        System.out.println("...Engine stopped");
+    }
+
 }
