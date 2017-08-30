@@ -207,7 +207,7 @@ public class Game implements IGameLogic {
         }
         else
         {
-            hud.setStatusText("Game paused, hit \"Q\" to quit or \"ESC\" to get back.");
+            hud.setStatusText("game paused, hit \"Q\" to quit or \"ESC\" to get back.");
         }
     }
 

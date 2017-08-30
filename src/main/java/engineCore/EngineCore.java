@@ -1,14 +1,18 @@
 package engineCore;
 
+import game.Game;
+
 public class EngineCore implements Runnable{
 
     private final Thread gameLoopThread;
     private final Window window;
+    private final Game game;
 
     public EngineCore()
     {
         gameLoopThread = new Thread(this, "GAME_LOOP_THREAD");
-        window = new Window(engineCore.EngineOptions.TITLE, engineCore.EngineOptions.WINDOW_WIDTH, EngineOptions.WINDOW_WIDTH);
+        window = new Window(EngineOptions.TITLE, EngineOptions.WINDOW_WIDTH, EngineOptions.WINDOW_HEIGHT);
+        game = new Game();
     }
 
     public void start()
@@ -57,16 +61,17 @@ public class EngineCore implements Runnable{
 
     private void input()
     {
-
+        game.input();
     }
 
     private void update(float deltaTime)
     {
-        System.out.println("TIME DELTA: " + deltaTime);
+        game.update(deltaTime);
     }
 
     private void render()
     {
+        game.render();
         window.update();
     }
 
