@@ -1,12 +1,13 @@
 package engineCore;
 
 import game.Game;
+import interfaces.IGame;
 
 public class EngineCore implements Runnable{
 
     private final Thread gameLoopThread;
     private final Window window;
-    private final Game game;
+    private final IGame game;
 
     public EngineCore()
     {
@@ -34,12 +35,15 @@ public class EngineCore implements Runnable{
     {
         initSubSystems();
         startGameloop();
+
         cleanup();
     }
 
     public void initSubSystems()
     {
         window.init();
+        game.init();
+
         if(EngineOptions.DEBUG) { EngineOptions.printAllInfo(); }
     }
 
@@ -77,7 +81,7 @@ public class EngineCore implements Runnable{
 
     public void cleanup()
     {
-        System.out.println("...cleanup...");
+        game.cleanup();
         System.out.println("...Engine stopped");
     }
 
