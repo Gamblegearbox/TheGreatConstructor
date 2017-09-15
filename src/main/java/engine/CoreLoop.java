@@ -1,19 +1,19 @@
-package engineCore;
+package engine;
 
 import game.Game;
-import interfaces.IGame;
+import interfaces.InterfaceGame;
 
-public class EngineCore implements Runnable{
+public class CoreLoop implements Runnable{
 
     private final Thread gameLoopThread;
     private final Window window;
-    private final IGame game;
+    private final InterfaceGame game;
 
-    public EngineCore()
+    public CoreLoop()
     {
         gameLoopThread = new Thread(this, "GAME_LOOP_THREAD");
         window = new Window(EngineOptions.TITLE, EngineOptions.WINDOW_WIDTH, EngineOptions.WINDOW_HEIGHT);
-        game = new Game();
+        game = new Game(window);
     }
 
     public void start()
@@ -33,13 +33,21 @@ public class EngineCore implements Runnable{
     @Override
     public void run()
     {
-        initSubSystems();
-        startGameloop();
-
-        cleanup();
+        try {
+            initSubSystems();
+            startGameloop();
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            cleanup();
+        }
     }
 
-    public void initSubSystems()
+    public void initSubSystems() throws Exception
     {
         window.init();
         game.init();
@@ -82,7 +90,6 @@ public class EngineCore implements Runnable{
     public void cleanup()
     {
         game.cleanup();
-        System.out.println("...Engine stopped");
     }
 
 }

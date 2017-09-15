@@ -1,11 +1,10 @@
-import engineCore.EngineCore;
+import engine.CoreLoop;
 
 public class Main {
 
     public static void main(String[] args)
     {
-        System.out.println("Starting Engine...");
-        EngineCore core = new EngineCore();
-        core.start();
+        CoreLoop coreLoop = new CoreLoop();
+        coreLoop.start();
     }
 }

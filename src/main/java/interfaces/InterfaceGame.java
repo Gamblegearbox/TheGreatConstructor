@@ -1,10 +1,9 @@
 package interfaces;
 
-import engineCore.Window;
 
-public interface IGame {
+public interface InterfaceGame {
 
-    void init();
+    void init() throws Exception;
 
     void input();
 

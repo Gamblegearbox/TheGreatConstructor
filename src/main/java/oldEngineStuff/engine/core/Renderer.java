@@ -79,8 +79,8 @@ public class Renderer {
     {
         // Create shader
         sceneShaderProgram = new ShaderProgram();
-        sceneShaderProgram.createVertexShader(Utils.loadResource("/shaders/scene.vs"));
-        sceneShaderProgram.createFragmentShader(Utils.loadResource("/shaders/scene.fs"));
+        sceneShaderProgram.createVertexShader(Utils.loadResource("/shaders/oldEngine/scene.vs"));
+        sceneShaderProgram.createFragmentShader(Utils.loadResource("/shaders/oldEngine/scene.fs"));
         sceneShaderProgram.link();
 
         // Create uniforms for modelView and projection matrices
@@ -100,8 +100,8 @@ public class Renderer {
     private void setupSolidColorShader() throws Exception
     {
         solidColorShaderProgram = new ShaderProgram();
-        solidColorShaderProgram.createVertexShader(Utils.loadResource("/shaders/solidColor.vs"));
-        solidColorShaderProgram.createFragmentShader(Utils.loadResource("/shaders/solidColor.fs"));
+        solidColorShaderProgram.createVertexShader(Utils.loadResource("/shaders/oldEngine/solidColor.vs"));
+        solidColorShaderProgram.createFragmentShader(Utils.loadResource("/shaders/oldEngine/solidColor.fs"));
         solidColorShaderProgram.link();
 
         solidColorShaderProgram.createUniform("projectionMatrix");
@@ -112,8 +112,8 @@ public class Renderer {
     private void setupDepthShader() throws Exception
     {
         depthShaderProgram = new ShaderProgram();
-        depthShaderProgram.createVertexShader(Utils.loadResource("/shaders/depth_vertex.vs"));
-        depthShaderProgram.createFragmentShader(Utils.loadResource("/shaders/depth_fragment.fs"));
+        depthShaderProgram.createVertexShader(Utils.loadResource("/shaders/oldEngine/depth_vertex.vs"));
+        depthShaderProgram.createFragmentShader(Utils.loadResource("/shaders/oldEngine/depth_fragment.fs"));
         depthShaderProgram.link();
 
         depthShaderProgram.createUniform("orthoProjectionMatrix");
@@ -123,8 +123,8 @@ public class Renderer {
     private void setupHudShader() throws Exception
     {
         hudShaderProgram = new ShaderProgram();
-        hudShaderProgram.createVertexShader(Utils.loadResource("/shaders/hud.vs"));
-        hudShaderProgram.createFragmentShader(Utils.loadResource("/shaders/hud.fs"));
+        hudShaderProgram.createVertexShader(Utils.loadResource("/shaders/oldEngine/hud.vs"));
+        hudShaderProgram.createFragmentShader(Utils.loadResource("/shaders/oldEngine/hud.fs"));
         hudShaderProgram.link();
 
         // Create uniforms for Orthographic-model projection matrix and base colour
