@@ -13,7 +13,6 @@ public class OpenGLRenderer {
     private final Window window;
     private ShaderProgram activeShader;
 
-
     public OpenGLRenderer(Window _window)
     {
         this.window = _window;
@@ -39,15 +38,15 @@ public class OpenGLRenderer {
 
     }
 
-    public void render(GameObject item, EngineOptions.renderMode mode)
+    public void render(GameObject item)
     {
         OpenGLMesh mesh = item.getMesh();
 
-
         glBindVertexArray(mesh.getVaoID());
         glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1);
 
-        switch(mode)
+        switch(EngineOptions.RENDER_MODE)
         {
             case WIREFRAME:
 
@@ -65,6 +64,7 @@ public class OpenGLRenderer {
 
                 activeShader = Shaders.wireframeShader;
                 activeShader.bind();
+
                 glDrawElements(GL_LINE_LOOP, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
                 glDrawElements(GL_POINTS, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
 
@@ -76,7 +76,7 @@ public class OpenGLRenderer {
                 glDrawElements(GL_TRIANGLES, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
 
                 break;
-            default:    //this is rendermode.DEFAULT
+            default:    //this is EngineOptions.rendermode.SHADED
 
                 activeShader = Shaders.sceneShader;
                 activeShader.bind();
@@ -104,16 +104,43 @@ public class OpenGLRenderer {
 
     private void setupOpenGl()
     {
-        glEnable(GL_DEPTH_TEST);
-        glEnable(GL_STENCIL_TEST);
-        glEnable(GL_BLEND);
+        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glPointSize(EngineOptions.POINT_SIZE);
 
-        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-        glDepthFunc(GL_LESS);
-        glPolygonMode(GL_FRONT_FACE, GL_FILL);
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_STENCIL_TEST);
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        switch(EngineOptions.RENDER_MODE)
+        {
+            case WIREFRAME:
+
+                glDepthFunc(GL_LESS);
+                glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+                break;
+            case WIREFRAME_OVERLAY:
+
+                glDepthFunc(GL_LEQUAL);
+                glPolygonMode(GL_FRONT_FACE, GL_FILL);
+
+                break;
+            case SHADED_UNICOLOR:
+
+                glDepthFunc(GL_LESS);
+                glPolygonMode(GL_FRONT_FACE, GL_FILL);
+
+                break;
+            default:    //this is rendermode.SHADED
+
+                glDepthFunc(GL_LESS);
+                glPolygonMode(GL_FRONT_FACE, GL_FILL);
+
+                break;
+        }
 
         if(EngineOptions.CULL_BACK_FACE)
         {
@@ -124,14 +151,6 @@ public class OpenGLRenderer {
         {
             glDisable(GL_CULL_FACE);
         }
-
-        /*Old wireframe settings
-        if(EngineOptions.CULL_BACK_FACE)
-        {
-            glDepthFunc(GL_LEQUAL);
-            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-            glDisable(GL_CULL_FACE);
-        }*/
 
     }
 

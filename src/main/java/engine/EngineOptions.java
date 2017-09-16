@@ -8,7 +8,6 @@ import static org.lwjgl.opengl.GL20.GL_SHADING_LANGUAGE_VERSION;
 
 public class EngineOptions {
 
-
     public static final String OPERATING_SYSTEM = System.getProperty("os.name");
     public static final String TITLE = "Television 2000";
 
@@ -28,9 +27,11 @@ public class EngineOptions {
     public static final Vector3f LINE_COLOR = new Vector3f(1.0f,1.0f,1.0f);
     public static final Vector3f POINT_COLOR = new Vector3f(0.0f,0.0f,0.0f);
 
+    public static final renderMode RENDER_MODE = renderMode.WIREFRAME_OVERLAY;
+
     public enum renderMode
     {
-        DEFAULT, WIREFRAME, WIREFRAME_OVERLAY, SHADED_UNICOLOR
+        SHADED, WIREFRAME, WIREFRAME_OVERLAY, SHADED_UNICOLOR
     }
 
     public static void printAllInfo()
@@ -60,6 +61,7 @@ public class EngineOptions {
     public static void printOptionStatus()
     {
         System.out.println();
+        System.out.println("RENDER MODE:        " + RENDER_MODE);
         System.out.println("DEBUG MODE:         " + convertBooleanToEnabledOrDisabled(DEBUG));
         System.out.println("ANTIALIASING:       " + convertBooleanToEnabledOrDisabled(ANTIALIASING));
         System.out.println("VSYNC:              " + convertBooleanToEnabledOrDisabled(V_SYNC));

@@ -11,8 +11,8 @@ public class Shaders {
     {
         //SCENE SHADER
         sceneShader = new ShaderProgram();
-        sceneShader.createVertexShader(Utils.loadResource("/shaders/default.vs"));
-        sceneShader.createFragmentShader (Utils.loadResource("/shaders/default.fs"));
+        sceneShader.createVertexShader(Utils.loadResource("/shaders/shaded.vs"));
+        sceneShader.createFragmentShader (Utils.loadResource("/shaders/shaded.fs"));
         sceneShader.link();
 
         //WIREFRAME SHADER

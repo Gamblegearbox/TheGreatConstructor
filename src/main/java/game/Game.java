@@ -34,11 +34,18 @@ public class Game implements InterfaceGame {
                 -0.25f, -0.25f, 0.0f
         };
 
+        float[] colors = new float[]{
+                0.5f, 0.0f, 0.0f,
+                0.0f, 0.5f, 0.0f,
+                0.0f, 0.0f, 0.5f,
+                0.0f, 0.5f, 0.5f,
+        };
+
         int[] indices = new int[]{
                 0, 2 ,1,
                 2, 3, 1,
         };
-        adam = new GameObject(new OpenGLMesh(vertices, indices));
+        adam = new GameObject(new OpenGLMesh(vertices, colors, indices));
 
         vertices = new float[]{
                 0.5f,  0.25f, 0.0f,
@@ -46,10 +53,16 @@ public class Game implements InterfaceGame {
                 0.75f, -0.25f, 0.0f
         };
 
+        colors = new float[]{
+                0.5f,  0.25f, 0.0f,
+                0.25f, 0.25f, 0.0f,
+                0.75f, 0.25f, 0.0f
+        };
+
         indices = new int[]{
                 0, 1, 2,
         };
-        eva = new GameObject(new OpenGLMesh(vertices, indices));
+        eva = new GameObject(new OpenGLMesh(vertices, colors, indices));
 
         gameObjects = new GameObject[]
                 {
@@ -65,6 +78,9 @@ public class Game implements InterfaceGame {
     {
         adam.getPosition().x = (float)Math.sin(anim);
         anim += deltaTime;
+
+        //if key???
+        //renderer.setRenderMode(EngineOptions.renderMode.SHADED;)
     }
 
     @Override
@@ -74,7 +90,7 @@ public class Game implements InterfaceGame {
 
         for(int i = 0; i < gameObjects.length; i++)
         {
-            renderer.render(gameObjects[i], EngineOptions.renderMode.WIREFRAME_OVERLAY);
+            renderer.render(gameObjects[i]);
         }
 
         renderer.afterFrame();
