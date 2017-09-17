@@ -1,6 +1,7 @@
 package engine;
 
-import org.joml.Vector3f;
+
+import math.Vector3f;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL11.glGetString;
@@ -13,6 +14,11 @@ public class EngineOptions {
 
     public static final int WINDOW_WIDTH = 500;
     public static final int WINDOW_HEIGHT = 500;
+    public static final float ASPECT_RATIO = WINDOW_WIDTH / WINDOW_HEIGHT;
+
+    public static final float Z_NEAR = 0.05f;
+    public static final float Z_FAR = 1000f;
+    public static final float FOV = 60f;
 
     public static final int TARGET_FPS = 60;
 

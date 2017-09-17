@@ -1,25 +1,31 @@
 package gameObject;
 
 import engine.OpenGLMesh;
-import org.joml.Vector3f;
+import math.Vector3f;
+import org.joml.Quaternionf;
+
 
 public class GameObject {
 
-    private Vector3f position;
-    private Vector3f scale;
-
-    private OpenGLMesh mesh;
+    private final Vector3f position;
+    private final Vector3f scale;
+    private final Quaternionf rotation;
+    private final OpenGLMesh mesh;
 
     public GameObject(OpenGLMesh mesh)
     {
         position = new Vector3f(0,0,0);
         scale = new Vector3f(1,1,1);
+        rotation = new Quaternionf();
+
         this.mesh = mesh;
     }
 
     public void setPosition(Vector3f _position)
     {
-        this.position = _position;
+        position.x = _position.x;
+        position.y = _position.y;
+        position.z = _position.z;
     }
 
     public void setPosition(float _x, float _y, float _z)

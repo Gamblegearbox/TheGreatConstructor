@@ -13,6 +13,7 @@ public class Game implements InterfaceGame {
     private GameObject[] gameObjects;
     private GameObject adam;
     private GameObject eva;
+    private GameObject bob;
 
     private float anim = 0;
 
@@ -28,10 +29,10 @@ public class Game implements InterfaceGame {
         renderer.init();
 
         float[] vertices = new float[]{
-                -0.75f,  0.25f, 0.0f,
-                -0.25f,  0.25f, 0.0f,
-                -0.75f, -0.25f, 0.0f,
-                -0.25f, -0.25f, 0.0f
+                -0.75f,  0.25f, -2.0f,
+                -0.25f,  0.25f, -2.0f,
+                -0.75f, -0.25f, -2.0f,
+                -0.25f, -0.25f, -2.0f
         };
 
         float[] colors = new float[]{
@@ -48,15 +49,22 @@ public class Game implements InterfaceGame {
         adam = new GameObject(new OpenGLMesh(vertices, colors, indices));
 
         vertices = new float[]{
-                0.5f,  0.25f, 0.0f,
-                0.25f, -0.25f, 0.0f,
-                0.75f, -0.25f, 0.0f
+                -0.75f,  0.25f, -3.0f,
+                -0.25f,  0.25f, -3.0f,
+                -0.75f, -0.25f, -3.0f,
+                -0.25f, -0.25f, -3.0f
+        };
+        bob = new GameObject(new OpenGLMesh(vertices, colors, indices));
+        vertices = new float[]{
+                0.5f,  0.25f, -2.0f,
+                0.25f, -0.25f, -2.0f,
+                0.75f, -0.25f, -2.0f
         };
 
         colors = new float[]{
-                0.5f,  0.25f, 0.0f,
-                0.25f, 0.25f, 0.0f,
-                0.75f, 0.25f, 0.0f
+                0.5f, 0.0f, 0.0f,
+                0.0f, 0.5f, 0.0f,
+                0.0f, 0.0f, 0.5f
         };
 
         indices = new int[]{
@@ -66,7 +74,7 @@ public class Game implements InterfaceGame {
 
         gameObjects = new GameObject[]
                 {
-                        adam, eva
+                        adam, eva, bob
                 };
     }
 

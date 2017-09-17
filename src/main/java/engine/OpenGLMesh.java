@@ -1,6 +1,7 @@
 package engine;
 
 import org.lwjgl.BufferUtils;
+import org.lwjgl.system.MemoryUtil;
 
 import java.nio.Buffer;
 import java.nio.FloatBuffer;

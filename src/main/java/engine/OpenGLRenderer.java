@@ -1,17 +1,20 @@
 package engine;
 
-
 import gameObject.GameObject;
+import math.Matrix4f;
+import org.omg.IOP.ENCODING_CDR_ENCAPS;
+
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 
-
 public class OpenGLRenderer {
 
     private final Window window;
     private ShaderProgram activeShader;
+    private Matrix4f projectionMatrix;
+
 
     public OpenGLRenderer(Window _window)
     {
@@ -22,8 +25,18 @@ public class OpenGLRenderer {
     {
         setupOpenGl();
         Shaders.initShaders();
+
+        projectionMatrix = new Matrix4f().perspective(EngineOptions.FOV, EngineOptions.ASPECT_RATIO, EngineOptions.Z_NEAR, EngineOptions.Z_FAR);
+
         activeShader = Shaders.sceneShader;
         activeShader.bind();
+        activeShader.createUniform("projectionMatrix");
+        activeShader.setUniformData("projectionMatrix", projectionMatrix);
+
+        activeShader = Shaders.wireframeShader;
+        activeShader.bind();
+        activeShader.createUniform("projectionMatrix");
+        activeShader.setUniformData("projectionMatrix", projectionMatrix);
     }
 
     public void prepareFrame()
@@ -35,7 +48,6 @@ public class OpenGLRenderer {
             glViewport(0, 0, window.getWidth(), window.getHeight());
             window.setResized(false);
         }
-
     }
 
     public void render(GameObject item)
@@ -76,7 +88,7 @@ public class OpenGLRenderer {
                 glDrawElements(GL_TRIANGLES, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
 
                 break;
-            default:    //this is EngineOptions.rendermode.SHADED
+            case SHADED:
 
                 activeShader = Shaders.sceneShader;
                 activeShader.bind();
