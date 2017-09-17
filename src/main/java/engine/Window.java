@@ -1,7 +1,6 @@
 package engine;
 
 
-import oldEngineStuff.engine.input.KeyboardInput;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.glfw.GLFWWindowSizeCallback;
@@ -74,7 +73,7 @@ public class Window {
         });
 
         // Setup a key callback. It will be called every time a key is pressed, repeated or released.
-        glfwSetKeyCallback(windowHandle, new KeyboardInput());
+        //TODO: glfwSetKeyCallback(windowHandle, new KeyboardInput());
 
         // Get the resolution of the primary monitor
         GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
@@ -97,7 +96,7 @@ public class Window {
         // Make the window visible
         glfwShowWindow(windowHandle);
 
-        Arrays.fill(KeyboardInput.keys, KeyboardInput.IDLE_STATE); // init all keys with idle state
+        //TODO: Arrays.fill(KeyboardInput.keys, KeyboardInput.IDLE_STATE); // init all keys with idle state
         GL.createCapabilities();
     }
 
@@ -134,7 +133,7 @@ public class Window {
     public void update()
     {
         glfwSwapBuffers(windowHandle);
-        KeyboardInput.update();
+        //TODO: KeyboardInput.update();
         glfwPollEvents();
     }
 

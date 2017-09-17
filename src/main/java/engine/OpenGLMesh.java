@@ -36,7 +36,9 @@ public class OpenGLMesh {
         return vertexCount;
     }
 
-    public OpenGLMesh(float[] _vertices, float[] _colors, int[] _indices)
+
+
+    public OpenGLMesh(float[] _vertices, float[] _normals, float[] _colors, float[] _uvCoords, int[] _indices)
     {
         vertexCount = _indices.length;
 

@@ -1,6 +1,7 @@
 package utils;
 
-import oldEngineStuff.engine.mesh.Mesh;
+
+import engine.OpenGLMesh;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
@@ -9,7 +10,7 @@ import java.util.List;
 
 public class OBJLoader {
 
-    public static Mesh loadMesh(String fileName) throws Exception
+    public static OpenGLMesh loadMesh(String fileName) throws Exception
     {
         List<String> lines = Utils.readAllLines(fileName);
 
@@ -61,35 +62,43 @@ public class OBJLoader {
         return reorderLists(vertices, textures, normals, faces);
     }
 
-    private static Mesh reorderLists(List<Vector3f> posList, List<Vector2f> textCoordList,
+    private static OpenGLMesh reorderLists(List<Vector3f> posList, List<Vector2f> textCoordList,
                                      List<Vector3f> normList, List<Face> facesList)
     {
-        List<Integer> indices = new ArrayList();
+        List<Integer> indicesList = new ArrayList();
         // Create position array in the order it has been declared
-        float[] posArr = new float[posList.size() * 3];
+        float[] vertices = new float[posList.size() * 3];
         int i = 0;
         for (Vector3f pos : posList)
         {
-            posArr[i * 3] = pos.x;
-            posArr[i * 3 + 1] = pos.y;
-            posArr[i * 3 + 2] = pos.z;
+            vertices[i * 3] = pos.x;
+            vertices[i * 3 + 1] = pos.y;
+            vertices[i * 3 + 2] = pos.z;
             i++;
         }
-        float[] textCoordArr = new float[posList.size() * 2];
-        float[] normArr = new float[posList.size() * 3];
+        float[] uvCoords = new float[posList.size() * 2];
+        float[] normals = new float[posList.size() * 3];
 
         for (Face face : facesList)
         {
             IdxGroup[] faceVertexIndices = face.getFaceVertexIndices();
             for (IdxGroup indValue : faceVertexIndices)
             {
-                processFaceVertex(indValue, textCoordList, normList, indices, textCoordArr, normArr);
+                processFaceVertex(indValue, textCoordList, normList, indicesList, uvCoords, normals);
             }
         }
 
-        int[] indicesArr = new int[indices.size()];
-        indicesArr = indices.stream().mapToInt((Integer v) -> v).toArray();
-        Mesh mesh = new Mesh(posArr, textCoordArr, normArr, indicesArr);
+        float[] colors = new float[vertices.length];
+        for(int x = 0; x < colors.length; x++)
+        {
+            colors[x] = 1.0f;
+        }
+
+
+        int[] indices = new int[indicesList.size()];
+        indices = indicesList.stream().mapToInt((Integer v) -> v).toArray();
+
+        OpenGLMesh mesh = new OpenGLMesh(vertices, normals, colors, uvCoords, indices);
 
         return mesh;
     }

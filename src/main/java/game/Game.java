@@ -35,6 +35,8 @@ public class Game implements InterfaceGame {
                 -0.25f, -0.25f, -2.0f
         };
 
+        float[] normals = new float[vertices.length];
+
         float[] colors = new float[]{
                 0.5f, 0.0f, 0.0f,
                 0.0f, 0.5f, 0.0f,
@@ -42,11 +44,13 @@ public class Game implements InterfaceGame {
                 0.0f, 0.5f, 0.5f,
         };
 
+        float[] uvCoords = new float[vertices.length / 3 * 2];
+
         int[] indices = new int[]{
                 0, 2 ,1,
                 2, 3, 1,
         };
-        adam = new GameObject(new OpenGLMesh(vertices, colors, indices));
+        adam = new GameObject(new OpenGLMesh(vertices, normals, colors, uvCoords, indices));
 
         vertices = new float[]{
                 -0.75f,  0.25f, -3.0f,
@@ -54,12 +58,15 @@ public class Game implements InterfaceGame {
                 -0.75f, -0.25f, -3.0f,
                 -0.25f, -0.25f, -3.0f
         };
-        bob = new GameObject(new OpenGLMesh(vertices, colors, indices));
+        bob = new GameObject(new OpenGLMesh(vertices, normals, colors, uvCoords, indices));
+
         vertices = new float[]{
                 0.5f,  0.25f, -2.0f,
                 0.25f, -0.25f, -2.0f,
                 0.75f, -0.25f, -2.0f
         };
+
+        normals = new float[vertices.length];
 
         colors = new float[]{
                 0.5f, 0.0f, 0.0f,
@@ -67,10 +74,12 @@ public class Game implements InterfaceGame {
                 0.0f, 0.0f, 0.5f
         };
 
+        uvCoords = new float[vertices.length / 3 * 2];
+
         indices = new int[]{
                 0, 1, 2,
         };
-        eva = new GameObject(new OpenGLMesh(vertices, colors, indices));
+        eva = new GameObject(new OpenGLMesh(vertices, normals, colors, uvCoords, indices));
 
         gameObjects = new GameObject[]
                 {
