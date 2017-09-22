@@ -2,7 +2,6 @@ package engine;
 
 import gameObject.GameObject;
 import math.Matrix4f;
-import org.omg.IOP.ENCODING_CDR_ENCAPS;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
@@ -14,6 +13,7 @@ public class OpenGLRenderer {
     private final Window window;
     private ShaderProgram activeShader;
     private Matrix4f projectionMatrix;
+    private Matrix4f modelMatrix;
 
 
     public OpenGLRenderer(Window _window)
@@ -27,15 +27,14 @@ public class OpenGLRenderer {
         Shaders.initShaders();
 
         projectionMatrix = new Matrix4f().perspective(EngineOptions.FOV, EngineOptions.ASPECT_RATIO, EngineOptions.Z_NEAR, EngineOptions.Z_FAR);
+        modelMatrix = new Matrix4f().identity();
 
         activeShader = Shaders.sceneShader;
         activeShader.bind();
-        activeShader.createUniform("projectionMatrix");
         activeShader.setUniformData("projectionMatrix", projectionMatrix);
 
         activeShader = Shaders.wireframeShader;
         activeShader.bind();
-        activeShader.createUniform("projectionMatrix");
         activeShader.setUniformData("projectionMatrix", projectionMatrix);
     }
 
@@ -54,6 +53,8 @@ public class OpenGLRenderer {
     {
         OpenGLMesh mesh = item.getMesh();
 
+        modelMatrix = modelMatrix.modelMatrix(item.getPosition(), item.getPosition(), item.getScale());
+
         glBindVertexArray(mesh.getVaoID());
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
@@ -64,6 +65,7 @@ public class OpenGLRenderer {
 
                 activeShader = Shaders.wireframeShader;
                 activeShader.bind();
+                activeShader.setUniformData("modelMatrix", modelMatrix);
                 glDrawElements(GL_LINE_LOOP, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
                 glDrawElements(GL_POINTS, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
 
@@ -72,11 +74,12 @@ public class OpenGLRenderer {
 
                 activeShader = Shaders.sceneShader;
                 activeShader.bind();
+                activeShader.setUniformData("modelMatrix", modelMatrix);
                 glDrawElements(GL_TRIANGLES, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
 
                 activeShader = Shaders.wireframeShader;
                 activeShader.bind();
-
+                activeShader.setUniformData("modelMatrix", modelMatrix);
                 glDrawElements(GL_LINE_LOOP, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
                 glDrawElements(GL_POINTS, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
 
@@ -85,6 +88,7 @@ public class OpenGLRenderer {
 
                 activeShader = Shaders.sceneShader; // TODO: create an activate capmaterial shader
                 activeShader.bind();
+                activeShader.setUniformData("modelMatrix", modelMatrix);
                 glDrawElements(GL_TRIANGLES, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
 
                 break;
@@ -92,6 +96,7 @@ public class OpenGLRenderer {
 
                 activeShader = Shaders.sceneShader;
                 activeShader.bind();
+                activeShader.setUniformData("modelMatrix", modelMatrix);
                 glDrawElements(GL_TRIANGLES, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
 
                 break;

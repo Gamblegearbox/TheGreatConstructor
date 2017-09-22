@@ -1,9 +1,6 @@
 package engine;
 
 import org.lwjgl.BufferUtils;
-import org.lwjgl.system.MemoryUtil;
-
-import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
@@ -14,7 +11,6 @@ import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glDeleteVertexArrays;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
-
 
 
 public class OpenGLMesh {
