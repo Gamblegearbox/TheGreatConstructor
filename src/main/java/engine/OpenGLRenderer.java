@@ -29,11 +29,15 @@ public class OpenGLRenderer {
         projectionMatrix = new Matrix4f().perspective(EngineOptions.FOV, EngineOptions.ASPECT_RATIO, EngineOptions.Z_NEAR, EngineOptions.Z_FAR);
         modelMatrix = new Matrix4f().identity();
 
-        activeShader = Shaders.sceneShader;
+        activeShader = Shaders.shaded;
         activeShader.bind();
         activeShader.setUniformData("projectionMatrix", projectionMatrix);
 
-        activeShader = Shaders.wireframeShader;
+        activeShader = Shaders.wireframe;
+        activeShader.bind();
+        activeShader.setUniformData("projectionMatrix", projectionMatrix);
+
+        activeShader = Shaders.shadedUnicolor;
         activeShader.bind();
         activeShader.setUniformData("projectionMatrix", projectionMatrix);
     }
@@ -52,8 +56,7 @@ public class OpenGLRenderer {
     public void render(GameObject item)
     {
         OpenGLMesh mesh = item.getMesh();
-
-        modelMatrix = modelMatrix.modelMatrix(item.getPosition(), item.getPosition(), item.getScale());
+        modelMatrix = modelMatrix.modelMatrix(item.getPosition(), item.getRotation(), item.getScale());
 
         glBindVertexArray(mesh.getVaoID());
         glEnableVertexAttribArray(0);
@@ -63,7 +66,7 @@ public class OpenGLRenderer {
         {
             case WIREFRAME:
 
-                activeShader = Shaders.wireframeShader;
+                activeShader = Shaders.wireframe;
                 activeShader.bind();
                 activeShader.setUniformData("modelMatrix", modelMatrix);
                 glDrawElements(GL_LINE_LOOP, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
@@ -72,12 +75,12 @@ public class OpenGLRenderer {
                 break;
             case WIREFRAME_OVERLAY:
 
-                activeShader = Shaders.sceneShader;
+                activeShader = Shaders.shaded;
                 activeShader.bind();
                 activeShader.setUniformData("modelMatrix", modelMatrix);
                 glDrawElements(GL_TRIANGLES, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
 
-                activeShader = Shaders.wireframeShader;
+                activeShader = Shaders.wireframe;
                 activeShader.bind();
                 activeShader.setUniformData("modelMatrix", modelMatrix);
                 glDrawElements(GL_LINE_LOOP, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
@@ -86,7 +89,7 @@ public class OpenGLRenderer {
                 break;
             case SHADED_UNICOLOR:
 
-                activeShader = Shaders.sceneShader; // TODO: create an activate capmaterial shader
+                activeShader = Shaders.shadedUnicolor;
                 activeShader.bind();
                 activeShader.setUniformData("modelMatrix", modelMatrix);
                 glDrawElements(GL_TRIANGLES, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
@@ -94,7 +97,7 @@ public class OpenGLRenderer {
                 break;
             case SHADED:
 
-                activeShader = Shaders.sceneShader;
+                activeShader = Shaders.shaded;
                 activeShader.bind();
                 activeShader.setUniformData("modelMatrix", modelMatrix);
                 glDrawElements(GL_TRIANGLES, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
@@ -152,8 +155,8 @@ public class OpenGLRenderer {
                 glPolygonMode(GL_FRONT_FACE, GL_FILL);
 
                 break;
-            default:    //this is rendermode.SHADED
-
+            default:
+                //this is rendermode.SHADED
                 glDepthFunc(GL_LESS);
                 glPolygonMode(GL_FRONT_FACE, GL_FILL);
 

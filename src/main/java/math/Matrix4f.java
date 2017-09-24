@@ -1,5 +1,7 @@
 package math;
 
+import org.joml.Quaternionf;
+
 public class Matrix4f {
 
     private float[] values;
@@ -48,29 +50,39 @@ public class Matrix4f {
         return this;
     }
 
-    public Matrix4f modelMatrix(Vector3f _position, Vector3f _, Vector3f _scale)
+    public Matrix4f modelMatrix(Vector3f _position, Quaternionf _rotation, Vector3f _scale)
     {
-        this.identity().translate(_position);
-        this.scale(_scale);
+        float dqx = _rotation.x + _rotation.x;
+        float dqy = _rotation.y + _rotation.y;
+        float dqz = _rotation.z + _rotation.z;
+        float q00 = dqx * _rotation.x;
+        float q11 = dqy * _rotation.y;
+        float q22 = dqz * _rotation.z;
+        float q01 = dqx * _rotation.y;
+        float q02 = dqx * _rotation.z;
+        float q03 = dqx * _rotation.w;
+        float q12 = dqy * _rotation.z;
+        float q13 = dqy * _rotation.w;
+        float q23 = dqz * _rotation.w;
+
+         values[0] = (_scale.x - (q11 + q22) * _scale.x);
+         values[1] = ((q01 + q23) * _scale.x);
+         values[2] = ((q02 - q13) * _scale.x);
+         values[3] = (0.0f);
+         values[4] = ((q01 - q23) * _scale.y);
+         values[5] = (_scale.y - (q22 + q00) * _scale.y);
+         values[6] = ((q12 + q03) * _scale.y);
+         values[7] = (0.0f);
+         values[8] = ((q02 + q13) * _scale.z);
+         values[9] = ((q12 - q03) * _scale.z);
+        values[10] = (_scale.z - (q11 + q00) * _scale.z);
+        values[11] = (0.0f);
+        values[12] = (_position.x);
+        values[13] = (_position.y);
+        values[14] = (_position.z);
+        values[15] = (1.0f);
+
         return this;
     }
-
-    private void translate(Vector3f _position)
-    {
-        values[12] = _position.x;
-        values[13] = _position.y;
-        values[14] = _position.z;
-
-    }
-
-    private void rotate(){}
-
-    public void scale(Vector3f _scale)
-    {
-        values[0] = _scale.x;
-        values[5] = _scale.y;
-        values[10] = _scale.z;
-    }
-
 
 }

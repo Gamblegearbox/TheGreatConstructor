@@ -4,21 +4,25 @@ import utils.Utils;
 
 public class Shaders {
 
-    public static ShaderProgram sceneShader;
-    public static ShaderProgram wireframeShader;
+    public static ShaderProgram shaded;
+    public static ShaderProgram wireframe;
+    public static ShaderProgram shadedUnicolor;
+
 
     public static void initShaders() throws Exception
     {
-        //SCENE SHADER
-        sceneShader = new ShaderProgram();
-        sceneShader.createVertexShader(Utils.loadResource("/shaders/shaded.vs"));
-        sceneShader.createFragmentShader (Utils.loadResource("/shaders/shaded.fs"));
-        sceneShader.link();
+        shaded = createShader("/shaders/shaded.vs", "/shaders/shaded.fs");
+        wireframe = createShader("/shaders/wireframe.vs", "/shaders/wireframe.fs");
+        shadedUnicolor = createShader("/shaders/unicolor.vs", "/shaders/unicolor.fs");
+    }
 
-        //WIREFRAME SHADER
-        wireframeShader = new ShaderProgram();
-        wireframeShader.createVertexShader(Utils.loadResource("/shaders/wireframe.vs"));
-        wireframeShader.createFragmentShader (Utils.loadResource("/shaders/wireframe.fs"));
-        wireframeShader.link();
+    private static ShaderProgram createShader(String _vertexShaderPath, String _fragmentShaderPath) throws Exception
+    {
+        ShaderProgram shader = new ShaderProgram();
+        shader.createVertexShader(Utils.loadResource(_vertexShaderPath));
+        shader.createFragmentShader (Utils.loadResource(_fragmentShaderPath));
+        shader.link();
+
+        return shader;
     }
 }

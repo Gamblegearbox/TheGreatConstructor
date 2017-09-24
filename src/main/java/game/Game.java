@@ -3,6 +3,7 @@ package game;
 import engine.*;
 import gameObject.GameObject;
 import interfaces.InterfaceGame;
+import org.joml.Matrix4f;
 
 
 public class Game implements InterfaceGame {
@@ -29,10 +30,15 @@ public class Game implements InterfaceGame {
         renderer.init();
 
         float[] vertices = new float[]{
-                -0.25f,  0.25f, 0.0f,
-                0.25f,  0.25f, 0.0f,
-                -0.25f, -0.25f, 0.0f,
-                0.25f, -0.25f, 0.0f
+                -0.25f,  0.25f, 0.25f,
+                 0.25f,  0.25f, 0.25f,
+                -0.25f, -0.25f, 0.25f,
+                 0.25f, -0.25f, 0.25f,
+
+                -0.25f,  0.25f, -0.25f,
+                 0.25f,  0.25f, -0.25f,
+                -0.25f, -0.25f, -0.25f,
+                 0.25f, -0.25f, -0.25f
         };
 
         float[] normals = new float[vertices.length];
@@ -42,13 +48,28 @@ public class Game implements InterfaceGame {
                 0.0f, 0.5f, 0.0f,
                 0.0f, 0.0f, 0.5f,
                 0.0f, 0.5f, 0.5f,
+
+                0.5f, 0.0f, 0.0f,
+                0.0f, 0.5f, 0.0f,
+                0.0f, 0.0f, 0.5f,
+                0.0f, 0.5f, 0.5f
         };
 
         float[] uvCoords = new float[vertices.length / 3 * 2];
 
         int[] indices = new int[]{
+                //FRONT
                 0, 2 ,1,
                 2, 3, 1,
+
+                0, 4 ,2,
+                6, 2, 4,
+
+                6, 4, 5,
+                7, 6, 5,
+
+
+
         };
         adam = new GameObject(new OpenGLMesh(vertices, normals, colors, uvCoords, indices));
         adam.getPosition().z = -2f;
@@ -92,8 +113,8 @@ public class Game implements InterfaceGame {
     @Override
     public void update(float deltaTime)
     {
-        adam.getPosition().x = (float)Math.sin(anim);
-        anim += deltaTime;
+        adam.setRotation(0, anim, 0);
+        anim += 50f * deltaTime;
 
         //if key???
         //renderer.setRenderMode(EngineOptions.renderMode.SHADED;)
