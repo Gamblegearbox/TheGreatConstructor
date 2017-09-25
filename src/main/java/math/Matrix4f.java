@@ -21,7 +21,7 @@ public class Matrix4f {
         return values;
     }
 
-    public Matrix4f perspective(float _fovInDegrees, float _aspectRatio, float _zNear, float _zFar)
+    public void setPerspective(float _fovInDegrees, float _aspectRatio, float _zNear, float _zFar)
     {
         float fov = (float) Math.toRadians(_fovInDegrees);
         float aspectRatio = _aspectRatio;
@@ -36,21 +36,17 @@ public class Matrix4f {
         values[1] = 0;                      values[5] = magicFov;   values[9] = 0;          values[13] = 0;
         values[2] = 0;                      values[6] = 0;          values[10] = -zp / zm;  values[14] = -(2 * zFar * zNear) / zm;
         values[3] = 0;                      values[7] = 0;          values[11] = -1;        values[15] = 0;
-
-        return this;
     }
 
-    public Matrix4f identity()
+    public void setIdentity()
     {
         values[0] = 1;    values[4] = 0;     values[8] = 0;    values[12] = 0;
         values[1] = 0;    values[5] = 1;     values[9] = 0;    values[13] = 0;
         values[2] = 0;    values[6] = 0;    values[10] = 1;    values[14] = 0;
         values[3] = 0;    values[7] = 0;    values[11] = 0;    values[15] = 1;
-
-        return this;
     }
 
-    public Matrix4f modelMatrix(Vector3f _position, Quaternionf _rotation, Vector3f _scale)
+    public void setModelValues(Vector3f _position, Quaternionf _rotation, Vector3f _scale)
     {
         float dqx = _rotation.x + _rotation.x;
         float dqy = _rotation.y + _rotation.y;
@@ -81,8 +77,6 @@ public class Matrix4f {
         values[13] = (_position.y);
         values[14] = (_position.z);
         values[15] = (1.0f);
-
-        return this;
     }
 
 }

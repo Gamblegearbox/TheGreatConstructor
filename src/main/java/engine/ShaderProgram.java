@@ -2,6 +2,7 @@ package engine;
 
 
 import math.Matrix4f;
+import math.Vector3f;
 import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;
@@ -68,6 +69,18 @@ public class ShaderProgram {
         buffer.put(_matrix.getValues()).flip();
 
         glUniformMatrix4fv(uniformLocation, false, buffer);
+    }
+
+    public void setUniformData(String _uniformName, int _value)
+    {
+        int uniformLocation = glGetUniformLocation(programID, _uniformName);
+        glUniform1i(uniformLocation, _value);
+    }
+
+    public void setUniformData(String _uniformName, Vector3f _value)
+    {
+        int uniformLocation = glGetUniformLocation(programID, _uniformName);
+        glUniform3f(uniformLocation, _value.x, _value.y, _value.z);
     }
 
     public void link() throws Exception

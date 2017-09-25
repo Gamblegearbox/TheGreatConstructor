@@ -4,6 +4,10 @@ import engine.*;
 import gameObject.GameObject;
 import interfaces.InterfaceGame;
 import org.joml.Matrix4f;
+import org.lwjgl.system.CallbackI;
+import utils.OBJLoader;
+import utils.PrototypMeshes;
+import utils.Utils;
 
 
 public class Game implements InterfaceGame {
@@ -29,82 +33,22 @@ public class Game implements InterfaceGame {
     {
         renderer.init();
 
-        float[] vertices = new float[]{
-                -0.25f,  0.25f, 0.25f,
-                 0.25f,  0.25f, 0.25f,
-                -0.25f, -0.25f, 0.25f,
-                 0.25f, -0.25f, 0.25f,
+        adam = new GameObject(OBJLoader.loadMesh("/models/AI_Cars.obj"));
+        adam.getPosition().z = -7f;
 
-                -0.25f,  0.25f, -0.25f,
-                 0.25f,  0.25f, -0.25f,
-                -0.25f, -0.25f, -0.25f,
-                 0.25f, -0.25f, -0.25f
+        bob = new GameObject(PrototypMeshes.cube());
+        bob.getPosition().x = -3f;
+        bob.getPosition().z = -5f;
+
+        eva = new GameObject(PrototypMeshes.triangle());
+        eva.getPosition().x = 1f;
+        eva.getPosition().z = -4f;
+
+        gameObjects = new GameObject[]{
+            adam,
+            eva,
+            bob
         };
-
-        float[] normals = new float[vertices.length];
-
-        float[] colors = new float[]{
-                0.5f, 0.0f, 0.0f,
-                0.0f, 0.5f, 0.0f,
-                0.0f, 0.0f, 0.5f,
-                0.0f, 0.5f, 0.5f,
-
-                0.5f, 0.0f, 0.0f,
-                0.0f, 0.5f, 0.0f,
-                0.0f, 0.0f, 0.5f,
-                0.0f, 0.5f, 0.5f
-        };
-
-        float[] uvCoords = new float[vertices.length / 3 * 2];
-
-        int[] indices = new int[]{
-                //FRONT
-                0, 2 ,1,
-                2, 3, 1,
-
-                0, 4 ,2,
-                6, 2, 4,
-
-                6, 4, 5,
-                7, 6, 5,
-
-
-
-        };
-        adam = new GameObject(new OpenGLMesh(vertices, normals, colors, uvCoords, indices));
-        adam.getPosition().z = -2f;
-
-        bob = new GameObject(new OpenGLMesh(vertices, normals, colors, uvCoords, indices));
-        bob.getPosition().x = -0.5f;
-        bob.getPosition().z = -3f;
-
-        vertices = new float[]{
-                 0.00f,  0.25f, 0f,
-                -0.25f, -0.25f, 0f,
-                 0.25f, -0.25f, 0f
-        };
-
-        normals = new float[vertices.length];
-
-        colors = new float[]{
-                0.5f, 0.0f, 0.0f,
-                0.0f, 0.5f, 0.0f,
-                0.0f, 0.0f, 0.5f
-        };
-
-        uvCoords = new float[vertices.length / 3 * 2];
-
-        indices = new int[]{
-                0, 1, 2,
-        };
-        eva = new GameObject(new OpenGLMesh(vertices, normals, colors, uvCoords, indices));
-        eva.getPosition().x = 0.5f;
-        eva.getPosition().z = -2f;
-
-        gameObjects = new GameObject[]
-                {
-                        adam, eva, bob
-                };
     }
 
     @Override
@@ -113,11 +57,12 @@ public class Game implements InterfaceGame {
     @Override
     public void update(float deltaTime)
     {
-        adam.setRotation(0, anim, 0);
-        anim += 50f * deltaTime;
+        adam.setRotation(0, 45, 0);
+        adam.getPosition().y =-2;//(float)Math.sin(anim*0.050);
 
-        //if key???
-        //renderer.setRenderMode(EngineOptions.renderMode.SHADED;)
+        bob.setRotation(0, anim, 0);
+
+        anim += 50f * deltaTime;
     }
 
     @Override

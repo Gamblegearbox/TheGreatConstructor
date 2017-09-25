@@ -91,7 +91,7 @@ public class OBJLoader {
         float[] colors = new float[vertices.length];
         for(int x = 0; x < colors.length; x++)
         {
-            colors[x] = 1.0f;
+            colors[x] = (float)Math.random();//0.75f;
         }
 
 

@@ -19,4 +19,9 @@ public class Vector3f {
         y = value.y;
         z = value.z;
     }
+
+    public String toString()
+    {
+        return "x: " + x + " | y: " + y + " | z: " + z;
+    }
 }

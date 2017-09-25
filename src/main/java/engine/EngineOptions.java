@@ -14,7 +14,6 @@ public class EngineOptions {
 
     public static final int WINDOW_WIDTH = 500;
     public static final int WINDOW_HEIGHT = 500;
-    public static final float ASPECT_RATIO = WINDOW_WIDTH / WINDOW_HEIGHT;
 
     public static final float Z_NEAR = 0.05f;
     public static final float Z_FAR = 1000f;
@@ -27,17 +26,18 @@ public class EngineOptions {
     public static final boolean ANTIALIASING = true;
     public static final boolean V_SYNC = true;
 
-    public static final boolean CULL_BACK_FACE = true;
+    public static final boolean CULL_BACK_FACE = true ;
 
-    public static final float POINT_SIZE = 5f;
+    public static final float POINT_SIZE = 4f;
     public static final Vector3f LINE_COLOR = new Vector3f(1.0f,1.0f,1.0f);
-    public static final Vector3f POINT_COLOR = new Vector3f(0.0f,0.0f,0.0f);
+    public static final Vector3f POINT_COLOR = new Vector3f(0.5f,0.5f,0.5f);
+    public static final Vector3f UNICOLOR_COLOR = new Vector3f(0.75f,0.75f,0.75f);
 
-    public static final renderMode RENDER_MODE = renderMode.WIREFRAME_OVERLAY;
+    public static final renderMode RENDER_MODE = renderMode.SHADED;
 
     public enum renderMode
     {
-        SHADED, WIREFRAME, WIREFRAME_OVERLAY, SHADED_UNICOLOR
+        SHADED, SHADED_UNICOLOR, WIREFRAME_OVERLAY, WIREFRAME
     }
 
     public static void printAllInfo()
