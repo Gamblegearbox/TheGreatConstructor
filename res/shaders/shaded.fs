@@ -8,13 +8,13 @@ out vec4 fragColor;
 uniform int renderMode;
 uniform vec3 unicolorColor;
 uniform vec3 wireframeColor;
+uniform vec3 lightPosition;
 
 void main()
 {
     float intensity;
-    vec3 lightPosition = vec3(-3,2,15);
     float diffuse;
-    intensity = dot(lightPosition, normalize(vertexNormal));
+    intensity = dot(normalize(lightPosition), normalize(vertexNormal));
 
     if (intensity > 0.95)
         diffuse = 1.0;

@@ -2,6 +2,7 @@ package engine;
 
 import gameObject.GameObject;
 import math.Matrix4f;
+import math.Vector3f;
 import utils.Utils;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -31,11 +32,15 @@ public class OpenGLRenderer {
         initShader();
     }
 
-    public void prepareFrame()
+    public void prepareFrame(Vector3f lightPosition)
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
         shader.bind();
+
+        //UPLOAD FRAME RELEVANT SCENE UNIFORMS HERE
+        shader.setUniformData("lightPosition", lightPosition);
+
 
         if ( window.isResized() )
         {

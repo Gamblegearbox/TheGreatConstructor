@@ -58,14 +58,27 @@ public class CoreLoop implements Runnable{
     public void startGameloop()
     {
         double lastTime = System.nanoTime() / 1000_000_000.0;
+        double deltaTimeSum = 0;
+        int frames = 0;
         while(!window.windowShouldClose())
         {
             double currentTime = System.nanoTime() / 1000_000_000.0;
             double deltaTime = currentTime - lastTime;
 
+            deltaTimeSum += deltaTime;
+
+            if(deltaTimeSum > 1)
+            {
+                System.out.println("FPS: " + frames);
+                deltaTimeSum = 0;
+                frames = 0;
+            }
+
             input();
             update((float)deltaTime);
             render();
+
+            frames++;
 
             lastTime = currentTime;
         }

@@ -24,7 +24,7 @@ public class EngineOptions {
     public static final boolean DEBUG = true;
 
     public static final boolean ANTIALIASING = true;
-    public static final boolean V_SYNC = true;
+    public static final boolean V_SYNC = false;
 
     public static final boolean CULL_BACK_FACE = true ;
 
@@ -33,7 +33,7 @@ public class EngineOptions {
     public static final Vector3f POINT_COLOR = new Vector3f(0.5f,0.5f,0.5f);
     public static final Vector3f UNICOLOR_COLOR = new Vector3f(0.75f,0.75f,0.75f);
 
-    public static final renderMode RENDER_MODE = renderMode.SHADED;
+    public static final renderMode RENDER_MODE = renderMode.SHADED_UNICOLOR;
 
     public enum renderMode
     {

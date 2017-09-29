@@ -4,6 +4,7 @@ package engine;
 import math.Matrix4f;
 import math.Vector3f;
 import org.lwjgl.BufferUtils;
+import org.lwjgl.system.MemoryStack;
 
 import java.nio.FloatBuffer;
 
@@ -65,10 +66,21 @@ public class ShaderProgram {
     {
         int uniformLocation = glGetUniformLocation(programID, _uniformName);
 
+        /*
+        PROVOKES GARBAGE COLLECTION VERY OFTEN!
         FloatBuffer buffer = BufferUtils.createFloatBuffer(16);
         buffer.put(_matrix.getValues()).flip();
 
         glUniformMatrix4fv(uniformLocation, false, buffer);
+        */
+
+        //THIS PREVENTS THE GARBAGE COLLECTOR TO HIT THE PROGRAM EVERY FEW SECONDS!
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            // Dump the matrix into a float buffer
+            FloatBuffer fb = stack.mallocFloat(16);
+            fb.put(_matrix.getValues()).flip();
+            glUniformMatrix4fv(uniformLocation, false, fb);
+        }
     }
 
     public void setUniformData(String _uniformName, int _value)

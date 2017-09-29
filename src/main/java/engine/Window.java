@@ -92,6 +92,10 @@ public class Window {
             // Enable v-sync
             glfwSwapInterval(1);
         }
+        else
+        {
+            glfwSwapInterval(0);
+        }
 
         // Make the window visible
         glfwShowWindow(windowHandle);

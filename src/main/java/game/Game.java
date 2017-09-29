@@ -3,22 +3,17 @@ package game;
 import engine.*;
 import gameObject.GameObject;
 import interfaces.InterfaceGame;
-import org.joml.Matrix4f;
-import org.lwjgl.system.CallbackI;
+import math.Vector3f;
 import utils.OBJLoader;
-import utils.PrototypMeshes;
-import utils.Utils;
 
 
 public class Game implements InterfaceGame {
 
     private final OpenGLRenderer renderer;
     private final Window window;
+    private final Vector3f lightPosition;
 
     private GameObject[] gameObjects;
-    private GameObject adam;
-    private GameObject eva;
-    private GameObject bob;
 
     private float anim = 0;
 
@@ -26,6 +21,7 @@ public class Game implements InterfaceGame {
     {
         window = _window;
         renderer = new OpenGLRenderer(window);
+        lightPosition = new Vector3f(0f,1f,0f);
     }
 
     @Override
@@ -33,22 +29,39 @@ public class Game implements InterfaceGame {
     {
         renderer.init();
 
-        adam = new GameObject(OBJLoader.loadMesh("/models/AI_Cars.obj"));
-        adam.getPosition().z = -7f;
+        int numberOfTestObjects = 100;
+        gameObjects = new GameObject[numberOfTestObjects];
+        float x = -3, y = -3, z = -5;
+        Vector3f position = new Vector3f(x,y,z);
 
-        bob = new GameObject(PrototypMeshes.cube());
-        bob.getPosition().x = -3f;
-        bob.getPosition().z = -5f;
+        for(int i = 0 ; i < numberOfTestObjects; i++)
+        {
+            position.set(x, y, z);
 
-        eva = new GameObject(PrototypMeshes.triangle());
-        eva.getPosition().x = 1f;
-        eva.getPosition().z = -4f;
+            if(x == 3)
+            {
+                x = -3;
+                if(y == 3)
+                {
+                    y = -3;
+                    z -= 1.5f;
+                }
+                else
+                {
+                    y += 1.5f;
+                }
+            }
+            else
+            {
+                x += 1.5f;
+            }
 
-        gameObjects = new GameObject[]{
-            adam,
-            eva,
-            bob
-        };
+            GameObject temp = new GameObject(OBJLoader.loadMesh("/models/AI_Cars.obj"));
+            temp.setPosition(position);
+            temp.setScale(0.2f,0.2f,0.2f);
+            gameObjects[i] = temp;
+        }
+
     }
 
     @Override
@@ -57,10 +70,10 @@ public class Game implements InterfaceGame {
     @Override
     public void update(float deltaTime)
     {
-        adam.setRotation(0, 45, 0);
-        adam.getPosition().y =-2;//(float)Math.sin(anim*0.050);
-
-        bob.setRotation(0, anim, 0);
+        for (int i = 0; i < gameObjects.length; i++)
+        {
+            gameObjects[i].setRotation(0, anim, 0);
+        }
 
         anim += 50f * deltaTime;
     }
@@ -68,7 +81,7 @@ public class Game implements InterfaceGame {
     @Override
     public void render()
     {
-        renderer.prepareFrame();
+        renderer.prepareFrame(lightPosition);
 
         for(int i = 0; i < gameObjects.length; i++)
         {
