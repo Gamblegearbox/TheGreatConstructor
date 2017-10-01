@@ -27,20 +27,30 @@ public class OpenGLRenderer {
 
     public void init() throws Exception
     {
+        float aspectRatio = (float)window.getWidth() / window.getHeight();
+        projectionMatrix.setPerspective(EngineOptions.FOV, aspectRatio, EngineOptions.Z_NEAR, EngineOptions.Z_FAR);
+
         setupOpenGl();
-        initMatrices();
         initShader();
+        initRenderMode();
     }
 
-    public void prepareFrame(Vector3f lightPosition)
+    public void render(GameObject[] _gameObjects, Vector3f _lightPosition)
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
+        //UPLOAD FRAME RELEVANT UNIFORMS HERE
         shader.bind();
+        shader.setUniformData("lightPosition", _lightPosition);
 
-        //UPLOAD FRAME RELEVANT SCENE UNIFORMS HERE
-        shader.setUniformData("lightPosition", lightPosition);
-
+        //FILTER OBJECTS FOR FRUSTUM CULLING
+        if(EngineOptions.FRUSTUM_CULLING)
+        {
+            for(GameObject temp : _gameObjects)
+            {
+                //TODO: filter objects
+            }
+        }
 
         if ( window.isResized() )
         {
@@ -51,64 +61,62 @@ public class OpenGLRenderer {
             glViewport(0, 0, window.getWidth(), window.getHeight());
             window.setResized(false);
         }
-    }
 
-    public void render(GameObject object)
-    {
-        OpenGLMesh mesh = object.getMesh();
 
-        glBindVertexArray(mesh.getVaoID());
-        glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(1);
-        glEnableVertexAttribArray(2);
-
-        modelMatrix.setModelValues(object.getPosition(), object.getRotation(), object.getScale());
-        shader.setUniformData("modelMatrix", modelMatrix);
-
-        switch(EngineOptions.RENDER_MODE)
+        for(GameObject temp : _gameObjects)
         {
-            case WIREFRAME:
-                shader.setUniformData("renderMode", 2);
+            if(temp.isVisible())
+            {
+                OpenGLMesh mesh = temp.getMesh();
 
-                shader.setUniformData("wireframeColor", EngineOptions.LINE_COLOR);
-                glDrawElements(GL_TRIANGLES, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
+                glBindVertexArray(mesh.getVaoID());
+                glEnableVertexAttribArray(0);
+                glEnableVertexAttribArray(1);
+                glEnableVertexAttribArray(2);
 
-                shader.setUniformData("wireframeColor", EngineOptions.POINT_COLOR);
-                glDrawElements(GL_POINTS, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
-                break;
+                modelMatrix.setModelValues(temp.getPosition(), temp.getRotation(), temp.getScale());
+                shader.setUniformData("modelMatrix", modelMatrix);
 
-            case WIREFRAME_OVERLAY:
-                shader.setUniformData("renderMode", 0);
-                glDrawElements(GL_TRIANGLES, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
+                switch(EngineOptions.RENDER_MODE)
+                {
+                    case WIREFRAME:
+                        shader.setUniformData("wireframeColor", EngineOptions.LINE_COLOR);
+                        glDrawElements(GL_TRIANGLES, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
 
-                shader.setUniformData("renderMode", 2);
-                shader.setUniformData("wireframeColor", EngineOptions.LINE_COLOR);
-                glDrawElements(GL_LINE_STRIP, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
+                        shader.setUniformData("wireframeColor", EngineOptions.POINT_COLOR);
+                        glDrawElements(GL_POINTS, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
+                        break;
 
-                shader.setUniformData("wireframeColor", EngineOptions.POINT_COLOR);
-                glDrawElements(GL_POINTS, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
-                break;
+                    case WIREFRAME_OVERLAY:
+                        shader.setUniformData("renderMode", 0); //TODO: unless it is not switchable during runtime put that in an init method
+                        glDrawElements(GL_TRIANGLES, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
 
-            case SHADED_UNICOLOR:
-                shader.setUniformData("renderMode", 1);
-                glDrawElements(GL_TRIANGLES, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
-                break;
+                        shader.setUniformData("renderMode", 2);
+                        shader.setUniformData("wireframeColor", EngineOptions.LINE_COLOR);
+                        glDrawElements(GL_LINE_STRIP, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
 
-            case SHADED:
+                        shader.setUniformData("wireframeColor", EngineOptions.POINT_COLOR);
+                        glDrawElements(GL_POINTS, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
+                        break;
 
-                shader.setUniformData("renderMode", 0);
-                glDrawElements(GL_TRIANGLES, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
-                break;
+                    case SHADED_UNICOLOR:
+
+                        glDrawElements(GL_TRIANGLES, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
+                        break;
+
+                    case SHADED:
+
+                        glDrawElements(GL_TRIANGLES, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
+                        break;
+                }
+
+                glDisableVertexAttribArray(0);
+                glDisableVertexAttribArray(1);
+                glDisableVertexAttribArray(2);
+                glBindVertexArray(0);
+            }
         }
 
-        glDisableVertexAttribArray(0);
-        glDisableVertexAttribArray(1);
-        glDisableVertexAttribArray(2);
-        glBindVertexArray(0);
-    }
-
-    public void afterFrame()
-    {
         shader.unbind();
     }
 
@@ -134,25 +142,6 @@ public class OpenGLRenderer {
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-        switch(EngineOptions.RENDER_MODE)
-        {
-            case WIREFRAME:
-                glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-                break;
-
-            case WIREFRAME_OVERLAY:
-                glPolygonMode(GL_FRONT_FACE, GL_FILL);
-                break;
-
-            case SHADED_UNICOLOR:
-                glPolygonMode(GL_FRONT_FACE, GL_FILL);
-                break;
-
-            case SHADED:
-                glPolygonMode(GL_FRONT_FACE, GL_FILL);
-                break;
-        }
-
         if(EngineOptions.CULL_BACK_FACE)
         {
             glEnable(GL_CULL_FACE);
@@ -177,9 +166,30 @@ public class OpenGLRenderer {
         shader.setUniformData("unicolorColor", EngineOptions.UNICOLOR_COLOR);
     }
 
-    private void initMatrices()
+    private void initRenderMode()
     {
-        float aspectRatio = (float)window.getWidth() / window.getHeight();
-        projectionMatrix.setPerspective(EngineOptions.FOV, aspectRatio, EngineOptions.Z_NEAR, EngineOptions.Z_FAR);
+        switch(EngineOptions.RENDER_MODE)
+        {
+            case WIREFRAME:
+                shader.setUniformData("renderMode", 2);
+                glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+                break;
+
+            case WIREFRAME_OVERLAY:
+
+                glPolygonMode(GL_FRONT_FACE, GL_FILL);
+                break;
+
+            case SHADED_UNICOLOR:
+                shader.setUniformData("renderMode", 1);
+                glPolygonMode(GL_FRONT_FACE, GL_FILL);
+                break;
+
+            case SHADED:
+                shader.setUniformData("renderMode", 0);
+                glPolygonMode(GL_FRONT_FACE, GL_FILL);
+                break;
+        }
     }
+
 }

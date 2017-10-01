@@ -6,11 +6,10 @@ import interfaces.InterfaceGame;
 import math.Vector3f;
 import utils.OBJLoader;
 
-
 public class Game implements InterfaceGame {
 
     private final OpenGLRenderer renderer;
-    private final Window window;
+    //private final Window window;
     private final Vector3f lightPosition;
 
     private GameObject[] gameObjects;
@@ -19,9 +18,8 @@ public class Game implements InterfaceGame {
 
     public Game(Window _window)
     {
-        window = _window;
-        renderer = new OpenGLRenderer(window);
-        lightPosition = new Vector3f(0f,1f,0f);
+        renderer = new OpenGLRenderer(_window);
+        lightPosition = new Vector3f(-1f,1f,-1f);
     }
 
     @Override
@@ -70,9 +68,12 @@ public class Game implements InterfaceGame {
     @Override
     public void update(float deltaTime)
     {
-        for (int i = 0; i < gameObjects.length; i++)
+        for (GameObject temp : gameObjects)
         {
-            gameObjects[i].setRotation(0, anim, 0);
+            if(temp.isVisible())
+            {
+                temp.setRotation(0, anim, 0);
+            }
         }
 
         anim += 50f * deltaTime;
@@ -81,14 +82,7 @@ public class Game implements InterfaceGame {
     @Override
     public void render()
     {
-        renderer.prepareFrame(lightPosition);
-
-        for(int i = 0; i < gameObjects.length; i++)
-        {
-            renderer.render(gameObjects[i]);
-        }
-
-        renderer.afterFrame();
+        renderer.render(gameObjects, lightPosition);
     }
 
     @Override
@@ -96,9 +90,9 @@ public class Game implements InterfaceGame {
     {
         renderer.cleanup();
 
-        for(int i = 0; i < gameObjects.length; i++)
+        for(GameObject temp : gameObjects)
         {
-            gameObjects[i].cleanup();
+            temp.cleanup();
         }
     }
 }

@@ -15,12 +15,12 @@ import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
 
 public class OpenGLMesh {
 
-    private int vaoID;
-    private int vboID_vertices;
-    private int vboID_normals;
-    private int vboID_colors;
-    private int vboID_indices;
-    private int vertexCount;
+    private final int vaoID;
+    private final int vboID_vertices;
+    private final int vboID_normals;
+    private final int vboID_colors;
+    private final int vboID_indices;
+    private final int vertexCount;
 
 
     public int getVaoID()

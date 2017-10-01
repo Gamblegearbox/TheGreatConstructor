@@ -4,7 +4,7 @@ import org.joml.Quaternionf;
 
 public class Matrix4f {
 
-    private float[] values;
+    private final float[] values;
 
     public Matrix4f()
     {
@@ -24,17 +24,14 @@ public class Matrix4f {
     public void setPerspective(float _fovInDegrees, float _aspectRatio, float _zNear, float _zFar)
     {
         float fov = (float) Math.toRadians(_fovInDegrees);
-        float aspectRatio = _aspectRatio;
-        float zNear = _zNear;
-        float zFar = _zFar;
 
         float magicFov = 1.0f / (float)Math.tan(fov / 2.0f);
-        float zm = zFar - zNear;
-        float zp = zFar + zNear;
+        float zm = _zFar - _zNear;
+        float zp = _zFar + _zNear;
 
-        values[0] = magicFov / aspectRatio; values[4] = 0;          values[8] = 0;          values[12] = 0;
+        values[0] = magicFov / _aspectRatio; values[4] = 0;          values[8] = 0;          values[12] = 0;
         values[1] = 0;                      values[5] = magicFov;   values[9] = 0;          values[13] = 0;
-        values[2] = 0;                      values[6] = 0;          values[10] = -zp / zm;  values[14] = -(2 * zFar * zNear) / zm;
+        values[2] = 0;                      values[6] = 0;          values[10] = -zp / zm;  values[14] = -(2 * _zFar * _zNear) / zm;
         values[3] = 0;                      values[7] = 0;          values[11] = -1;        values[15] = 0;
     }
 

@@ -6,8 +6,6 @@ import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.glfw.GLFWWindowSizeCallback;
 import org.lwjgl.opengl.GL;
 
-import java.util.Arrays;
-
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.GL_FALSE;
 import static org.lwjgl.opengl.GL11.GL_TRUE;
@@ -19,14 +17,14 @@ public class Window {
     private int width;
     private int height;
     private long windowHandle;
-    private boolean resized;
+    private boolean isResized;
 
     public Window(String title, int width, int height)
     {
         this.title = title;
         this.width = width;
         this.height = height;
-        this.resized = false;
+        this.isResized = false;
     }
 
     public void init()
@@ -126,12 +124,12 @@ public class Window {
 
     public boolean isResized()
     {
-        return resized;
+        return isResized;
     }
 
-    public void setResized(boolean resized)
+    public void setResized(boolean _isResized)
     {
-        this.resized = resized;
+        this.isResized = _isResized;
     }
 
     public void update()

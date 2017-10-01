@@ -35,7 +35,7 @@ public class CoreLoop implements Runnable{
     {
         try {
             initSubSystems();
-            startGameloop();
+            startGameLoop();
         }
         catch(Exception e)
         {
@@ -47,7 +47,7 @@ public class CoreLoop implements Runnable{
         }
     }
 
-    public void initSubSystems() throws Exception
+    private void initSubSystems() throws Exception
     {
         window.init();
         game.init();
@@ -55,7 +55,7 @@ public class CoreLoop implements Runnable{
         if(EngineOptions.DEBUG) { EngineOptions.printAllInfo(); }
     }
 
-    public void startGameloop()
+    private void startGameLoop()
     {
         double lastTime = System.nanoTime() / 1000_000_000.0;
         double deltaTimeSum = 0;
@@ -65,20 +65,22 @@ public class CoreLoop implements Runnable{
             double currentTime = System.nanoTime() / 1000_000_000.0;
             double deltaTime = currentTime - lastTime;
 
-            deltaTimeSum += deltaTime;
-
-            if(deltaTimeSum > 1)
-            {
-                System.out.println("FPS: " + frames);
-                deltaTimeSum = 0;
-                frames = 0;
-            }
-
             input();
             update((float)deltaTime);
             render();
 
-            frames++;
+            if(EngineOptions.DEBUG)
+            {
+                deltaTimeSum += deltaTime;
+
+                if( deltaTimeSum > 1 )
+                {
+                    System.out.println("FPS: " + frames);
+                    deltaTimeSum = 0;
+                    frames = 0;
+                }
+                frames++;
+            }
 
             lastTime = currentTime;
         }
@@ -100,7 +102,7 @@ public class CoreLoop implements Runnable{
         window.update();
     }
 
-    public void cleanup()
+    private void cleanup()
     {
         game.cleanup();
     }

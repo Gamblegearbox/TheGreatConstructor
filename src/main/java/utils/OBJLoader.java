@@ -62,29 +62,30 @@ public class OBJLoader {
         return reorderLists(vertices, textures, normals, faces);
     }
 
-    private static OpenGLMesh reorderLists(List<Vector3f> posList, List<Vector2f> textCoordList,
-                                     List<Vector3f> normList, List<Face> facesList)
+    private static OpenGLMesh reorderLists(List<Vector3f> _verticesList, List<Vector2f> _uvCoordsList,
+                                     List<Vector3f> _normalsList, List<Face> _facesList)
     {
-        List<Integer> indicesList = new ArrayList();
-        // Create position array in the order it has been declared
-        float[] vertices = new float[posList.size() * 3];
+        List<Integer> indicesList = new ArrayList<>();
+
+        // Create vertices array in the order it has been declared
+        float[] vertices = new float[_verticesList.size() * 3];
         int i = 0;
-        for (Vector3f pos : posList)
+        for (Vector3f pos : _verticesList)
         {
             vertices[i * 3] = pos.x;
             vertices[i * 3 + 1] = pos.y;
             vertices[i * 3 + 2] = pos.z;
             i++;
         }
-        float[] uvCoords = new float[posList.size() * 2];
-        float[] normals = new float[posList.size() * 3];
+        float[] uvCoords = new float[_verticesList.size() * 2];
+        float[] normals = new float[_verticesList.size() * 3];
 
-        for (Face face : facesList)
+        for (Face face : _facesList)
         {
             IdxGroup[] faceVertexIndices = face.getFaceVertexIndices();
             for (IdxGroup indValue : faceVertexIndices)
             {
-                processFaceVertex(indValue, textCoordList, normList, indicesList, uvCoords, normals);
+                processFaceVertex(indValue, _uvCoordsList, _normalsList, indicesList, uvCoords, normals);
             }
         }
 
@@ -95,12 +96,10 @@ public class OBJLoader {
         }
 
 
-        int[] indices = new int[indicesList.size()];
+        int[] indices;          // = new int[indicesList.size()]; <-- redundant!
         indices = indicesList.stream().mapToInt((Integer v) -> v).toArray();
 
-        OpenGLMesh mesh = new OpenGLMesh(vertices, normals, colors, uvCoords, indices);
-
-        return mesh;
+        return new OpenGLMesh(vertices, normals, colors, uvCoords, indices);
     }
 
     private static void processFaceVertex(IdxGroup indices, List<Vector2f> textCoordList,
@@ -126,14 +125,14 @@ public class OBJLoader {
         }
     }
 
-    protected static class Face {
+    static class Face {
 
         /**
          * List of idxGroup groups for a face triangle (3 vertices per face).
          */
         private IdxGroup[] idxGroups = new IdxGroup[3];
 
-        public Face(String v1, String v2, String v3)
+        Face(String v1, String v2, String v3)
         {
             idxGroups = new IdxGroup[3];
             // Parse the lines
@@ -164,19 +163,19 @@ public class OBJLoader {
             return idxGroup;
         }
 
-        public IdxGroup[] getFaceVertexIndices()
+        IdxGroup[] getFaceVertexIndices()
         {
             return idxGroups;
         }
     }
 
-    protected static class IdxGroup {
+    static class IdxGroup {
 
-        public static final int NO_VALUE = -1;
-        public int idxPos;
-        public int idxTextCoord;
-        public int idxVecNormal;
-        public IdxGroup()
+        static final int NO_VALUE = -1;
+        int idxPos;
+        int idxTextCoord;
+        int idxVecNormal;
+        IdxGroup()
         {
             idxPos = NO_VALUE;
             idxTextCoord = NO_VALUE;

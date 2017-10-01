@@ -3,24 +3,18 @@ package engine;
 
 import math.Matrix4f;
 import math.Vector3f;
-import org.lwjgl.BufferUtils;
 import org.lwjgl.system.MemoryStack;
-
 import java.nio.FloatBuffer;
-
-
-import static org.lwjgl.opengl.GL20.glCreateProgram;
 import static org.lwjgl.opengl.GL20.*;
 
-public class ShaderProgram {
+class ShaderProgram {
 
     private final int programID;
 
     private int vertexShaderId;
     private int fragmentShaderId;
 
-
-    public ShaderProgram() throws Exception
+    ShaderProgram() throws Exception
     {
         programID = glCreateProgram();
 
@@ -30,17 +24,17 @@ public class ShaderProgram {
         }
     }
 
-    public void createVertexShader(String shaderCode) throws Exception
+    void createVertexShader(String shaderCode) throws Exception
     {
         vertexShaderId = createShader(shaderCode, GL_VERTEX_SHADER);
     }
 
-    public void createFragmentShader(String shaderCode) throws Exception
+    void createFragmentShader(String shaderCode) throws Exception
     {
         fragmentShaderId = createShader(shaderCode, GL_FRAGMENT_SHADER);
     }
 
-    protected int createShader(String shaderCode, int shaderType) throws Exception
+    private int createShader(String shaderCode, int shaderType) throws Exception
     {
         int shaderId = glCreateShader(shaderType);
 
@@ -62,7 +56,7 @@ public class ShaderProgram {
         return shaderId;
     }
 
-    public void setUniformData(String _uniformName, Matrix4f _matrix)
+    void setUniformData(String _uniformName, Matrix4f _matrix)
     {
         int uniformLocation = glGetUniformLocation(programID, _uniformName);
 
@@ -83,19 +77,19 @@ public class ShaderProgram {
         }
     }
 
-    public void setUniformData(String _uniformName, int _value)
+    void setUniformData(String _uniformName, int _value)
     {
         int uniformLocation = glGetUniformLocation(programID, _uniformName);
         glUniform1i(uniformLocation, _value);
     }
 
-    public void setUniformData(String _uniformName, Vector3f _value)
+    void setUniformData(String _uniformName, Vector3f _value)
     {
         int uniformLocation = glGetUniformLocation(programID, _uniformName);
         glUniform3f(uniformLocation, _value.x, _value.y, _value.z);
     }
 
-    public void link() throws Exception
+    void link() throws Exception
     {
         glLinkProgram(programID);
         if (glGetProgrami(programID, GL_LINK_STATUS) == 0)
@@ -120,17 +114,17 @@ public class ShaderProgram {
 
     }
 
-    public void bind()
+    void bind()
     {
         glUseProgram(programID);
     }
 
-    public void unbind()
+    void unbind()
     {
         glUseProgram(0);
     }
 
-    public void cleanup()
+    void cleanup()
     {
         unbind();
         if (programID != 0)

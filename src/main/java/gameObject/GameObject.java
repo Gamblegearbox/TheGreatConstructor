@@ -13,6 +13,8 @@ public class GameObject {
     private final Quaternionf rotation;
     private final OpenGLMesh mesh;
 
+    private boolean isVisible;
+
     public GameObject(OpenGLMesh mesh)
     {
         position = new Vector3f(0,0,0);
@@ -20,6 +22,22 @@ public class GameObject {
         rotation = new Quaternionf();
 
         this.mesh = mesh;
+        setVisible();
+    }
+
+    public void setVisible()
+    {
+        isVisible = true;
+    }
+
+    public void setInvisible()
+    {
+        isVisible = false;
+    }
+
+    public boolean isVisible()
+    {
+        return isVisible;
     }
 
     public void setPosition(Vector3f _position)
