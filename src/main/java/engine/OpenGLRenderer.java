@@ -123,7 +123,7 @@ public class OpenGLRenderer {
 
         if(EngineOptions.DEBUG)
         {
-            Logger.getInstance().log("VERTEX COUNT", totalVerticesInFrame);
+            Logger.getInstance().logData("VERTEX COUNT", totalVerticesInFrame);
         }
         //shader.unbind();
     }

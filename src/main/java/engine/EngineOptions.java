@@ -2,6 +2,8 @@ package engine;
 
 
 import math.Vector3f;
+import utils.Logger;
+
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.GL_SHADING_LANGUAGE_VERSION;
 
@@ -20,7 +22,8 @@ public class EngineOptions {
     private static final int TARGET_FPS = 60;
 
     public static final boolean DEBUG = true;
-    public static final float LOGGER_PRINT_INTERVAL = 1;
+    public static final boolean LOG_TO_FILE = false;
+    public static final float LOGGING_INTERVAL = 1;
 
     static final boolean ANTIALIASING = true;
     static final boolean V_SYNC = false;
@@ -40,39 +43,48 @@ public class EngineOptions {
         SHADED, SHADED_UNICOLOR, WIREFRAME_OVERLAY, WIREFRAME
     }
 
-    static void printAllInfo()
+    static void logAllInfo()
     {
-        printGeneralInfo();
-        printResolutionAndTimerSettings();
-        printOptionStatus();
+        logGeneralInfo();
+        logResolutionAndTimerSettings();
+        logOptionsStatus();
     }
 
-    private static void printGeneralInfo()
+    private static void logGeneralInfo()
     {
-        System.out.println();
-        System.out.println("OPERATING SYSTEM:   " + OPERATING_SYSTEM);
-        System.out.println("OPENGL VENDOR:      " + glGetString(GL_VENDOR));
-        System.out.println("RENDERER:           " + glGetString(GL_RENDERER));
-        System.out.println("OPENGL VERSION:     " + glGetString(GL_VERSION));
-        System.out.println("GLSL VERSION:       " + glGetString(GL_SHADING_LANGUAGE_VERSION));
+        String info =
+        "OPERATING SYSTEM:   " + OPERATING_SYSTEM + "\n" +
+        "OPENGL VENDOR:      " + glGetString(GL_VENDOR) + "\n" +
+        "RENDERER:           " + glGetString(GL_RENDERER) + "\n" +
+        "OPENGL VERSION:     " + glGetString(GL_VERSION) + "\n" +
+        "GLSL VERSION:       " + glGetString(GL_SHADING_LANGUAGE_VERSION) + "\n" +
+        "\n";
+
+        Logger.getInstance().writeTolog(info);
     }
 
-    private static void printResolutionAndTimerSettings()
+    static void logResolutionAndTimerSettings()
     {
-        System.out.println();
-        System.out.println("RESOLUTION:         " + WINDOW_WIDTH + " x " + WINDOW_HEIGHT);
-        System.out.println("TARGET FPS:         " + TARGET_FPS);
+        String info =
+        "RESOLUTION:         " + WINDOW_WIDTH + " x " + WINDOW_HEIGHT + "\n" +
+        "TARGET FPS:         " + TARGET_FPS + "\n" +
+        "LOGGING INTERVAL    " + LOGGING_INTERVAL + "sec" + "\n" +
+        "\n";
+
+        Logger.getInstance().writeTolog(info);
     }
 
-    private static void printOptionStatus()
+    static void logOptionsStatus()
     {
-        System.out.println();
-        System.out.println("RENDER MODE:        " + RENDER_MODE);
-        System.out.println("DEBUG MODE:         " + convertBooleanToEnabledOrDisabled(DEBUG));
-        System.out.println("ANTIALIASING:       " + convertBooleanToEnabledOrDisabled(ANTIALIASING));
-        System.out.println("VSYNC:              " + convertBooleanToEnabledOrDisabled(V_SYNC));
-        System.out.println("BACKFACE CULLING:   " + convertBooleanToEnabledOrDisabled(CULL_BACK_FACE));
-        System.out.println();
+        String info =
+        "RENDER MODE:        " + RENDER_MODE  + "\n" +
+        "DEBUG MODE:         " + convertBooleanToEnabledOrDisabled(DEBUG) + "\n" +
+        "ANTIALIASING:       " + convertBooleanToEnabledOrDisabled(ANTIALIASING)  + "\n" +
+        "VSYNC:              " + convertBooleanToEnabledOrDisabled(V_SYNC)  + "\n" +
+        "BACKFACE CULLING:   " + convertBooleanToEnabledOrDisabled(CULL_BACK_FACE) + "\n" +
+        "\n";
+
+        Logger.getInstance().writeTolog(info);
     }
 
     private static String convertBooleanToEnabledOrDisabled(boolean status)

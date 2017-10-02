@@ -53,10 +53,10 @@ public class CoreLoop implements Runnable{
         window.init();
         game.init();
 
-        if(EngineOptions.DEBUG) { EngineOptions.printAllInfo(); }
+        if(EngineOptions.DEBUG) { EngineOptions.logAllInfo(); }
     }
 
-    private void startGameLoop()
+    private void startGameLoop() throws Exception
     {
         double lastTime = System.nanoTime() / 1000_000_000.0;
         double deltaTimeSum = 0;
@@ -72,7 +72,7 @@ public class CoreLoop implements Runnable{
 
                 if( deltaTimeSum > 1 )
                 {
-                    Logger.getInstance().log("FPS", frames);
+                    Logger.getInstance().logData("FPS", frames);
                     deltaTimeSum = 0;
                     frames = 0;
                 }

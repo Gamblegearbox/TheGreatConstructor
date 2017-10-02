@@ -19,7 +19,6 @@ public class Game implements InterfaceGame {
     //DEBUG VALUES
     private float deltaTimeSum;
 
-
     public Game(Window _window)
     {
         renderer = new OpenGLRenderer(_window);
@@ -86,9 +85,9 @@ public class Game implements InterfaceGame {
         {
             deltaTimeSum += deltaTime;
 
-            if( deltaTimeSum > EngineOptions.LOGGER_PRINT_INTERVAL )
+            if( deltaTimeSum > EngineOptions.LOGGING_INTERVAL)
             {
-                Logger.getInstance().printAll();
+                Logger.getInstance().outputLoggedData();
                 deltaTimeSum = 0;
             }
         }
@@ -109,5 +108,7 @@ public class Game implements InterfaceGame {
         {
             temp.cleanup();
         }
+
+        Logger.getInstance().cleanup();
     }
 }
