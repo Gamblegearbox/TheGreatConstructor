@@ -4,6 +4,7 @@ import engine.*;
 import gameObject.GameObject;
 import interfaces.InterfaceGame;
 import math.Vector3f;
+import utils.Logger;
 import utils.OBJLoader;
 
 public class Game implements InterfaceGame {
@@ -13,8 +14,11 @@ public class Game implements InterfaceGame {
     private final Vector3f lightPosition;
 
     private GameObject[] gameObjects;
-
     private float anim = 0;
+
+    //DEBUG VALUES
+    private float deltaTimeSum;
+
 
     public Game(Window _window)
     {
@@ -77,6 +81,17 @@ public class Game implements InterfaceGame {
         }
 
         anim += 50f * deltaTime;
+
+        if(EngineOptions.DEBUG)
+        {
+            deltaTimeSum += deltaTime;
+
+            if( deltaTimeSum > EngineOptions.LOGGER_PRINT_INTERVAL )
+            {
+                Logger.getInstance().printAll();
+                deltaTimeSum = 0;
+            }
+        }
     }
 
     @Override

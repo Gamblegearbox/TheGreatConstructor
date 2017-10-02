@@ -43,7 +43,7 @@ void main()
         //WIREFRAME
         case 2:
 
-            fragColor = vec4(wireframeColor * diffuse, 1.0);
+            fragColor = vec4(wireframeColor, 1.0);
             break;
 
         default :

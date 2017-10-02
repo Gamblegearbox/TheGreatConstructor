@@ -3,6 +3,7 @@ package engine;
 import gameObject.GameObject;
 import math.Matrix4f;
 import math.Vector3f;
+import utils.Logger;
 import utils.Utils;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -40,7 +41,7 @@ public class OpenGLRenderer {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
         //UPLOAD FRAME RELEVANT UNIFORMS HERE
-        shader.bind();
+        //shader.bind();
         shader.setUniformData("lightPosition", _lightPosition);
 
         //FILTER OBJECTS FOR FRUSTUM CULLING
@@ -62,12 +63,15 @@ public class OpenGLRenderer {
             window.setResized(false);
         }
 
+        int totalVerticesInFrame = 0;
 
         for(GameObject temp : _gameObjects)
         {
             if(temp.isVisible())
             {
                 OpenGLMesh mesh = temp.getMesh();
+                int vertexCount = mesh.getVertexCount();
+                totalVerticesInFrame += vertexCount;
 
                 glBindVertexArray(mesh.getVaoID());
                 glEnableVertexAttribArray(0);
@@ -81,32 +85,32 @@ public class OpenGLRenderer {
                 {
                     case WIREFRAME:
                         shader.setUniformData("wireframeColor", EngineOptions.LINE_COLOR);
-                        glDrawElements(GL_TRIANGLES, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
+                        glDrawElements(GL_TRIANGLES, vertexCount, GL_UNSIGNED_INT, 0);
 
                         shader.setUniformData("wireframeColor", EngineOptions.POINT_COLOR);
-                        glDrawElements(GL_POINTS, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
+                        glDrawElements(GL_POINTS, vertexCount, GL_UNSIGNED_INT, 0);
                         break;
 
                     case WIREFRAME_OVERLAY:
                         shader.setUniformData("renderMode", 0); //TODO: unless it is not switchable during runtime put that in an init method
-                        glDrawElements(GL_TRIANGLES, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
+                        glDrawElements(GL_TRIANGLES, vertexCount, GL_UNSIGNED_INT, 0);
 
                         shader.setUniformData("renderMode", 2);
                         shader.setUniformData("wireframeColor", EngineOptions.LINE_COLOR);
-                        glDrawElements(GL_LINE_STRIP, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
+                        glDrawElements(GL_LINE_STRIP, vertexCount, GL_UNSIGNED_INT, 0);
 
                         shader.setUniformData("wireframeColor", EngineOptions.POINT_COLOR);
-                        glDrawElements(GL_POINTS, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
+                        glDrawElements(GL_POINTS, vertexCount, GL_UNSIGNED_INT, 0);
                         break;
 
                     case SHADED_UNICOLOR:
 
-                        glDrawElements(GL_TRIANGLES, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
+                        glDrawElements(GL_TRIANGLES, vertexCount, GL_UNSIGNED_INT, 0);
                         break;
 
                     case SHADED:
 
-                        glDrawElements(GL_TRIANGLES, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
+                        glDrawElements(GL_TRIANGLES, vertexCount, GL_UNSIGNED_INT, 0);
                         break;
                 }
 
@@ -117,7 +121,11 @@ public class OpenGLRenderer {
             }
         }
 
-        shader.unbind();
+        if(EngineOptions.DEBUG)
+        {
+            Logger.getInstance().log("VERTEX COUNT", totalVerticesInFrame);
+        }
+        //shader.unbind();
     }
 
     public void cleanup()

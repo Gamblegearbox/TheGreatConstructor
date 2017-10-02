@@ -19,7 +19,8 @@ public class EngineOptions {
 
     private static final int TARGET_FPS = 60;
 
-    static final boolean DEBUG = true;
+    public static final boolean DEBUG = true;
+    public static final float LOGGER_PRINT_INTERVAL = 1;
 
     static final boolean ANTIALIASING = true;
     static final boolean V_SYNC = false;
@@ -27,9 +28,9 @@ public class EngineOptions {
     static final boolean CULL_BACK_FACE = true ;
     static final boolean FRUSTUM_CULLING = true;
 
-    static final float POINT_SIZE = 4f;
+    static final float POINT_SIZE = 3f;
     static final Vector3f LINE_COLOR = new Vector3f(1.0f,1.0f,1.0f);
-    static final Vector3f POINT_COLOR = new Vector3f(0.5f,0.5f,0.5f);
+    static final Vector3f POINT_COLOR = new Vector3f(0.8f,0.8f,0.8f);
     static final Vector3f UNICOLOR_COLOR = new Vector3f(0.75f,0.75f,0.75f);
 
     static final renderMode RENDER_MODE = renderMode.SHADED_UNICOLOR;

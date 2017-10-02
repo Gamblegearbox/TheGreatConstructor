@@ -2,6 +2,7 @@ package engine;
 
 import game.Game;
 import interfaces.InterfaceGame;
+import utils.Logger;
 
 public class CoreLoop implements Runnable{
 
@@ -65,22 +66,22 @@ public class CoreLoop implements Runnable{
             double currentTime = System.nanoTime() / 1000_000_000.0;
             double deltaTime = currentTime - lastTime;
 
-            input();
-            update((float)deltaTime);
-            render();
-
             if(EngineOptions.DEBUG)
             {
                 deltaTimeSum += deltaTime;
 
                 if( deltaTimeSum > 1 )
                 {
-                    System.out.println("FPS: " + frames);
+                    Logger.getInstance().log("FPS", frames);
                     deltaTimeSum = 0;
                     frames = 0;
                 }
                 frames++;
             }
+
+            input();
+            update((float)deltaTime);
+            render();
 
             lastTime = currentTime;
         }
