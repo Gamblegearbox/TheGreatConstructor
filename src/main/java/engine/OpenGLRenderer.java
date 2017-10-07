@@ -15,6 +15,8 @@ public class OpenGLRenderer {
 
     private final Window window;
     private final Matrix4f projectionMatrix;
+    private final Matrix4f viewMatrix;
+    private final Matrix4f viewProjectionMatrix;
 
     private ShaderProgram shader;
     private final Matrix4f modelMatrix;
@@ -23,6 +25,9 @@ public class OpenGLRenderer {
     {
         this.window = _window;
         projectionMatrix = new Matrix4f();
+        viewMatrix = new Matrix4f();
+        viewProjectionMatrix = new Matrix4f();
+        viewProjectionMatrix.multiply(projectionMatrix, viewMatrix);
         modelMatrix = new Matrix4f();
     }
 
@@ -50,6 +55,10 @@ public class OpenGLRenderer {
             for(GameObject temp : _gameObjects)
             {
                 //TODO: filter objects
+                if(temp.getPosition().x > 0)
+                {
+                    //temp.setVisibility(false);
+                }
             }
         }
 
@@ -57,7 +66,8 @@ public class OpenGLRenderer {
         {
             float aspectRatio = (float)window.getWidth() / window.getHeight();
             projectionMatrix.setPerspective(EngineOptions.FOV, aspectRatio, EngineOptions.Z_NEAR, EngineOptions.Z_FAR);
-            shader.setUniformData("projectionMatrix", projectionMatrix);
+            viewProjectionMatrix.multiply(projectionMatrix, viewMatrix);
+            shader.setUniformData("viewProjectionMatrix", viewProjectionMatrix);
 
             glViewport(0, 0, window.getWidth(), window.getHeight());
             window.setResized(false);
@@ -170,7 +180,7 @@ public class OpenGLRenderer {
         shader.link();
 
         shader.bind();
-        shader.setUniformData("projectionMatrix", projectionMatrix);
+        shader.setUniformData("viewProjectionMatrix", viewProjectionMatrix);
         shader.setUniformData("unicolorColor", EngineOptions.UNICOLOR_COLOR);
     }
 

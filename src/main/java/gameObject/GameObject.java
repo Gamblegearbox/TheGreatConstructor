@@ -22,17 +22,12 @@ public class GameObject {
         rotation = new Quaternionf();
 
         this.mesh = mesh;
-        setVisible();
+        setVisibility(true);
     }
 
-    public void setVisible()
+    public void setVisibility(boolean _value)
     {
-        isVisible = true;
-    }
-
-    public void setInvisible()
-    {
-        isVisible = false;
+        isVisible = _value;
     }
 
     public boolean isVisible()
