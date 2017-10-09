@@ -27,20 +27,20 @@ public class EngineOptions {
 
     static final boolean ANTIALIASING = true;
     static final boolean V_SYNC = false;
-
     static final boolean CULL_BACK_FACE = true ;
     static final boolean FRUSTUM_CULLING = true;
 
     static final float POINT_SIZE = 3f;
-    static final Vector3f LINE_COLOR = new Vector3f(1.0f,1.0f,1.0f);
-    static final Vector3f POINT_COLOR = new Vector3f(0.8f,0.8f,0.8f);
+    static final Vector3f WIREFRAME_COLOR = new Vector3f(1.0f,1.0f,1.0f);
     static final Vector3f UNICOLOR_COLOR = new Vector3f(0.75f,0.75f,0.75f);
 
-    static final renderMode RENDER_MODE = renderMode.SHADED_UNICOLOR;
+    static final renderMode RENDER_MODE = renderMode.UNICOLOR;
+    static final int IS_SHADED = 1;
+    static final int SHOW_DEPTH = 0;
 
     public enum renderMode
     {
-        SHADED, SHADED_UNICOLOR, WIREFRAME_OVERLAY, WIREFRAME
+        TEXTURED, UNICOLOR, WIREFRAME
     }
 
     static void logAllInfo()

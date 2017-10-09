@@ -38,15 +38,46 @@ public class OpenGLRenderer {
 
         setupOpenGl();
         initShader();
-        initRenderMode();
+
+        shader.bind();
+        shader.setUniformData("unicolorColor", EngineOptions.UNICOLOR_COLOR);
+        shader.setUniformData("isShaded", EngineOptions.IS_SHADED);
+        shader.setUniformData("showDepth", EngineOptions.SHOW_DEPTH);
+
+        switch(EngineOptions.RENDER_MODE)
+        {
+            case WIREFRAME:
+                shader.setUniformData("renderMode", 2);
+                glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+                break;
+
+            case UNICOLOR:
+                shader.setUniformData("renderMode", 1);
+                glPolygonMode(GL_FRONT_FACE, GL_FILL);
+                break;
+
+            case TEXTURED:
+                shader.setUniformData("renderMode", 0);
+                glPolygonMode(GL_FRONT_FACE, GL_FILL);
+                break;
+        }
     }
 
     public void render(GameObject[] _gameObjects, Vector3f _lightPosition)
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
+        if ( window.isResized() )
+        {
+            float aspectRatio = (float)window.getWidth() / window.getHeight();
+            projectionMatrix.setPerspective(EngineOptions.FOV, aspectRatio, EngineOptions.Z_NEAR, EngineOptions.Z_FAR);
+            glViewport(0, 0, window.getWidth(), window.getHeight());
+            window.setResized(false);
+        }
+
         //UPLOAD FRAME RELEVANT UNIFORMS HERE
-        //shader.bind();
+        viewProjectionMatrix.multiply(projectionMatrix, viewMatrix);
+        shader.setUniformData("viewProjectionMatrix", viewProjectionMatrix);
         shader.setUniformData("lightPosition", _lightPosition);
 
         //FILTER OBJECTS FOR FRUSTUM CULLING
@@ -62,17 +93,8 @@ public class OpenGLRenderer {
             }
         }
 
-        if ( window.isResized() )
-        {
-            float aspectRatio = (float)window.getWidth() / window.getHeight();
-            projectionMatrix.setPerspective(EngineOptions.FOV, aspectRatio, EngineOptions.Z_NEAR, EngineOptions.Z_FAR);
-            viewProjectionMatrix.multiply(projectionMatrix, viewMatrix);
-            shader.setUniformData("viewProjectionMatrix", viewProjectionMatrix);
 
-            glViewport(0, 0, window.getWidth(), window.getHeight());
-            window.setResized(false);
-        }
-
+        //RENDER ALL VISIBLE OBJECTS
         int totalVerticesInFrame = 0;
 
         for(GameObject temp : _gameObjects)
@@ -94,31 +116,17 @@ public class OpenGLRenderer {
                 switch(EngineOptions.RENDER_MODE)
                 {
                     case WIREFRAME:
-                        shader.setUniformData("wireframeColor", EngineOptions.LINE_COLOR);
+                        shader.setUniformData("wireframeColor", EngineOptions.WIREFRAME_COLOR);
                         glDrawElements(GL_TRIANGLES, vertexCount, GL_UNSIGNED_INT, 0);
-
-                        shader.setUniformData("wireframeColor", EngineOptions.POINT_COLOR);
                         glDrawElements(GL_POINTS, vertexCount, GL_UNSIGNED_INT, 0);
                         break;
 
-                    case WIREFRAME_OVERLAY:
-                        shader.setUniformData("renderMode", 0); //TODO: unless it is not switchable during runtime put that in an init method
-                        glDrawElements(GL_TRIANGLES, vertexCount, GL_UNSIGNED_INT, 0);
-
-                        shader.setUniformData("renderMode", 2);
-                        shader.setUniformData("wireframeColor", EngineOptions.LINE_COLOR);
-                        glDrawElements(GL_LINE_STRIP, vertexCount, GL_UNSIGNED_INT, 0);
-
-                        shader.setUniformData("wireframeColor", EngineOptions.POINT_COLOR);
-                        glDrawElements(GL_POINTS, vertexCount, GL_UNSIGNED_INT, 0);
-                        break;
-
-                    case SHADED_UNICOLOR:
+                    case UNICOLOR:
 
                         glDrawElements(GL_TRIANGLES, vertexCount, GL_UNSIGNED_INT, 0);
                         break;
 
-                    case SHADED:
+                    case TEXTURED:
 
                         glDrawElements(GL_TRIANGLES, vertexCount, GL_UNSIGNED_INT, 0);
                         break;
@@ -135,7 +143,6 @@ public class OpenGLRenderer {
         {
             Logger.getInstance().logData("VERTEX COUNT", totalVerticesInFrame);
         }
-        //shader.unbind();
     }
 
     public void cleanup()
@@ -178,36 +185,6 @@ public class OpenGLRenderer {
         shader.createVertexShader(Utils.loadResource("/shaders/shaded.vs"));
         shader.createFragmentShader (Utils.loadResource("/shaders/shaded.fs"));
         shader.link();
-
-        shader.bind();
-        shader.setUniformData("viewProjectionMatrix", viewProjectionMatrix);
-        shader.setUniformData("unicolorColor", EngineOptions.UNICOLOR_COLOR);
-    }
-
-    private void initRenderMode()
-    {
-        switch(EngineOptions.RENDER_MODE)
-        {
-            case WIREFRAME:
-                shader.setUniformData("renderMode", 2);
-                glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-                break;
-
-            case WIREFRAME_OVERLAY:
-
-                glPolygonMode(GL_FRONT_FACE, GL_FILL);
-                break;
-
-            case SHADED_UNICOLOR:
-                shader.setUniformData("renderMode", 1);
-                glPolygonMode(GL_FRONT_FACE, GL_FILL);
-                break;
-
-            case SHADED:
-                shader.setUniformData("renderMode", 0);
-                glPolygonMode(GL_FRONT_FACE, GL_FILL);
-                break;
-        }
     }
 
 }

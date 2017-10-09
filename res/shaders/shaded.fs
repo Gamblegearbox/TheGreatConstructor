@@ -2,6 +2,7 @@
 
 in vec3 vertexNormal;
 in vec3 vertexColor;
+in float depth;
 
 out vec4 fragColor;
 
@@ -9,46 +10,60 @@ uniform int renderMode;
 uniform vec3 unicolorColor;
 uniform vec3 wireframeColor;
 uniform vec3 lightPosition;
+uniform bool isShaded;
+uniform bool showDepth;
 
 void main()
 {
-    float intensity;
-    float diffuse;
-    intensity = dot(normalize(lightPosition), normalize(vertexNormal));
-
-    if (intensity > 0.95)
-        diffuse = 1.0;
-    else if (intensity > 0.5)
-        diffuse =  0.75;
-    else if (intensity > 0.25)
-        diffuse = 0.5;
-    else
-        diffuse = 0.25;
-
+    float transparency = 1.0;   //TODO: put that in a material uniform thing
+    vec3 color;
 
     switch(renderMode)
     {
-        //SHADED
+        //TEXTURED
         case 0:
-
-            fragColor = vec4(vertexColor * diffuse, 1.0) ;
+            color = vertexColor;
             break;
 
-        //SHADED_UNICOLOR
+        //UNICOLOR
         case 1:
-
-            fragColor = vec4(unicolorColor * diffuse, 1.0);
+            color = unicolorColor;
             break;
 
         //WIREFRAME
         case 2:
-
-            fragColor = vec4(wireframeColor, 1.0);
+            color = wireframeColor;
             break;
 
         default :
-            fragColor = vec4(1.0, 1.0, 0.0, 1.0);
+            color = vec3(1.0, 1.0, 0.0);    //just a fall back color
+            break;
     }
+
+    if(isShaded)
+    {
+        float intensity;
+        float diffuse;
+        intensity = dot(normalize(lightPosition), normalize(vertexNormal));
+
+        if (intensity > 0.95)
+            diffuse = 1.0;
+        else if (intensity > 0.5)
+            diffuse =  0.75;
+        else if (intensity > 0.25)
+            diffuse = 0.5;
+        else
+            diffuse = 0.25;
+
+        color *= diffuse;
+    }
+
+    if(showDepth)
+    {
+        color *= 1.0 - depth;
+    }
+
+    fragColor = vec4(color, transparency);
 }
 
 

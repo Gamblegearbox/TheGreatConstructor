@@ -32,7 +32,7 @@ public class Game implements InterfaceGame {
 
         int numberOfTestObjects = 100;
         gameObjects = new GameObject[numberOfTestObjects];
-        float x = -3, y = -3, z = -5;
+        float x = -3, y = -3, z = -2;
         Vector3f position = new Vector3f(x,y,z);
 
         for(int i = 0 ; i < numberOfTestObjects; i++)
