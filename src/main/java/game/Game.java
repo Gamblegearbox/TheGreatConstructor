@@ -3,7 +3,7 @@ package game;
 import engine.*;
 import gameObject.GameObject;
 import interfaces.InterfaceGame;
-import math.Vector3f;
+import math.Vector3;
 import utils.Logger;
 import utils.OBJLoader;
 
@@ -11,7 +11,7 @@ public class Game implements InterfaceGame {
 
     private final OpenGLRenderer renderer;
     //private final Window window;
-    private final Vector3f lightPosition;
+    private final Vector3 lightPosition;
 
     private GameObject[] gameObjects;
     private float anim = 0;
@@ -22,7 +22,7 @@ public class Game implements InterfaceGame {
     public Game(Window _window)
     {
         renderer = new OpenGLRenderer(_window);
-        lightPosition = new Vector3f(-1f,1f,-1f);
+        lightPosition = new Vector3(-1f,1f,-1f);
     }
 
     @Override
@@ -33,7 +33,7 @@ public class Game implements InterfaceGame {
         int numberOfTestObjects = 100;
         gameObjects = new GameObject[numberOfTestObjects];
         float x = -3, y = -3, z = -2;
-        Vector3f position = new Vector3f(x,y,z);
+        Vector3 position = new Vector3(x,y,z);
 
         for(int i = 0 ; i < numberOfTestObjects; i++)
         {

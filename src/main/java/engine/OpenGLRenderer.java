@@ -1,8 +1,9 @@
 package engine;
 
 import gameObject.GameObject;
-import math.Matrix4f;
-import math.Vector3f;
+import math.Matrix4;
+import math.Vector3;
+import math.Vector4;
 import utils.Logger;
 import utils.Utils;
 
@@ -14,21 +15,28 @@ import static org.lwjgl.opengl.GL30.glBindVertexArray;
 public class OpenGLRenderer {
 
     private final Window window;
-    private final Matrix4f projectionMatrix;
-    private final Matrix4f viewMatrix;
-    private final Matrix4f viewProjectionMatrix;
+    private final Matrix4 projectionMatrix;
+    private final Matrix4 viewMatrix;
+    private final Matrix4 viewProjectionMatrix;
+    private final Vector4[] frustumPlanes;
 
     private ShaderProgram shader;
-    private final Matrix4f modelMatrix;
+    private final Matrix4 modelMatrix;
 
     public OpenGLRenderer(Window _window)
     {
         this.window = _window;
-        projectionMatrix = new Matrix4f();
-        viewMatrix = new Matrix4f();
-        viewProjectionMatrix = new Matrix4f();
+        projectionMatrix = new Matrix4();
+        viewMatrix = new Matrix4();
+        viewProjectionMatrix = new Matrix4();
         viewProjectionMatrix.multiply(projectionMatrix, viewMatrix);
-        modelMatrix = new Matrix4f();
+        modelMatrix = new Matrix4();
+
+        frustumPlanes = new Vector4[6];
+        for (int i = 0; i < 6; i++)
+        {
+            frustumPlanes[i] = new Vector4();
+        }
     }
 
     public void init() throws Exception
@@ -41,6 +49,7 @@ public class OpenGLRenderer {
 
         shader.bind();
         shader.setUniformData("unicolorColor", EngineOptions.UNICOLOR_COLOR);
+        shader.setUniformData("wireframeColor", EngineOptions.WIREFRAME_COLOR);
         shader.setUniformData("isShaded", EngineOptions.IS_SHADED);
         shader.setUniformData("showDepth", EngineOptions.SHOW_DEPTH);
 
@@ -63,7 +72,7 @@ public class OpenGLRenderer {
         }
     }
 
-    public void render(GameObject[] _gameObjects, Vector3f _lightPosition)
+    public void render(GameObject[] _gameObjects, Vector3 _lightPosition)
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
@@ -83,13 +92,26 @@ public class OpenGLRenderer {
         //FILTER OBJECTS FOR FRUSTUM CULLING
         if(EngineOptions.FRUSTUM_CULLING)
         {
+            //UPDATE FRUSTUM PLANES TODO: don't update if you want to freeze the culling
+            for(int i = 0; i < 6; i++)
+            {
+                viewProjectionMatrix.frustumPlane(i, frustumPlanes[i]);
+            }
+
             for(GameObject temp : _gameObjects)
             {
-                //TODO: filter objects
-                if(temp.getPosition().x > 0)
-                {
-                    //temp.setVisibility(false);
+                //INSIDE FRUSTUM?
+                Vector3 position = temp.getPosition();
+                boolean isInsideFrustum = true;
+                for (int i = 0; i < 6; i++) {
+                    Vector4 plane = frustumPlanes[i];
+                    if (plane.x * position.x + plane.y * position.y + plane.z * position.z + plane.w <= -0.0f/*BOUNDING RADIUS*/)
+                    {
+                        isInsideFrustum = false;
+                    }
                 }
+
+                temp.setVisibility(isInsideFrustum);
             }
         }
 
@@ -116,7 +138,7 @@ public class OpenGLRenderer {
                 switch(EngineOptions.RENDER_MODE)
                 {
                     case WIREFRAME:
-                        shader.setUniformData("wireframeColor", EngineOptions.WIREFRAME_COLOR);
+
                         glDrawElements(GL_TRIANGLES, vertexCount, GL_UNSIGNED_INT, 0);
                         glDrawElements(GL_POINTS, vertexCount, GL_UNSIGNED_INT, 0);
                         break;

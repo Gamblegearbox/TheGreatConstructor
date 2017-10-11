@@ -1,8 +1,8 @@
 package engine;
 
 
-import math.Matrix4f;
-import math.Vector3f;
+import math.Matrix4;
+import math.Vector3;
 import org.lwjgl.system.MemoryStack;
 import java.nio.FloatBuffer;
 import static org.lwjgl.opengl.GL20.*;
@@ -56,7 +56,7 @@ class ShaderProgram {
         return shaderId;
     }
 
-    void setUniformData(String _uniformName, Matrix4f _matrix)
+    void setUniformData(String _uniformName, Matrix4 _matrix)
     {
         int uniformLocation = glGetUniformLocation(programID, _uniformName);
 
@@ -83,7 +83,7 @@ class ShaderProgram {
         glUniform1i(uniformLocation, _value);
     }
 
-    void setUniformData(String _uniformName, Vector3f _value)
+    void setUniformData(String _uniformName, Vector3 _value)
     {
         int uniformLocation = glGetUniformLocation(programID, _uniformName);
         glUniform3f(uniformLocation, _value.x, _value.y, _value.z);

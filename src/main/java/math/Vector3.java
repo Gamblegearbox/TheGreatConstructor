@@ -1,19 +1,19 @@
 package math;
 
-public class Vector3f {
+public class Vector3 {
 
     public float x;
     public float y;
     public float z;
 
-    public Vector3f(float _x, float _y, float _z)
+    public Vector3(float _x, float _y, float _z)
     {
         x = _x;
         y = _y;
         z = _z;
     }
 
-    public Vector3f(Vector3f _value)
+    public Vector3(Vector3 _value)
     {
         x = _value.x;
         y = _value.y;
@@ -27,7 +27,7 @@ public class Vector3f {
         z = _z;
     }
 
-    public void set(Vector3f _value)
+    public void set(Vector3 _value)
     {
         x = _value.x;
         y = _value.y;

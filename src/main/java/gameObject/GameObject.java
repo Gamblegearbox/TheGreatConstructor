@@ -1,15 +1,15 @@
 package gameObject;
 
 import engine.OpenGLMesh;
-import math.Vector3f;
+import math.Vector3;
 import org.joml.Quaternionf;
 import utils.Conversions;
 
 
 public class GameObject {
 
-    private final Vector3f position;
-    private final Vector3f scale;
+    private final Vector3 position;
+    private final Vector3 scale;
     private final Quaternionf rotation;
     private final OpenGLMesh mesh;
 
@@ -17,8 +17,8 @@ public class GameObject {
 
     public GameObject(OpenGLMesh mesh)
     {
-        position = new Vector3f(0,0,0);
-        scale = new Vector3f(1,1,1);
+        position = new Vector3(0,0,0);
+        scale = new Vector3(1,1,1);
         rotation = new Quaternionf();
 
         this.mesh = mesh;
@@ -35,7 +35,7 @@ public class GameObject {
         return isVisible;
     }
 
-    public void setPosition(Vector3f _position)
+    public void setPosition(Vector3 _position)
     {
         position.x = _position.x;
         position.y = _position.y;
@@ -49,12 +49,12 @@ public class GameObject {
         position.z = _z;
     }
 
-    public Vector3f getPosition()
+    public Vector3 getPosition()
     {
         return position;
     }
 
-    public void setScale(Vector3f _scale)
+    public void setScale(Vector3 _scale)
     {
         scale.x = _scale.x;
         scale.y = _scale.y;
@@ -68,7 +68,7 @@ public class GameObject {
         scale.z = _z;
     }
 
-    public Vector3f getScale()
+    public Vector3 getScale()
     {
         return scale;
     }
@@ -81,7 +81,7 @@ public class GameObject {
         rotation.z = _rotation.z;
     }
 
-    public void setRotation(Vector3f _rotation)
+    public void setRotation(Vector3 _rotation)
     {
         Conversions.convertEulerToQuaternion(_rotation.x, _rotation.y, _rotation.z, rotation);
     }

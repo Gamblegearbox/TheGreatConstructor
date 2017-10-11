@@ -1,13 +1,16 @@
 package engine;
 
 
-import math.Vector3f;
+import math.Vector3;
 import utils.Logger;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.GL_SHADING_LANGUAGE_VERSION;
 
 public class EngineOptions {
+
+    private static final int TRUE = 1;
+    private static final int FALSE = 0;
 
     static final String OPERATING_SYSTEM = System.getProperty("os.name");
     static final String TITLE = "Television 2000";
@@ -31,12 +34,14 @@ public class EngineOptions {
     static final boolean FRUSTUM_CULLING = true;
 
     static final float POINT_SIZE = 3f;
-    static final Vector3f WIREFRAME_COLOR = new Vector3f(1.0f,1.0f,1.0f);
-    static final Vector3f UNICOLOR_COLOR = new Vector3f(0.75f,0.75f,0.75f);
+    static final Vector3 WIREFRAME_COLOR = new Vector3(1.0f,1.0f,1.0f);
+    static final Vector3 UNICOLOR_COLOR = new Vector3(0.75f,0.75f,0.75f);
 
     static final renderMode RENDER_MODE = renderMode.UNICOLOR;
-    static final int IS_SHADED = 1;
-    static final int SHOW_DEPTH = 0;
+
+
+    static final int IS_SHADED = TRUE;
+    static final int SHOW_DEPTH = FALSE;
 
     public enum renderMode
     {
@@ -78,6 +83,8 @@ public class EngineOptions {
     {
         String info =
         "RENDER MODE:        " + RENDER_MODE  + "\n" +
+        "SHADED GEOMETRY:    " + convertIntToEnabledOrDisabled(IS_SHADED) + "\n" +
+        "SHOW DEPTH:         " + convertIntToEnabledOrDisabled(SHOW_DEPTH) + "\n" +
         "DEBUG MODE:         " + convertBooleanToEnabledOrDisabled(DEBUG) + "\n" +
         "ANTIALIASING:       " + convertBooleanToEnabledOrDisabled(ANTIALIASING)  + "\n" +
         "VSYNC:              " + convertBooleanToEnabledOrDisabled(V_SYNC)  + "\n" +
@@ -87,8 +94,13 @@ public class EngineOptions {
         Logger.getInstance().writeTolog(info);
     }
 
-    private static String convertBooleanToEnabledOrDisabled(boolean status)
+    private static String convertBooleanToEnabledOrDisabled(boolean _status)
     {
-        return status ? "Enabled" : "Disabled";
+        return _status ? "Enabled" : "Disabled";
+    }
+
+    private static String convertIntToEnabledOrDisabled(int _status)
+    {
+        return _status > 0 ? "Enabled" : "Disabled";
     }
 }
