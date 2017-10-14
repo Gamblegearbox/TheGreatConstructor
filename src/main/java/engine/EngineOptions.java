@@ -1,9 +1,7 @@
 package engine;
 
-
 import math.Vector3;
 import utils.Logger;
-
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.GL_SHADING_LANGUAGE_VERSION;
 
@@ -22,30 +20,26 @@ public class EngineOptions {
     static final float Z_FAR = 1000f;
     static final float FOV = 60f;
 
-    private static final int TARGET_FPS = 60;
-
     public static final boolean DEBUG = true;
     public static final boolean LOG_TO_FILE = false;
     public static final float LOGGING_INTERVAL = 1;
 
-    static final boolean ANTIALIASING = true;
+    static final multiSamplingMode MULTISAMPLING = multiSamplingMode.X4;
     static final boolean V_SYNC = false;
     static final boolean CULL_BACK_FACE = true ;
     static final boolean FRUSTUM_CULLING = true;
 
     static final float POINT_SIZE = 3f;
-    static final Vector3 WIREFRAME_COLOR = new Vector3(1.0f,1.0f,1.0f);
     static final Vector3 UNICOLOR_COLOR = new Vector3(0.75f,0.75f,0.75f);
 
-    static final renderMode RENDER_MODE = renderMode.UNICOLOR;
-
-
+    static final boolean SHOW_WIREFRAME = false;
+    static final int IS_TEXTURED = FALSE;
     static final int IS_SHADED = TRUE;
     static final int SHOW_DEPTH = FALSE;
 
-    public enum renderMode
+    public enum multiSamplingMode
     {
-        TEXTURED, UNICOLOR, WIREFRAME
+        OFF, X1, X2, X3, X4, X5, X6, X7, X8
     }
 
     static void logAllInfo()
@@ -72,7 +66,6 @@ public class EngineOptions {
     {
         String info =
         "RESOLUTION:         " + WINDOW_WIDTH + " x " + WINDOW_HEIGHT + "\n" +
-        "TARGET FPS:         " + TARGET_FPS + "\n" +
         "LOGGING INTERVAL    " + LOGGING_INTERVAL + "sec" + "\n" +
         "\n";
 
@@ -82,11 +75,11 @@ public class EngineOptions {
     static void logOptionsStatus()
     {
         String info =
-        "RENDER MODE:        " + RENDER_MODE  + "\n" +
+        "DEBUG MODE:         " + convertBooleanToEnabledOrDisabled(DEBUG) + "\n" +
+        "TEXTURES:           " + convertIntToEnabledOrDisabled(IS_TEXTURED) + "\n" +
         "SHADED GEOMETRY:    " + convertIntToEnabledOrDisabled(IS_SHADED) + "\n" +
         "SHOW DEPTH:         " + convertIntToEnabledOrDisabled(SHOW_DEPTH) + "\n" +
-        "DEBUG MODE:         " + convertBooleanToEnabledOrDisabled(DEBUG) + "\n" +
-        "ANTIALIASING:       " + convertBooleanToEnabledOrDisabled(ANTIALIASING)  + "\n" +
+        "MULTISAMPLING:      " + MULTISAMPLING + "\n" +
         "VSYNC:              " + convertBooleanToEnabledOrDisabled(V_SYNC)  + "\n" +
         "BACKFACE CULLING:   " + convertBooleanToEnabledOrDisabled(CULL_BACK_FACE) + "\n" +
         "\n";

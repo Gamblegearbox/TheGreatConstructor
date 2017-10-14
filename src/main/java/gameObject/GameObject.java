@@ -13,15 +13,16 @@ public class GameObject {
     private final Quaternionf rotation;
     private final OpenGLMesh mesh;
 
+    private final float boundingRadius;
     private boolean isVisible;
 
-    public GameObject(OpenGLMesh mesh)
+    public GameObject(OpenGLMesh _mesh, float _boundingRadius)
     {
         position = new Vector3(0,0,0);
         scale = new Vector3(1,1,1);
         rotation = new Quaternionf();
-
-        this.mesh = mesh;
+        boundingRadius = _boundingRadius;
+        this.mesh = _mesh;
         setVisibility(true);
     }
 
@@ -33,6 +34,11 @@ public class GameObject {
     public boolean isVisible()
     {
         return isVisible;
+    }
+
+    public float getBoundingRadius()
+    {
+        return boundingRadius;
     }
 
     public void setPosition(Vector3 _position)

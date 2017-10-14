@@ -117,7 +117,7 @@ public class Matrix4 {
     }
 
     //FROM JOML MATRIX4F
-    public Vector4 frustumPlane(int plane, Vector4 _planeEquation)
+    public Vector4 calcFrustumPlane(int plane, Vector4 _planeEquation)
     {
         /*
         m00  m10  m20  m30  |   m[0];  m[4];  m[8];  m[12]

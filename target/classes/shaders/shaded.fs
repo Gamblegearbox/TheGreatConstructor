@@ -6,38 +6,24 @@ in float depth;
 
 out vec4 fragColor;
 
-uniform int renderMode;
 uniform vec3 unicolorColor;
-uniform vec3 wireframeColor;
 uniform vec3 lightPosition;
 uniform bool isShaded;
 uniform bool showDepth;
+uniform bool isTextured;
 
 void main()
 {
     float transparency = 1.0;   //TODO: put that in a material uniform thing
     vec3 color;
 
-    switch(renderMode)
+    if(isTextured)
     {
-        //TEXTURED
-        case 0:
-            color = vertexColor;
-            break;
-
-        //UNICOLOR
-        case 1:
-            color = unicolorColor;
-            break;
-
-        //WIREFRAME
-        case 2:
-            color = wireframeColor;
-            break;
-
-        default :
-            color = vec3(1.0, 1.0, 0.0);    //just a fall back color
-            break;
+        color = vertexColor;
+    }
+    else
+    {
+        color = unicolorColor;
     }
 
     if(isShaded)

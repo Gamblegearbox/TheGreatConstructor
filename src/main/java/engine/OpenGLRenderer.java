@@ -14,6 +14,7 @@ import static org.lwjgl.opengl.GL30.glBindVertexArray;
 
 public class OpenGLRenderer {
 
+    private static final int NUMBER_OF_FRUSTUM_PLANES = 6;
     private final Window window;
     private final Matrix4 projectionMatrix;
     private final Matrix4 viewMatrix;
@@ -49,26 +50,17 @@ public class OpenGLRenderer {
 
         shader.bind();
         shader.setUniformData("unicolorColor", EngineOptions.UNICOLOR_COLOR);
-        shader.setUniformData("wireframeColor", EngineOptions.WIREFRAME_COLOR);
         shader.setUniformData("isShaded", EngineOptions.IS_SHADED);
         shader.setUniformData("showDepth", EngineOptions.SHOW_DEPTH);
+        shader.setUniformData("isTextured", EngineOptions.IS_TEXTURED);
 
-        switch(EngineOptions.RENDER_MODE)
+        if(EngineOptions.SHOW_WIREFRAME)
         {
-            case WIREFRAME:
-                shader.setUniformData("renderMode", 2);
-                glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-                break;
-
-            case UNICOLOR:
-                shader.setUniformData("renderMode", 1);
-                glPolygonMode(GL_FRONT_FACE, GL_FILL);
-                break;
-
-            case TEXTURED:
-                shader.setUniformData("renderMode", 0);
-                glPolygonMode(GL_FRONT_FACE, GL_FILL);
-                break;
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        }
+        else
+        {
+            glPolygonMode(GL_FRONT_FACE, GL_FILL);
         }
     }
 
@@ -93,19 +85,20 @@ public class OpenGLRenderer {
         if(EngineOptions.FRUSTUM_CULLING)
         {
             //UPDATE FRUSTUM PLANES TODO: don't update if you want to freeze the culling
-            for(int i = 0; i < 6; i++)
+            for(int i = 0; i < NUMBER_OF_FRUSTUM_PLANES; i++)
             {
-                viewProjectionMatrix.frustumPlane(i, frustumPlanes[i]);
+                viewProjectionMatrix.calcFrustumPlane(i, frustumPlanes[i]);
             }
 
             for(GameObject temp : _gameObjects)
             {
-                //INSIDE FRUSTUM?
+                //IS OBJECT INSIDE FRUSTUM?
                 Vector3 position = temp.getPosition();
                 boolean isInsideFrustum = true;
-                for (int i = 0; i < 6; i++) {
+                for (int i = 0; i < NUMBER_OF_FRUSTUM_PLANES; i++)
+                {
                     Vector4 plane = frustumPlanes[i];
-                    if (plane.x * position.x + plane.y * position.y + plane.z * position.z + plane.w <= -0.0f/*BOUNDING RADIUS*/)
+                    if (plane.x * position.x + plane.y * position.y + plane.z * position.z + plane.w <= -temp.getBoundingRadius())
                     {
                         isInsideFrustum = false;
                     }
@@ -135,23 +128,14 @@ public class OpenGLRenderer {
                 modelMatrix.setModelValues(temp.getPosition(), temp.getRotation(), temp.getScale());
                 shader.setUniformData("modelMatrix", modelMatrix);
 
-                switch(EngineOptions.RENDER_MODE)
+                if(EngineOptions.SHOW_WIREFRAME)
                 {
-                    case WIREFRAME:
-
-                        glDrawElements(GL_TRIANGLES, vertexCount, GL_UNSIGNED_INT, 0);
-                        glDrawElements(GL_POINTS, vertexCount, GL_UNSIGNED_INT, 0);
-                        break;
-
-                    case UNICOLOR:
-
-                        glDrawElements(GL_TRIANGLES, vertexCount, GL_UNSIGNED_INT, 0);
-                        break;
-
-                    case TEXTURED:
-
-                        glDrawElements(GL_TRIANGLES, vertexCount, GL_UNSIGNED_INT, 0);
-                        break;
+                    glDrawElements(GL_TRIANGLES, vertexCount, GL_UNSIGNED_INT, 0);
+                    glDrawElements(GL_POINTS, vertexCount, GL_UNSIGNED_INT, 0);
+                }
+                else
+                {
+                    glDrawElements(GL_TRIANGLES, vertexCount, GL_UNSIGNED_INT, 0);
                 }
 
                 glDisableVertexAttribArray(0);

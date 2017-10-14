@@ -9,6 +9,7 @@ import utils.OBJLoader;
 
 public class Game implements InterfaceGame {
 
+
     private final OpenGLRenderer renderer;
     //private final Window window;
     private final Vector3 lightPosition;
@@ -18,6 +19,7 @@ public class Game implements InterfaceGame {
 
     //DEBUG VALUES
     private float deltaTimeSum;
+    private static final int NUMBER_OF_TEST_OBJECTS = 100;
 
     public Game(Window _window)
     {
@@ -30,12 +32,12 @@ public class Game implements InterfaceGame {
     {
         renderer.init();
 
-        int numberOfTestObjects = 100;
-        gameObjects = new GameObject[numberOfTestObjects];
-        float x = -3, y = -3, z = -2;
+
+        gameObjects = new GameObject[NUMBER_OF_TEST_OBJECTS];
+        float x = -3, y = -3, z = -3;
         Vector3 position = new Vector3(x,y,z);
 
-        for(int i = 0 ; i < numberOfTestObjects; i++)
+        for(int i = 0 ; i < NUMBER_OF_TEST_OBJECTS; i++)
         {
             position.set(x, y, z);
 
@@ -57,7 +59,7 @@ public class Game implements InterfaceGame {
                 x += 1.5f;
             }
 
-            GameObject temp = new GameObject(OBJLoader.loadMesh("/models/AI_Cars.obj"));
+            GameObject temp = new GameObject(OBJLoader.loadMesh("/models/AI_Cars.obj"), 2f);
             temp.setPosition(position);
             temp.setScale(0.2f,0.2f,0.2f);
             gameObjects[i] = temp;
