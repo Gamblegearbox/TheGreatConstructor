@@ -45,7 +45,6 @@ public class EngineOptions {
     static void logAllInfo()
     {
         logGeneralInfo();
-        logResolutionAndTimerSettings();
         logOptionsStatus();
     }
 
@@ -62,20 +61,12 @@ public class EngineOptions {
         Logger.getInstance().writeTolog(info);
     }
 
-    static void logResolutionAndTimerSettings()
-    {
-        String info =
-        "RESOLUTION:         " + WINDOW_WIDTH + " x " + WINDOW_HEIGHT + "\n" +
-        "LOGGING INTERVAL    " + LOGGING_INTERVAL + "sec" + "\n" +
-        "\n";
-
-        Logger.getInstance().writeTolog(info);
-    }
-
     static void logOptionsStatus()
     {
         String info =
         "DEBUG MODE:         " + convertBooleanToEnabledOrDisabled(DEBUG) + "\n" +
+        "LOGGING INTERVAL    " + LOGGING_INTERVAL + "sec" + "\n" +
+        "RESOLUTION:         " + WINDOW_WIDTH + " x " + WINDOW_HEIGHT + "\n" +
         "TEXTURES:           " + convertIntToEnabledOrDisabled(IS_TEXTURED) + "\n" +
         "SHADED GEOMETRY:    " + convertIntToEnabledOrDisabled(IS_SHADED) + "\n" +
         "SHOW DEPTH:         " + convertIntToEnabledOrDisabled(SHOW_DEPTH) + "\n" +

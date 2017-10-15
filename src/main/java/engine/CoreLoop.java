@@ -56,7 +56,7 @@ public class CoreLoop implements Runnable{
         if(EngineOptions.DEBUG) { EngineOptions.logAllInfo(); }
     }
 
-    private void startGameLoop() throws Exception
+    private void startGameLoop()
     {
         double lastTime = System.nanoTime() / 1000_000_000.0;
         double deltaTimeSum = 0;
