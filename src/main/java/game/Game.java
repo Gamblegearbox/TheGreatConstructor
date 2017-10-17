@@ -59,7 +59,7 @@ public class Game implements InterfaceGame {
                 x += 1.5f;
             }
 
-            GameObject temp = new GameObject(OBJLoader.loadMesh("/models/AI_Cars.obj"), 2f);
+            GameObject temp = new GameObject(OBJLoader.loadMesh("/models/AI_Cars.obj"), new Texture("/textures/ash_uvgrid03.png"), 2f);
             temp.setPosition(position);
             temp.setScale(0.2f,0.2f,0.2f);
             gameObjects[i] = temp;

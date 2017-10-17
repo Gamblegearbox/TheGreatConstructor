@@ -18,22 +18,11 @@ public class OpenGLMesh {
     private final int vaoID;
     private final int vboID_vertices;
     private final int vboID_normals;
-    private final int vboID_colors;
+    private final int vboID_uvCoords;
     private final int vboID_indices;
     private final int vertexCount;
 
-
-    public int getVaoID()
-    {
-        return vaoID;
-    }
-
-    public int getVertexCount()
-    {
-        return vertexCount;
-    }
-
-    public OpenGLMesh(float[] _vertices, float[] _normals, float[] _colors, float[] _uvCoords, int[] _indices)
+    public OpenGLMesh(float[] _vertices, float[] _normals, float[] _uvCoords, int[] _indices)
     {
         vertexCount = _indices.length;
 
@@ -54,12 +43,12 @@ public class OpenGLMesh {
         glBufferData(GL_ARRAY_BUFFER, normalsBuffer, GL_STATIC_DRAW);
         glVertexAttribPointer(1, 3, GL_FLOAT, false, 0, 0);
 
-        vboID_colors = glGenBuffers();
-        FloatBuffer colorsBuffer = BufferUtils.createFloatBuffer(_colors.length);
-        colorsBuffer.put(_colors).flip();
-        glBindBuffer(GL_ARRAY_BUFFER, vboID_colors);
-        glBufferData(GL_ARRAY_BUFFER, colorsBuffer, GL_STATIC_DRAW);
-        glVertexAttribPointer(2, 3, GL_FLOAT, false, 0, 0);
+        vboID_uvCoords = glGenBuffers();
+        FloatBuffer uvBuffer = BufferUtils.createFloatBuffer(_uvCoords.length);
+        uvBuffer.put(_uvCoords).flip();
+        glBindBuffer(GL_ARRAY_BUFFER, vboID_uvCoords);
+        glBufferData(GL_ARRAY_BUFFER, uvBuffer, GL_STATIC_DRAW);
+        glVertexAttribPointer(2, 2, GL_FLOAT, false, 0, 0);
 
         vboID_indices = glGenBuffers();
         IntBuffer indicesBuffer = BufferUtils.createIntBuffer(_indices.length);
@@ -71,6 +60,16 @@ public class OpenGLMesh {
         glBindVertexArray(0);
     }
 
+    public int getVaoID()
+    {
+        return vaoID;
+    }
+
+    public int getVertexCount()
+    {
+        return vertexCount;
+    }
+
     public void cleanup()
     {
         glDisableVertexAttribArray(0);
@@ -79,7 +78,7 @@ public class OpenGLMesh {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glDeleteBuffers(vboID_vertices);
         glDeleteBuffers(vboID_normals);
-        glDeleteBuffers(vboID_colors);
+        glDeleteBuffers(vboID_uvCoords);
         glDeleteBuffers(vboID_indices);
 
         // Delete the VAO

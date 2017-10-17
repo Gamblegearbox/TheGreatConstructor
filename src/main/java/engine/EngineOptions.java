@@ -33,7 +33,7 @@ public class EngineOptions {
     static final Vector3 UNICOLOR_COLOR = new Vector3(0.75f,0.75f,0.75f);
 
     static final boolean SHOW_WIREFRAME = false;
-    static final int IS_TEXTURED = FALSE;
+    static final int IS_TEXTURED = TRUE;
     static final int IS_SHADED = TRUE;
     static final int SHOW_DEPTH = FALSE;
 

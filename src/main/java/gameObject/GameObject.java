@@ -1,6 +1,7 @@
 package gameObject;
 
 import engine.OpenGLMesh;
+import engine.Texture;
 import math.Vector3;
 import org.joml.Quaternionf;
 import utils.Conversions;
@@ -12,17 +13,20 @@ public class GameObject {
     private final Vector3 scale;
     private final Quaternionf rotation;
     private final OpenGLMesh mesh;
+    private final Texture texture;
 
     private final float boundingRadius;
     private boolean isVisible;
 
-    public GameObject(OpenGLMesh _mesh, float _boundingRadius)
+    public GameObject(OpenGLMesh _mesh, Texture _texture, float _boundingRadius)
     {
         position = new Vector3(0,0,0);
         scale = new Vector3(1,1,1);
         rotation = new Quaternionf();
+        mesh = _mesh;
+        texture = _texture;
+
         boundingRadius = _boundingRadius;
-        this.mesh = _mesh;
         setVisibility(true);
     }
 
@@ -105,6 +109,11 @@ public class GameObject {
     public OpenGLMesh getMesh()
     {
         return mesh;
+    }
+
+    public Texture getTexture()
+    {
+        return texture;
     }
 
     public void cleanup()

@@ -2,10 +2,10 @@
 
 layout (location=0) in vec3 position;
 layout (location=1) in vec3 normal;
-layout (location=2) in vec3 color;
+layout (location=2) in vec2 uvCoord;
 
 out vec3 vertexNormal;
-out vec3 vertexColor;
+out vec2 vertexUvCoord;
 out float depth;
 
 uniform mat4 viewProjectionMatrix;
@@ -18,6 +18,6 @@ void main()
 
     gl_Position = modelViewProjectionMatrix * vec4(position, 1.0);
     vertexNormal = vec3(normalMatrix * vec4(normal, 0));
-    vertexColor = color;
+    vertexUvCoord = uvCoord;
     depth = gl_Position.z / 7.0;       //TODO: put value for wireframe depth in uniform
 }

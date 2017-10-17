@@ -89,17 +89,10 @@ public class OBJLoader {
             }
         }
 
-        float[] colors = new float[vertices.length];
-        for(int x = 0; x < colors.length; x++)
-        {
-            colors[x] = (float)Math.random();//0.75f;
-        }
-
-
         int[] indices;          // = new int[indicesList.size()]; <-- redundant!
         indices = indicesList.stream().mapToInt((Integer v) -> v).toArray();
 
-        return new OpenGLMesh(vertices, normals, colors, uvCoords, indices);
+        return new OpenGLMesh(vertices, normals, uvCoords, indices);
     }
 
     private static void processFaceVertex(IdxGroup indices, List<Vector2f> textCoordList,

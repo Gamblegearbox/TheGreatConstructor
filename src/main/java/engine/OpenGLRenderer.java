@@ -8,6 +8,8 @@ import utils.Logger;
 import utils.Utils;
 
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
+import static org.lwjgl.opengl.GL13.glActiveTexture;
 import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
@@ -124,6 +126,9 @@ public class OpenGLRenderer {
                 glEnableVertexAttribArray(0);
                 glEnableVertexAttribArray(1);
                 glEnableVertexAttribArray(2);
+
+                glActiveTexture(GL_TEXTURE0);
+                glBindTexture(GL_TEXTURE_2D, temp.getTexture().getID());
 
                 modelMatrix.setModelValues(temp.getPosition(), temp.getRotation(), temp.getScale());
                 shader.setUniformData("modelMatrix", modelMatrix);

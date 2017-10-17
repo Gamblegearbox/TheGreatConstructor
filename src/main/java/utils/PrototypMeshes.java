@@ -30,18 +30,6 @@ public class PrototypMeshes {
             -0.5f,  0.5f, -0.5f
         };
 
-        float[] colors = new float[]{
-            0.5f, 0.0f, 0.0f,
-            0.0f, 0.5f, 0.0f,
-            0.0f, 0.0f, 0.5f,
-            0.0f, 0.5f, 0.5f,
-
-            0.5f, 0.0f, 0.0f,
-            0.0f, 0.5f, 0.0f,
-            0.0f, 0.0f, 0.5f,
-            0.0f, 0.5f, 0.5f
-        };
-
         float[] uvCoords = new float[vertices.length / 3 * 2];
 
         int[] indices = new int[]{
@@ -64,7 +52,7 @@ public class PrototypMeshes {
             4,5,1,
         };
 
-        return new OpenGLMesh(vertices, normals, colors, uvCoords, indices);
+        return new OpenGLMesh(vertices, normals, uvCoords, indices);
     }
 
     public static OpenGLMesh triangle()
@@ -81,18 +69,12 @@ public class PrototypMeshes {
             0,0,1
         };
 
-        float[] colors = new float[]{
-            0.5f, 0.0f, 0.0f,
-            0.0f, 0.5f, 0.0f,
-            0.0f, 0.0f, 0.5f
-        };
-
         float[] uvCoords = new float[vertices.length / 3 * 2];
 
         int[] indices = new int[]{
             0, 1, 2,
         };
 
-        return new OpenGLMesh(vertices, normals, colors, uvCoords, indices);
+        return new OpenGLMesh(vertices, normals, uvCoords, indices);
     }
 }

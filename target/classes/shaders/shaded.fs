@@ -1,7 +1,7 @@
 #version 330
 
 in vec3 vertexNormal;
-in vec3 vertexColor;
+in vec2 vertexUvCoord;
 in float depth;
 
 out vec4 fragColor;
@@ -11,19 +11,21 @@ uniform vec3 lightPosition;
 uniform bool isShaded;
 uniform bool showDepth;
 uniform bool isTextured;
+uniform sampler2D texture_sampler;
+
 
 void main()
 {
     float transparency = 1.0;   //TODO: put that in a material uniform thing
-    vec3 color;
+    vec4 color;
 
     if(isTextured)
     {
-        color = vertexColor;
+        color = texture(texture_sampler, vertexUvCoord);
     }
     else
     {
-        color = unicolorColor;
+        color = vec4(unicolorColor, transparency);
     }
 
     if(isShaded)
@@ -41,15 +43,15 @@ void main()
         else
             diffuse = 0.25;
 
-        color *= diffuse;
+        color.rgb *= diffuse;
     }
 
     if(showDepth)
     {
-        color *= 1.0 - depth;
+        color.rgb *= 1.0 - depth;
     }
 
-    fragColor = vec4(color, transparency);
+    fragColor = color;
 }
 
 
