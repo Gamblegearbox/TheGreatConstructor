@@ -7,17 +7,19 @@ layout (location=2) in vec2 uvCoord;
 out vec3 vertexNormal;
 out vec2 vertexUvCoord;
 out float depth;
+out mat4 outModelViewMatrix;
 
-uniform mat4 viewProjectionMatrix;
-uniform mat4 modelMatrix;
+uniform mat4 projectionMatrix;
+uniform mat4 modelViewMatrix;
 
 void main()
 {
-    mat4 modelViewProjectionMatrix = viewProjectionMatrix * modelMatrix;
-    mat4 normalMatrix = transpose(modelViewProjectionMatrix);
+    vec4 pos = modelViewMatrix * vec4(position, 1.0);
+    gl_Position = projectionMatrix * pos;
 
-    gl_Position = modelViewProjectionMatrix * vec4(position, 1.0);
-    vertexNormal = vec3(normalMatrix * vec4(normal, 0));
+    vertexNormal = normalize(modelViewMatrix * vec4(normal, 0.0)).xyz;
     vertexUvCoord = uvCoord;
     depth = gl_Position.z / 7.0;       //TODO: put value for wireframe depth in uniform
+
+    outModelViewMatrix = modelViewMatrix;
 }

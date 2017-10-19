@@ -13,8 +13,8 @@ public class EngineOptions {
     static final String OPERATING_SYSTEM = System.getProperty("os.name");
     static final String TITLE = "Television 2000";
 
-    static final int WINDOW_WIDTH = 500;
-    static final int WINDOW_HEIGHT = 500;
+    static final int WINDOW_WIDTH = 1000;
+    static final int WINDOW_HEIGHT = 700;
 
     static final float Z_NEAR = 0.05f;
     static final float Z_FAR = 1000f;

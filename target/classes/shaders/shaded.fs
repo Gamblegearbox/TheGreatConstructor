@@ -3,6 +3,7 @@
 in vec3 vertexNormal;
 in vec2 vertexUvCoord;
 in float depth;
+in mat4 outModelViewMatrix;
 
 out vec4 fragColor;
 
@@ -30,18 +31,7 @@ void main()
 
     if(isShaded)
     {
-        float intensity;
-        float diffuse;
-        intensity = dot(normalize(lightPosition), normalize(vertexNormal));
-
-        if (intensity > 0.95)
-            diffuse = 1.0;
-        else if (intensity > 0.5)
-            diffuse =  0.75;
-        else if (intensity > 0.25)
-            diffuse = 0.5;
-        else
-            diffuse = 0.25;
+        float diffuse = max(dot(vertexNormal, normalize(lightPosition)),0.0);
 
         color.rgb *= diffuse;
     }

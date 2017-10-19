@@ -19,12 +19,12 @@ public class Game implements InterfaceGame {
 
     //DEBUG VALUES
     private float deltaTimeSum;
-    private static final int NUMBER_OF_TEST_OBJECTS = 100;
+    private static final int NUMBER_OF_TEST_OBJECTS = 1;
 
     public Game(Window _window)
     {
         renderer = new OpenGLRenderer(_window);
-        lightPosition = new Vector3(-1f,1f,-1f);
+        lightPosition = new Vector3(-5f,2f,2f);
     }
 
     @Override
@@ -34,7 +34,7 @@ public class Game implements InterfaceGame {
 
 
         gameObjects = new GameObject[NUMBER_OF_TEST_OBJECTS];
-        float x = -3, y = -3, z = -3;
+        float x = 0, y = -0, z = -0.5f;
         Vector3 position = new Vector3(x,y,z);
 
         for(int i = 0 ; i < NUMBER_OF_TEST_OBJECTS; i++)
@@ -58,8 +58,8 @@ public class Game implements InterfaceGame {
             {
                 x += 1.5f;
             }
-
-            GameObject temp = new GameObject(OBJLoader.loadMesh("/models/AI_Cars.obj"), new Texture("/textures/ash_uvgrid03.png"), 2f);
+            Material tempMat = new Material(new Texture("/textures/rock.png"));
+            GameObject temp = new GameObject(OBJLoader.loadMesh("/models/cube.obj"), tempMat, 2f);
             temp.setPosition(position);
             temp.setScale(0.2f,0.2f,0.2f);
             gameObjects[i] = temp;
@@ -77,11 +77,11 @@ public class Game implements InterfaceGame {
         {
             if(temp.isVisible())
             {
-                temp.setRotation(0, anim, 0);
+                temp.setRotation(anim * 0.25f, anim + anim, anim);
             }
         }
 
-        anim += 50f * deltaTime;
+        anim += 5f * deltaTime;
 
         if(EngineOptions.DEBUG)
         {

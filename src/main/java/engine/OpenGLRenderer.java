@@ -18,22 +18,23 @@ public class OpenGLRenderer {
 
     private static final int NUMBER_OF_FRUSTUM_PLANES = 6;
     private final Window window;
-    private final Matrix4 projectionMatrix;
-    private final Matrix4 viewMatrix;
-    private final Matrix4 viewProjectionMatrix;
-    private final Vector4[] frustumPlanes;
 
-    private ShaderProgram shader;
+    private final Matrix4 projectionMatrix;
     private final Matrix4 modelMatrix;
+    private final Matrix4 viewMatrix;
+    private final Matrix4 modelViewMatrix;
+
+    private final Vector4[] frustumPlanes;
+    private ShaderProgram shader;
 
     public OpenGLRenderer(Window _window)
     {
         this.window = _window;
+
         projectionMatrix = new Matrix4();
-        viewMatrix = new Matrix4();
-        viewProjectionMatrix = new Matrix4();
-        viewProjectionMatrix.multiply(projectionMatrix, viewMatrix);
         modelMatrix = new Matrix4();
+        viewMatrix = new Matrix4();
+        modelViewMatrix = new Matrix4();
 
         frustumPlanes = new Vector4[6];
         for (int i = 0; i < 6; i++)
@@ -51,6 +52,7 @@ public class OpenGLRenderer {
         initShader();
 
         shader.bind();
+        shader.setUniformData("projectionMatrix", projectionMatrix);
         shader.setUniformData("unicolorColor", EngineOptions.UNICOLOR_COLOR);
         shader.setUniformData("isShaded", EngineOptions.IS_SHADED);
         shader.setUniformData("showDepth", EngineOptions.SHOW_DEPTH);
@@ -74,13 +76,13 @@ public class OpenGLRenderer {
         {
             float aspectRatio = (float)window.getWidth() / window.getHeight();
             projectionMatrix.setPerspective(EngineOptions.FOV, aspectRatio, EngineOptions.Z_NEAR, EngineOptions.Z_FAR);
+            shader.setUniformData("projectionMatrix", projectionMatrix);
             glViewport(0, 0, window.getWidth(), window.getHeight());
             window.setResized(false);
         }
 
         //UPLOAD FRAME RELEVANT UNIFORMS HERE
-        viewProjectionMatrix.multiply(projectionMatrix, viewMatrix);
-        shader.setUniformData("viewProjectionMatrix", viewProjectionMatrix);
+
         shader.setUniformData("lightPosition", _lightPosition);
 
         //FILTER OBJECTS FOR FRUSTUM CULLING
@@ -89,7 +91,8 @@ public class OpenGLRenderer {
             //UPDATE FRUSTUM PLANES TODO: don't update if you want to freeze the culling
             for(int i = 0; i < NUMBER_OF_FRUSTUM_PLANES; i++)
             {
-                viewProjectionMatrix.calcFrustumPlane(i, frustumPlanes[i]);
+                //TODO: find out which matrix to use here!
+                //viewProjectionMatrix.calcFrustumPlane(i, frustumPlanes[i]);
             }
 
             for(GameObject temp : _gameObjects)
@@ -127,11 +130,13 @@ public class OpenGLRenderer {
                 glEnableVertexAttribArray(1);
                 glEnableVertexAttribArray(2);
 
-                glActiveTexture(GL_TEXTURE0);
-                glBindTexture(GL_TEXTURE_2D, temp.getTexture().getID());
-
                 modelMatrix.setModelValues(temp.getPosition(), temp.getRotation(), temp.getScale());
-                shader.setUniformData("modelMatrix", modelMatrix);
+                modelViewMatrix.multiply(modelMatrix, viewMatrix);
+                shader.setUniformData("modelViewMatrix", modelViewMatrix);
+
+                shader.setUniformData("texture_sampler", 0);
+                glActiveTexture(GL_TEXTURE0);
+                glBindTexture(GL_TEXTURE_2D, temp.getMaterial().getTexture().getID());
 
                 if(EngineOptions.SHOW_WIREFRAME)
                 {
