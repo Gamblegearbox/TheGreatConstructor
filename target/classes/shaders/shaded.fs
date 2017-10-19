@@ -31,9 +31,19 @@ void main()
 
     if(isShaded)
     {
-        float diffuse = max(dot(vertexNormal, normalize(lightPosition)),0.0);
-
-        color.rgb *= diffuse;
+        float intensity = max(dot(vertexNormal, normalize(lightPosition)),0.0);
+        float diffuse = 1;
+        /*
+        if (intensity > 0.95)
+        		diffuse = 0.75;
+        	else if (intensity > 0.5)
+        		diffuse = 0.5;
+        	else if (intensity > 0.25)
+        		diffuse = 0.25;
+        	else
+        		diffuse = 0.1;
+        */
+        color.rgb *= intensity;
     }
 
     if(showDepth)
