@@ -7,9 +7,6 @@ import static org.lwjgl.opengl.GL20.GL_SHADING_LANGUAGE_VERSION;
 
 public class EngineOptions {
 
-    private static final int TRUE = 1;
-    private static final int FALSE = 0;
-
     static final String OPERATING_SYSTEM = System.getProperty("os.name");
     static final String TITLE = "Television 2000";
 
@@ -32,10 +29,16 @@ public class EngineOptions {
     static final float POINT_SIZE = 3f;
     static final Vector3 UNICOLOR_COLOR = new Vector3(0.75f,0.75f,0.75f);
 
+    static final boolean IS_SHADED = true;
+    static final boolean SHOW_DEPTH = false;
     static final boolean SHOW_WIREFRAME = false;
-    static final int IS_TEXTURED = TRUE;
-    static final int IS_SHADED = TRUE;
-    static final int SHOW_DEPTH = FALSE;
+    static final boolean ENABLE_NORMALS_TO_COLOR = false;
+
+    static final boolean ENABLE_DIFFUSE_MAPPING = true;
+    static final boolean ENABLE_NORMAL_MAPPING = true;
+    static final boolean ENABLE_GLOSS_MAPPING = true;
+    static final boolean ENABLE_ILLUMINATION_MAPPING = true;
+
 
     public enum multiSamplingMode
     {
@@ -51,11 +54,11 @@ public class EngineOptions {
     private static void logGeneralInfo()
     {
         String info =
-        "OPERATING SYSTEM:   " + OPERATING_SYSTEM + "\n" +
-        "OPENGL VENDOR:      " + glGetString(GL_VENDOR) + "\n" +
-        "RENDERER:           " + glGetString(GL_RENDERER) + "\n" +
-        "OPENGL VERSION:     " + glGetString(GL_VERSION) + "\n" +
-        "GLSL VERSION:       " + glGetString(GL_SHADING_LANGUAGE_VERSION) + "\n" +
+        "OPERATING SYSTEM:      " + OPERATING_SYSTEM + "\n" +
+        "OPENGL VENDOR:         " + glGetString(GL_VENDOR) + "\n" +
+        "RENDERER:              " + glGetString(GL_RENDERER) + "\n" +
+        "OPENGL VERSION:        " + glGetString(GL_VERSION) + "\n" +
+        "GLSL VERSION:          " + glGetString(GL_SHADING_LANGUAGE_VERSION) + "\n" +
         "\n";
 
         Logger.getInstance().writeTolog(info);
@@ -64,15 +67,24 @@ public class EngineOptions {
     static void logOptionsStatus()
     {
         String info =
-        "DEBUG MODE:         " + convertBooleanToEnabledOrDisabled(DEBUG) + "\n" +
-        "LOGGING INTERVAL    " + LOGGING_INTERVAL + "sec" + "\n" +
-        "RESOLUTION:         " + WINDOW_WIDTH + " x " + WINDOW_HEIGHT + "\n" +
-        "TEXTURES:           " + convertIntToEnabledOrDisabled(IS_TEXTURED) + "\n" +
-        "SHADED GEOMETRY:    " + convertIntToEnabledOrDisabled(IS_SHADED) + "\n" +
-        "SHOW DEPTH:         " + convertIntToEnabledOrDisabled(SHOW_DEPTH) + "\n" +
-        "MULTISAMPLING:      " + MULTISAMPLING + "\n" +
-        "VSYNC:              " + convertBooleanToEnabledOrDisabled(V_SYNC)  + "\n" +
-        "BACKFACE CULLING:   " + convertBooleanToEnabledOrDisabled(CULL_BACK_FACE) + "\n" +
+        "DEBUG MODE:            " + convertBooleanToEnabledOrDisabled(DEBUG) + "\n" +
+        "LOGGING INTERVAL       " + LOGGING_INTERVAL + "sec" + "\n" +
+        "\n" +
+        "RESOLUTION:            " + WINDOW_WIDTH + " x " + WINDOW_HEIGHT + "\n" +
+        "MULTISAMPLING:         " + MULTISAMPLING + "\n" +
+        "VSYNC:                 " + convertBooleanToEnabledOrDisabled(V_SYNC)  + "\n" +
+        "\n" +
+        "SHADED GEOMETRY:       " + convertBooleanToEnabledOrDisabled(IS_SHADED) + "\n" +
+        "SHOW DEPTH:            " + convertBooleanToEnabledOrDisabled(SHOW_DEPTH) + "\n" +
+        "SHOW WIREFRAME:        " + convertBooleanToEnabledOrDisabled(SHOW_DEPTH) + "\n" +
+        "NORMALS TO COLOR:      " + convertBooleanToEnabledOrDisabled(ENABLE_NORMALS_TO_COLOR) + "\n" +
+        "\n" +
+        "USE DIFFUSE MAPS:      " + convertBooleanToEnabledOrDisabled(ENABLE_DIFFUSE_MAPPING) + "\n" +
+        "USE NORMAL MAPS:       " + convertBooleanToEnabledOrDisabled(ENABLE_NORMAL_MAPPING) + "\n" +
+        "USE SPECULAR MAPS:     " + convertBooleanToEnabledOrDisabled(ENABLE_GLOSS_MAPPING) + "\n" +
+        "USE ILLUMINATION MAPS: " + convertBooleanToEnabledOrDisabled(ENABLE_ILLUMINATION_MAPPING) + "\n" +
+        "\n" +
+        "BACKFACE CULLING:      " + convertBooleanToEnabledOrDisabled(CULL_BACK_FACE) + "\n" +
         "\n";
 
         Logger.getInstance().writeTolog(info);
@@ -83,8 +95,4 @@ public class EngineOptions {
         return _status ? "Enabled" : "Disabled";
     }
 
-    private static String convertIntToEnabledOrDisabled(int _status)
-    {
-        return _status > 0 ? "Enabled" : "Disabled";
-    }
 }

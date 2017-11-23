@@ -1,5 +1,6 @@
 package game;
 
+import Input.KeyboardInput;
 import engine.*;
 import gameObject.GameObject;
 import interfaces.InterfaceGame;
@@ -7,24 +8,26 @@ import math.Vector3;
 import utils.Logger;
 import utils.OBJLoader;
 
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_LEFT;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_RIGHT;
+
+
 public class Game implements InterfaceGame {
 
-
     private final OpenGLRenderer renderer;
-    //private final Window window;
-    private final Vector3 lightPosition;
+    private Scene[] scenes;
+    private int activeScene;
 
-    private GameObject[] gameObjects;
     private float anim = 0;
-
+    private float rotationSpeed = 10f;
     //DEBUG VALUES
     private float deltaTimeSum;
-    private static final int NUMBER_OF_TEST_OBJECTS = 1;
+
 
     public Game(Window _window)
     {
         renderer = new OpenGLRenderer(_window);
-        lightPosition = new Vector3(-5f,2f,2f);
+        activeScene = 0;
     }
 
     @Override
@@ -32,56 +35,59 @@ public class Game implements InterfaceGame {
     {
         renderer.init();
 
+        int NUMBER_OF_TEST_OBJECTS = 1;
+        float OBJECT_GRID_Z_OFFSET = -4f;
 
-        gameObjects = new GameObject[NUMBER_OF_TEST_OBJECTS];
-        float x = 0, y = -0, z = -0.5f;
+        Material sceneMaterial = new Material(new Texture("/textures/car_diffuse.png"), new Texture("/textures/car_normals.png"), new Texture("/textures/car_gloss.png"), null);
+        GameObject[] gameObjects = new GameObject[NUMBER_OF_TEST_OBJECTS];
+
+        float x = 0;
+        float y = -1;
+        float z = OBJECT_GRID_Z_OFFSET;
         Vector3 position = new Vector3(x,y,z);
 
         for(int i = 0 ; i < NUMBER_OF_TEST_OBJECTS; i++)
         {
             position.set(x, y, z);
 
-            if(x == 3)
-            {
-                x = -3;
-                if(y == 3)
-                {
-                    y = -3;
-                    z -= 1.5f;
-                }
-                else
-                {
-                    y += 1.5f;
-                }
-            }
-            else
-            {
-                x += 1.5f;
-            }
-            Material tempMat = new Material(new Texture("/textures/rock.png"));
-            GameObject temp = new GameObject(OBJLoader.loadMesh("/models/cube.obj"), tempMat, 2f);
+            GameObject temp = new GameObject(OBJLoader.loadMesh("/models/cp_deLorean.obj"), sceneMaterial, 2f);
             temp.setPosition(position);
-            temp.setScale(0.2f,0.2f,0.2f);
+
             gameObjects[i] = temp;
         }
+
+        scenes = new Scene[1];
+        scenes[0] = new Scene( new Vector3(-1f,0.0f,1.0f), gameObjects );
+
+        activeScene = 0;
 
     }
 
     @Override
-    public void input(){}
+    public void input(float deltaTime)
+    {
+        if(KeyboardInput.isKeyDown(GLFW_KEY_RIGHT))
+        {
+            anim += rotationSpeed * deltaTime;
+        }
+        else if(KeyboardInput.isKeyDown(GLFW_KEY_LEFT))
+        {
+            anim -= rotationSpeed * deltaTime;
+        }
+    }
 
     @Override
     public void update(float deltaTime)
     {
+        GameObject[] gameObjects = scenes[activeScene].getGameObjects();
+
         for (GameObject temp : gameObjects)
         {
             if(temp.isVisible())
             {
-                temp.setRotation(anim * 0.25f, anim + anim, anim);
+                temp.setRotation(0, anim, 0);
             }
         }
-
-        anim += 5f * deltaTime;
 
         if(EngineOptions.DEBUG)
         {
@@ -98,7 +104,7 @@ public class Game implements InterfaceGame {
     @Override
     public void render()
     {
-        renderer.render(gameObjects, lightPosition);
+        renderer.render(scenes[activeScene]);
     }
 
     @Override
@@ -106,7 +112,7 @@ public class Game implements InterfaceGame {
     {
         renderer.cleanup();
 
-        for(GameObject temp : gameObjects)
+        for(Scene temp : scenes)
         {
             temp.cleanup();
         }

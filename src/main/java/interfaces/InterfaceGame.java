@@ -5,7 +5,7 @@ public interface InterfaceGame {
 
     void init() throws Exception;
 
-    void input();
+    void input(float deltaTime);
 
     void update(float deltaTime);
 

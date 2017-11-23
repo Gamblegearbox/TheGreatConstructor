@@ -78,18 +78,19 @@ public class CoreLoop implements Runnable{
                 }
                 frames++;
             }
+            float dt = (float)deltaTime;
 
-            input();
-            update((float)deltaTime);
+            input(dt);
+            update(dt);
             render();
 
             lastTime = currentTime;
         }
     }
 
-    private void input()
+    private void input(float deltaTime)
     {
-        game.input();
+        game.input(deltaTime);
     }
 
     private void update(float deltaTime)

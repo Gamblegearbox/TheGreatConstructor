@@ -8,8 +8,7 @@ import utils.Logger;
 import utils.Utils;
 
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
-import static org.lwjgl.opengl.GL13.glActiveTexture;
+import static org.lwjgl.opengl.GL13.*;
 import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
@@ -54,9 +53,15 @@ public class OpenGLRenderer {
         shader.bind();
         shader.setUniformData("projectionMatrix", projectionMatrix);
         shader.setUniformData("unicolorColor", EngineOptions.UNICOLOR_COLOR);
-        shader.setUniformData("isShaded", EngineOptions.IS_SHADED);
-        shader.setUniformData("showDepth", EngineOptions.SHOW_DEPTH);
-        shader.setUniformData("isTextured", EngineOptions.IS_TEXTURED);
+
+        shader.setUniformData("isShaded", EngineOptions.IS_SHADED ? 1 : 0);
+        shader.setUniformData("showDepth", EngineOptions.SHOW_DEPTH ? 1 : 0);
+        shader.setUniformData("enableNormalsToColor", EngineOptions.ENABLE_NORMALS_TO_COLOR ? 1 : 0);
+
+        shader.setUniformData("diffuseMap_sampler", 0);
+        shader.setUniformData("normalMap_sampler", 1);
+        shader.setUniformData("glossMap_sampler", 2);
+        shader.setUniformData("illuminationMap_sampler", 3);
 
         if(EngineOptions.SHOW_WIREFRAME)
         {
@@ -68,7 +73,7 @@ public class OpenGLRenderer {
         }
     }
 
-    public void render(GameObject[] _gameObjects, Vector3 _lightPosition)
+    public void render(Scene _scene)
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
@@ -81,9 +86,11 @@ public class OpenGLRenderer {
             window.setResized(false);
         }
 
-        //UPLOAD FRAME RELEVANT UNIFORMS HERE
+        GameObject[] gameObjects = _scene.getGameObjects();
+        Vector3 lightPosition = _scene.getLightPosition();
 
-        shader.setUniformData("lightPosition", _lightPosition);
+        //UPLOAD FRAME RELEVANT UNIFORMS HERE
+        shader.setUniformData("lightPosition", lightPosition);
 
         //FILTER OBJECTS FOR FRUSTUM CULLING
         if(EngineOptions.FRUSTUM_CULLING)
@@ -95,7 +102,7 @@ public class OpenGLRenderer {
                 //viewProjectionMatrix.calcFrustumPlane(i, frustumPlanes[i]);
             }
 
-            for(GameObject temp : _gameObjects)
+            for(GameObject temp : gameObjects)
             {
                 //IS OBJECT INSIDE FRUSTUM?
                 Vector3 position = temp.getPosition();
@@ -113,15 +120,16 @@ public class OpenGLRenderer {
             }
         }
 
-
         //RENDER ALL VISIBLE OBJECTS
         int totalVerticesInFrame = 0;
 
-        for(GameObject temp : _gameObjects)
+        for(GameObject temp : gameObjects)
         {
             if(temp.isVisible())
             {
                 OpenGLMesh mesh = temp.getMesh();
+                Material material = temp.getMaterial();
+
                 int vertexCount = mesh.getVertexCount();
                 totalVerticesInFrame += vertexCount;
 
@@ -134,9 +142,46 @@ public class OpenGLRenderer {
                 modelViewMatrix.multiply(modelMatrix, viewMatrix);
                 shader.setUniformData("modelViewMatrix", modelViewMatrix);
 
-                shader.setUniformData("texture_sampler", 0);
-                glActiveTexture(GL_TEXTURE0);
-                glBindTexture(GL_TEXTURE_2D, temp.getMaterial().getTexture().getID());
+                /* TODO: It's way more performance to do this only once in the init method.
+                * But that would mean only on giant texture atlas and no texture changes during rendering.
+                * Or a few atlasses and the material only holds an index for an atlas*/
+
+                if(EngineOptions.ENABLE_DIFFUSE_MAPPING && material.hasDiffuseMap()) {
+                    shader.setUniformData("hasDiffuseMap", 1);
+                    glActiveTexture(GL_TEXTURE0);
+                    glBindTexture(GL_TEXTURE_2D, material.getDiffuseMap().getID());
+                }
+                else {
+                    shader.setUniformData("hasDiffuseMap", 0);
+                }
+
+                if(EngineOptions.ENABLE_NORMAL_MAPPING && material.hasNormalMap()) {
+                    shader.setUniformData("hasNormalMap", 1);
+                    glActiveTexture(GL_TEXTURE1);
+                    glBindTexture(GL_TEXTURE_2D, material.getNormalMap().getID());
+                }
+                else {
+                    shader.setUniformData("hasNormalMap", 0);
+                }
+
+                if(EngineOptions.ENABLE_GLOSS_MAPPING && material.hasGlossMap()) {
+                    shader.setUniformData("hasGlossMap", 1);
+                    glActiveTexture(GL_TEXTURE2);
+                    glBindTexture(GL_TEXTURE_2D, material.getGlossMap().getID());
+                }
+                else {
+                    shader.setUniformData("hasGlossMap", 0);
+                }
+
+                if(EngineOptions.ENABLE_ILLUMINATION_MAPPING && material.hasIlluminationMap()) {
+                    shader.setUniformData("hasIlluminationMap", 1);
+                    glActiveTexture(GL_TEXTURE3);
+                    glBindTexture(GL_TEXTURE_2D, material.getIlluminationMap().getID());
+                }
+                else {
+                    shader.setUniformData("hasIlluminationMap", 0);
+                }
+                /*****************************************************************************/
 
                 if(EngineOptions.SHOW_WIREFRAME)
                 {

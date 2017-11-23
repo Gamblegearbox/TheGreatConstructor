@@ -1,7 +1,9 @@
 package engine;
 
 
+import Input.KeyboardInput;
 import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.glfw.GLFWWindowSizeCallback;
 import org.lwjgl.opengl.GL;
@@ -14,6 +16,7 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 public class Window {
 
     private final String title;
+    private GLFWKeyCallback keyCallback;
     private int width;
     private int height;
     private long windowHandle;
@@ -69,7 +72,7 @@ public class Window {
         });
 
         // Setup a key callback. It will be called every time a key is pressed, repeated or released.
-        //TODO: glfwSetKeyCallback(windowHandle, new KeyboardInput());
+        glfwSetKeyCallback(windowHandle, keyCallback = new KeyboardInput());
 
         // Get the resolution of the primary monitor
         GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());

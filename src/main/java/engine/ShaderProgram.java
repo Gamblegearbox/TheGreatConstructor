@@ -89,6 +89,12 @@ class ShaderProgram {
         glUniform3f(uniformLocation, _value.x, _value.y, _value.z);
     }
 
+    void setUniformData(String _uniformName, float _x, float _y, float _z)
+    {
+        int uniformLocation = glGetUniformLocation(programID, _uniformName);
+        glUniform3f(uniformLocation, _x, _y, _z);
+    }
+
     void link() throws Exception
     {
         glLinkProgram(programID);
