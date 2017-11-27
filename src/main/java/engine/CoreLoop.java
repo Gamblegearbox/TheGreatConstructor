@@ -13,7 +13,7 @@ public class CoreLoop implements Runnable{
     public CoreLoop()
     {
         gameLoopThread = new Thread(this, "GAME_LOOP_THREAD");
-        window = new Window(EngineOptions.TITLE, EngineOptions.WINDOW_WIDTH, EngineOptions.WINDOW_HEIGHT);
+        window = new Window(EngineOptions.WINDOW_TITLE, EngineOptions.WINDOW_WIDTH, EngineOptions.WINDOW_HEIGHT);
         game = new Game(window);
     }
 

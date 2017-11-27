@@ -8,8 +8,7 @@ import math.Vector3;
 import utils.Logger;
 import utils.OBJLoader;
 
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_LEFT;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_RIGHT;
+import static org.lwjgl.glfw.GLFW.*;
 
 
 public class Game implements InterfaceGame {
@@ -18,7 +17,8 @@ public class Game implements InterfaceGame {
     private Scene[] scenes;
     private int activeScene;
 
-    private float anim = 0;
+    private float anim_X = 0;
+    private float anim_Y = 0;
     private float rotationSpeed = 10f;
     //DEBUG VALUES
     private float deltaTimeSum;
@@ -35,7 +35,7 @@ public class Game implements InterfaceGame {
     {
         renderer.init();
 
-        int NUMBER_OF_TEST_OBJECTS = 1;
+        int NUMBER_OF_TEST_OBJECTS = 5;
         float OBJECT_GRID_Z_OFFSET = -4f;
 
         Material sceneMaterial = new Material(new Texture("/textures/car_diffuse.png"), new Texture("/textures/car_normals.png"), new Texture("/textures/car_gloss.png"), null);
@@ -50,10 +50,12 @@ public class Game implements InterfaceGame {
         {
             position.set(x, y, z);
 
-            GameObject temp = new GameObject(OBJLoader.loadMesh("/models/cp_deLorean.obj"), sceneMaterial, 2f);
+            GameObject temp = new GameObject(OBJLoader.loadMesh("/models/cp_deLorean.obj"), sceneMaterial, 0.1f);
             temp.setPosition(position);
 
             gameObjects[i] = temp;
+
+            x+=2f;
         }
 
         scenes = new Scene[1];
@@ -68,11 +70,32 @@ public class Game implements InterfaceGame {
     {
         if(KeyboardInput.isKeyDown(GLFW_KEY_RIGHT))
         {
-            anim += rotationSpeed * deltaTime;
+            //anim_X -= rotationSpeed * deltaTime;
+            anim_X = 2 * deltaTime;
         }
         else if(KeyboardInput.isKeyDown(GLFW_KEY_LEFT))
         {
-            anim -= rotationSpeed * deltaTime;
+            //anim_X += rotationSpeed * deltaTime;
+            anim_X = -2 * deltaTime;
+        }
+        else
+        {
+            anim_X = 0;
+        }
+
+        if(KeyboardInput.isKeyDown(GLFW_KEY_UP))
+        {
+            //anim_X -= rotationSpeed * deltaTime;
+            anim_Y = 2 * deltaTime;
+        }
+        else if(KeyboardInput.isKeyDown(GLFW_KEY_DOWN))
+        {
+            //anim_X += rotationSpeed * deltaTime;
+            anim_Y = -2 * deltaTime;
+        }
+        else
+        {
+            anim_Y = 0;
         }
     }
 
@@ -83,10 +106,12 @@ public class Game implements InterfaceGame {
 
         for (GameObject temp : gameObjects)
         {
-            if(temp.isVisible())
-            {
-                temp.setRotation(0, anim, 0);
-            }
+            float x = temp.getPosition().x;
+            x += anim_X;
+            float y = temp.getPosition().y;
+            y += anim_Y;
+
+            temp.setPosition(x, y, temp.getPosition().z);
         }
 
         if(EngineOptions.DEBUG)

@@ -15,6 +15,10 @@ import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
 
 public class OpenGLMesh {
 
+    public static final int VERTICES = 0;
+    public static final int NORMALS = 1;
+    public static final int UV_COORDS = 2;
+
     private final int vaoID;
     private final int vboID_vertices;
     private final int vboID_normals;

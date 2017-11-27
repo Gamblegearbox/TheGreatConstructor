@@ -2,7 +2,6 @@ package gameObject;
 
 import engine.Material;
 import engine.OpenGLMesh;
-import engine.Texture;
 import math.Vector3;
 import org.joml.Quaternionf;
 import utils.Conversions;

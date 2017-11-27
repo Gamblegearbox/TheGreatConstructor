@@ -7,8 +7,11 @@ import static org.lwjgl.opengl.GL20.GL_SHADING_LANGUAGE_VERSION;
 
 public class EngineOptions {
 
+    static final String WINDOW_TITLE = "Television 2000";
+
     static final String OPERATING_SYSTEM = System.getProperty("os.name");
-    static final String TITLE = "Television 2000";
+    static final String OPERATING_SYSTEM_VERSION = System.getProperty("os.version");
+    static final String OPERATING_SYSTEM_ARCHITECTURE = System.getProperty("os.arch");
 
     static final int WINDOW_WIDTH = 1000;
     static final int WINDOW_HEIGHT = 700;
@@ -55,6 +58,10 @@ public class EngineOptions {
     {
         String info =
         "OPERATING SYSTEM:      " + OPERATING_SYSTEM + "\n" +
+        "VERSION:               " + OPERATING_SYSTEM_VERSION + "\n" +
+        "ARCHITECTURE:          " + OPERATING_SYSTEM_ARCHITECTURE + "\n" +
+        "\n" +
+        //The following throw ACCESS_VIOLATION_EXCEPTIONs if called to early (so no static final variable ;))
         "OPENGL VENDOR:         " + glGetString(GL_VENDOR) + "\n" +
         "RENDERER:              " + glGetString(GL_RENDERER) + "\n" +
         "OPENGL VERSION:        " + glGetString(GL_VERSION) + "\n" +

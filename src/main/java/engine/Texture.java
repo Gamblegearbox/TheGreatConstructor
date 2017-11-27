@@ -10,6 +10,11 @@ import static org.lwjgl.opengl.GL30.glGenerateMipmap;
 public class Texture {
 
     private final int textureID;
+    public static final int DIFFUSE = 0;
+    public static final int NORMALS = 1;
+    public static final int GLOSS = 2;
+    public static final int ILLUMINATION = 3;
+
 
     public Texture(String _filePath) throws Exception
     {

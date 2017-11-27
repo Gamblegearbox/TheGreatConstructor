@@ -22,6 +22,7 @@ public class OpenGLRenderer {
     private final Matrix4 modelMatrix;
     private final Matrix4 viewMatrix;
     private final Matrix4 modelViewMatrix;
+    private final Matrix4 viewProjectionMatrix;
 
     private final Vector4[] frustumPlanes;
     private ShaderProgram shader;
@@ -34,6 +35,7 @@ public class OpenGLRenderer {
         modelMatrix = new Matrix4();
         viewMatrix = new Matrix4();
         modelViewMatrix = new Matrix4();
+        viewProjectionMatrix = new Matrix4();
 
         frustumPlanes = new Vector4[6];
         for (int i = 0; i < 6; i++)
@@ -58,10 +60,10 @@ public class OpenGLRenderer {
         shader.setUniformData("showDepth", EngineOptions.SHOW_DEPTH ? 1 : 0);
         shader.setUniformData("enableNormalsToColor", EngineOptions.ENABLE_NORMALS_TO_COLOR ? 1 : 0);
 
-        shader.setUniformData("diffuseMap_sampler", 0);
-        shader.setUniformData("normalMap_sampler", 1);
-        shader.setUniformData("glossMap_sampler", 2);
-        shader.setUniformData("illuminationMap_sampler", 3);
+        shader.setUniformData("diffuseMap_sampler", Texture.DIFFUSE);
+        shader.setUniformData("normalMap_sampler", Texture.NORMALS);
+        shader.setUniformData("glossMap_sampler", Texture.GLOSS);
+        shader.setUniformData("illuminationMap_sampler", Texture.ILLUMINATION);
 
         if(EngineOptions.SHOW_WIREFRAME)
         {
@@ -95,11 +97,12 @@ public class OpenGLRenderer {
         //FILTER OBJECTS FOR FRUSTUM CULLING
         if(EngineOptions.FRUSTUM_CULLING)
         {
-            //UPDATE FRUSTUM PLANES TODO: don't update if you want to freeze the culling
+            viewProjectionMatrix.multiply(viewMatrix, projectionMatrix);
+
+            //UPDATE FRUSTUM PLANES TODO: Add option to freeze update (don't update the planes)
             for(int i = 0; i < NUMBER_OF_FRUSTUM_PLANES; i++)
             {
-                //TODO: find out which matrix to use here!
-                //viewProjectionMatrix.calcFrustumPlane(i, frustumPlanes[i]);
+                viewProjectionMatrix.calcFrustumPlane(i, frustumPlanes[i]);
             }
 
             for(GameObject temp : gameObjects)
@@ -134,9 +137,9 @@ public class OpenGLRenderer {
                 totalVerticesInFrame += vertexCount;
 
                 glBindVertexArray(mesh.getVaoID());
-                glEnableVertexAttribArray(0);
-                glEnableVertexAttribArray(1);
-                glEnableVertexAttribArray(2);
+                glEnableVertexAttribArray(OpenGLMesh.VERTICES);
+                glEnableVertexAttribArray(OpenGLMesh.NORMALS);
+                glEnableVertexAttribArray(OpenGLMesh.UV_COORDS);
 
                 modelMatrix.setModelValues(temp.getPosition(), temp.getRotation(), temp.getScale());
                 modelViewMatrix.multiply(modelMatrix, viewMatrix);
@@ -193,9 +196,9 @@ public class OpenGLRenderer {
                     glDrawElements(GL_TRIANGLES, vertexCount, GL_UNSIGNED_INT, 0);
                 }
 
-                glDisableVertexAttribArray(0);
-                glDisableVertexAttribArray(1);
-                glDisableVertexAttribArray(2);
+                glDisableVertexAttribArray(OpenGLMesh.VERTICES);
+                glDisableVertexAttribArray(OpenGLMesh.NORMALS);
+                glDisableVertexAttribArray(OpenGLMesh.UV_COORDS);
                 glBindVertexArray(0);
             }
         }
