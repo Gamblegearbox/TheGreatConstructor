@@ -19,10 +19,11 @@ public class Game implements InterfaceGame {
 
     private float anim_X = 0;
     private float anim_Y = 0;
-    private float rotationSpeed = 10f;
+    private float animSpeed = 1f;
+    private float time = 0;
+
     //DEBUG VALUES
     private float deltaTimeSum;
-
 
     public Game(Window _window)
     {
@@ -33,16 +34,17 @@ public class Game implements InterfaceGame {
     @Override
     public void init() throws Exception
     {
+        Logger.getInstance().writeTolog("> INITIALISING GAME\n");
         renderer.init();
 
-        int NUMBER_OF_TEST_OBJECTS = 5;
-        float OBJECT_GRID_Z_OFFSET = -4f;
+        int NUMBER_OF_TEST_OBJECTS = 1;
+        float OBJECT_GRID_Z_OFFSET = -3f;
 
-        Material sceneMaterial = new Material(new Texture("/textures/car_diffuse.png"), new Texture("/textures/car_normals.png"), new Texture("/textures/car_gloss.png"), null);
+        Material sceneMaterial = new Material(new Texture("/textures/car_diffuse.png"), new Texture("/textures/car_normals.png"), new Texture("/textures/cube/gloss.png"), new Texture("/textures/cube/illumination.png"));
         GameObject[] gameObjects = new GameObject[NUMBER_OF_TEST_OBJECTS];
 
         float x = 0;
-        float y = -1;
+        float y = -0.5f;
         float z = OBJECT_GRID_Z_OFFSET;
         Vector3 position = new Vector3(x,y,z);
 
@@ -50,12 +52,12 @@ public class Game implements InterfaceGame {
         {
             position.set(x, y, z);
 
-            GameObject temp = new GameObject(OBJLoader.loadMesh("/models/cp_deLorean.obj"), sceneMaterial, 0.1f);
+            GameObject temp = new GameObject(OBJLoader.loadMesh("/models/E_Engine.obj"), sceneMaterial, 2f);
             temp.setPosition(position);
 
             gameObjects[i] = temp;
 
-            x+=2f;
+            x+=1f;
         }
 
         scenes = new Scene[1];
@@ -70,13 +72,11 @@ public class Game implements InterfaceGame {
     {
         if(KeyboardInput.isKeyDown(GLFW_KEY_RIGHT))
         {
-            //anim_X -= rotationSpeed * deltaTime;
-            anim_X = 2 * deltaTime;
+            anim_X = animSpeed * deltaTime;
         }
         else if(KeyboardInput.isKeyDown(GLFW_KEY_LEFT))
         {
-            //anim_X += rotationSpeed * deltaTime;
-            anim_X = -2 * deltaTime;
+            anim_X = -animSpeed * deltaTime;
         }
         else
         {
@@ -85,13 +85,11 @@ public class Game implements InterfaceGame {
 
         if(KeyboardInput.isKeyDown(GLFW_KEY_UP))
         {
-            //anim_X -= rotationSpeed * deltaTime;
-            anim_Y = 2 * deltaTime;
+            anim_Y = animSpeed * deltaTime;
         }
         else if(KeyboardInput.isKeyDown(GLFW_KEY_DOWN))
         {
-            //anim_X += rotationSpeed * deltaTime;
-            anim_Y = -2 * deltaTime;
+            anim_Y = -animSpeed * deltaTime;
         }
         else
         {
@@ -112,6 +110,7 @@ public class Game implements InterfaceGame {
             y += anim_Y;
 
             temp.setPosition(x, y, temp.getPosition().z);
+            temp.setRotation(0, time,0);
         }
 
         if(EngineOptions.DEBUG)
@@ -124,6 +123,8 @@ public class Game implements InterfaceGame {
                 deltaTimeSum = 0;
             }
         }
+
+        time += deltaTime * 15;
     }
 
     @Override

@@ -46,6 +46,8 @@ public class OpenGLRenderer {
 
     public void init() throws Exception
     {
+        Logger.getInstance().writeTolog("> INITIALISING RENDERER\n");
+
         float aspectRatio = (float)window.getWidth() / window.getHeight();
         projectionMatrix.setPerspective(EngineOptions.FOV, aspectRatio, EngineOptions.Z_NEAR, EngineOptions.Z_FAR);
 
@@ -55,6 +57,7 @@ public class OpenGLRenderer {
         shader.bind();
         shader.setUniformData("projectionMatrix", projectionMatrix);
         shader.setUniformData("unicolorColor", EngineOptions.UNICOLOR_COLOR);
+        shader.setUniformData("unicolorOpacity", EngineOptions.UNICOLOR_OPACITY);
 
         shader.setUniformData("isShaded", EngineOptions.IS_SHADED ? 1 : 0);
         shader.setUniformData("showDepth", EngineOptions.SHOW_DEPTH ? 1 : 0);

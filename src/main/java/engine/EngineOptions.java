@@ -31,6 +31,7 @@ public class EngineOptions {
 
     static final float POINT_SIZE = 3f;
     static final Vector3 UNICOLOR_COLOR = new Vector3(0.75f,0.75f,0.75f);
+    static final float UNICOLOR_OPACITY = 0.5f;
 
     static final boolean IS_SHADED = true;
     static final boolean SHOW_DEPTH = false;
@@ -56,7 +57,7 @@ public class EngineOptions {
 
     private static void logGeneralInfo()
     {
-        String info =
+        String info = "\n" +
         "OPERATING SYSTEM:      " + OPERATING_SYSTEM + "\n" +
         "VERSION:               " + OPERATING_SYSTEM_VERSION + "\n" +
         "ARCHITECTURE:          " + OPERATING_SYSTEM_ARCHITECTURE + "\n" +

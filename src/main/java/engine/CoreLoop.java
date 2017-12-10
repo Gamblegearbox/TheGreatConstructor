@@ -19,6 +19,7 @@ public class CoreLoop implements Runnable{
 
     public void start()
     {
+        Logger.getInstance().writeTolog("> STARTING CORE LOOP\n");
         String osName = EngineOptions.OPERATING_SYSTEM;
 
         if(osName.contains("Mac"))
@@ -50,10 +51,11 @@ public class CoreLoop implements Runnable{
 
     private void initSubSystems() throws Exception
     {
+        Logger.getInstance().writeTolog("> INITIALISING SUBSYSTEMS\n");
         window.init();
         game.init();
 
-        if(EngineOptions.DEBUG) { EngineOptions.logAllInfo(); }
+        EngineOptions.logAllInfo();
     }
 
     private void startGameLoop()

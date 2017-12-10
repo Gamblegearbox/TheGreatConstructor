@@ -7,6 +7,7 @@ import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.glfw.GLFWWindowSizeCallback;
 import org.lwjgl.opengl.GL;
+import utils.Logger;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.GL_FALSE;
@@ -32,6 +33,8 @@ public class Window {
 
     public void init()
     {
+        Logger.getInstance().writeTolog("> INITIALISING WINDOW\n");
+
         // Setup an error callback. The default implementation
         // will print the error message in System.err.
         glfwSetErrorCallback(GLFWErrorCallback.createPrint(System.err));

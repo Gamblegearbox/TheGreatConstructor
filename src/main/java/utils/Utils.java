@@ -15,7 +15,7 @@ public class Utils {
 
         try (InputStream in = Utils.class.getClass().getResourceAsStream(fileName))
         {
-            result = new Scanner(in, "UTF-8").useDelimiter("\\A").next();
+            result = new Scanner(in, "UTF-8").useDelimiter("\\A").next();       //TODO: this crashes when using java 9...why?
         }
 
         return result;

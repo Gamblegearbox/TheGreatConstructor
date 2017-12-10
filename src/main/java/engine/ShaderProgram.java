@@ -83,6 +83,12 @@ class ShaderProgram {
         glUniform1i(uniformLocation, _value);
     }
 
+    void setUniformData(String _uniformName, float _value)
+    {
+        int uniformLocation = glGetUniformLocation(programID, _uniformName);
+        glUniform1f(uniformLocation, _value);
+    }
+
     void setUniformData(String _uniformName, Vector3 _value)
     {
         int uniformLocation = glGetUniformLocation(programID, _uniformName);
