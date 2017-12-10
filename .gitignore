@@ -70,3 +70,5 @@ res/models/
 res/textures/
 *.class
 
+!dummyCube.obj
+!defaultMap.png
