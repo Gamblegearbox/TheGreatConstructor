@@ -6,7 +6,6 @@ import gameObject.GameObject;
 import interfaces.InterfaceGame;
 import math.Vector3;
 import utils.Logger;
-import utils.OBJLoader;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -15,60 +14,41 @@ public class Game implements InterfaceGame {
 
     private final OpenGLRenderer renderer;
     private Scene[] scenes;
-    private int activeScene;
+    private Scene activeScene = null;
 
     private float anim_X = 0;
     private float anim_Y = 0;
     private float animSpeed = 1f;
     private float time = 0;
+    private Material sceneMaterial;
 
     //DEBUG VALUES
     private float deltaTimeSum;
 
-    public Game(Window _window)
+    public Game(OpenGLRenderer _renderer)
     {
-        renderer = new OpenGLRenderer(_window);
-        activeScene = 0;
+        renderer = _renderer;
     }
 
     @Override
     public void init() throws Exception
     {
-        Logger.getInstance().writeTolog("> INITIALISING GAME\n");
-        renderer.init();
+        Logger.getInstance().writeln("> INITIALISING GAME");
+        sceneMaterial = new Material(new Texture("/textures/iav.png"), new Texture("/textures/car_normals.png"), new Texture("/textures/cube/gloss.png"), new Texture("/textures/cube/illumination.png"));
+        int NUMBER_OF_TEST_OBJECTS = 50;
 
-        int NUMBER_OF_TEST_OBJECTS = 1;
-        float OBJECT_GRID_Z_OFFSET = -3f;
+        scenes = new Scene[2];
+        scenes[0] = new Scene("Main Menu", new Vector3(-1f,0.0f,1.0f), NUMBER_OF_TEST_OBJECTS, "/models/REF_ONE_CUBIC_METER.obj", sceneMaterial);
+        scenes[1] = new Scene("Test Level", new Vector3(1f,0.0f,0.5f), NUMBER_OF_TEST_OBJECTS, "/models/E_Engine.obj", sceneMaterial);
+    }
 
-        Material sceneMaterial = new Material(new Texture("/textures/car_diffuse.png"), new Texture("/textures/car_normals.png"), new Texture("/textures/cube/gloss.png"), new Texture("/textures/cube/illumination.png"));
-        GameObject[] gameObjects = new GameObject[NUMBER_OF_TEST_OBJECTS];
-
-        float x = 0;
-        float y = -0.5f;
-        float z = OBJECT_GRID_Z_OFFSET;
-        Vector3 position = new Vector3(x,y,z);
-
-        for(int i = 0 ; i < NUMBER_OF_TEST_OBJECTS; i++)
-        {
-            position.set(x, y, z);
-
-            GameObject temp = new GameObject(OBJLoader.loadMesh("/models/E_Engine.obj"), sceneMaterial, 2f);
-            temp.setPosition(position);
-
-            gameObjects[i] = temp;
-
-            x+=1f;
-        }
-
-        scenes = new Scene[1];
-        scenes[0] = new Scene( new Vector3(-1f,0.0f,1.0f), gameObjects );
-
-        activeScene = 0;
-
+    public void start() throws Exception
+    {
+        switchScene(0);
     }
 
     @Override
-    public void input(float deltaTime)
+    public void input(float deltaTime) throws Exception
     {
         if(KeyboardInput.isKeyDown(GLFW_KEY_RIGHT))
         {
@@ -95,12 +75,17 @@ public class Game implements InterfaceGame {
         {
             anim_Y = 0;
         }
+
+        if(KeyboardInput.isKeyDown(GLFW_KEY_L))
+        {
+            switchScene(1);
+        }
     }
 
     @Override
     public void update(float deltaTime)
     {
-        GameObject[] gameObjects = scenes[activeScene].getGameObjects();
+        GameObject[] gameObjects = activeScene.getGameObjects();
 
         for (GameObject temp : gameObjects)
         {
@@ -130,7 +115,7 @@ public class Game implements InterfaceGame {
     @Override
     public void render()
     {
-        renderer.render(scenes[activeScene]);
+        renderer.render(activeScene);
     }
 
     @Override
@@ -144,5 +129,11 @@ public class Game implements InterfaceGame {
         }
 
         Logger.getInstance().cleanup();
+    }
+
+    private void switchScene(int _index) throws Exception
+    {
+        activeScene = scenes[_index];
+        activeScene.load();
     }
 }

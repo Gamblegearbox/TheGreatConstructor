@@ -33,7 +33,7 @@ public class Window {
 
     public void init()
     {
-        Logger.getInstance().writeTolog("> INITIALISING WINDOW\n");
+        Logger.getInstance().writeln("> INITIALISING WINDOW");
 
         // Setup an error callback. The default implementation
         // will print the error message in System.err.

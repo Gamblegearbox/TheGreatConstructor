@@ -56,7 +56,7 @@ public class Logger {
         logs.put(_label, _logValue);
     }
 
-    public void writeTolog(String _log)
+    public void write(String _log)
     {
         if (EngineOptions.LOG_TO_FILE)
         {
@@ -70,6 +70,26 @@ public class Logger {
         else
         {
             System.out.print(_log);
+        }
+    }
+
+    public void writeln(String _log)
+    {
+        if (EngineOptions.LOG_TO_FILE)
+        {
+            try
+            {
+                out.write(_log + "\n");
+                out.flush();
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+        else
+        {
+            System.out.println(_log);
         }
     }
 

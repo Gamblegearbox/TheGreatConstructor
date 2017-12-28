@@ -62,14 +62,14 @@ public class EngineOptions {
         "VERSION:               " + OPERATING_SYSTEM_VERSION + "\n" +
         "ARCHITECTURE:          " + OPERATING_SYSTEM_ARCHITECTURE + "\n" +
         "\n" +
-        //The following throw ACCESS_VIOLATION_EXCEPTIONs if called to early (so no static final variable ;))
+        //The following throws ACCESS_VIOLATION_EXCEPTIONs if called to early (so no static final variable ;))
         "OPENGL VENDOR:         " + glGetString(GL_VENDOR) + "\n" +
         "RENDERER:              " + glGetString(GL_RENDERER) + "\n" +
         "OPENGL VERSION:        " + glGetString(GL_VERSION) + "\n" +
         "GLSL VERSION:          " + glGetString(GL_SHADING_LANGUAGE_VERSION) + "\n" +
         "\n";
 
-        Logger.getInstance().writeTolog(info);
+        Logger.getInstance().write(info);
     }
 
     static void logOptionsStatus()
@@ -95,7 +95,7 @@ public class EngineOptions {
         "BACKFACE CULLING:      " + convertBooleanToEnabledOrDisabled(CULL_BACK_FACE) + "\n" +
         "\n";
 
-        Logger.getInstance().writeTolog(info);
+        Logger.getInstance().write(info);
     }
 
     private static String convertBooleanToEnabledOrDisabled(boolean _status)

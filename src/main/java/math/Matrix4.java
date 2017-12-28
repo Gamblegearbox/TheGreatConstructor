@@ -159,7 +159,7 @@ public class Matrix4 {
                 _planeEquation.normalize3();
                 break;
             default:
-                Logger.getInstance().writeTolog("wrong Plane number");
+                Logger.getInstance().write("wrong Plane number");
         }
     }
 }

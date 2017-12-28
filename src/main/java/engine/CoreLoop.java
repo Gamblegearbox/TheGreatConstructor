@@ -8,18 +8,19 @@ public class CoreLoop implements Runnable{
 
     private final Thread gameLoopThread;
     private final Window window;
+    private final OpenGLRenderer renderer;
     private final InterfaceGame game;
 
     public CoreLoop()
     {
         gameLoopThread = new Thread(this, "GAME_LOOP_THREAD");
         window = new Window(EngineOptions.WINDOW_TITLE, EngineOptions.WINDOW_WIDTH, EngineOptions.WINDOW_HEIGHT);
-        game = new Game(window);
+        renderer =  new OpenGLRenderer(window);
+        game = new Game(renderer);
     }
 
     public void start()
     {
-        Logger.getInstance().writeTolog("> STARTING CORE LOOP\n");
         String osName = EngineOptions.OPERATING_SYSTEM;
 
         if(osName.contains("Mac"))
@@ -35,7 +36,8 @@ public class CoreLoop implements Runnable{
     @Override
     public void run()
     {
-        try {
+        try
+        {
             initSubSystems();
             startGameLoop();
         }
@@ -51,15 +53,20 @@ public class CoreLoop implements Runnable{
 
     private void initSubSystems() throws Exception
     {
-        Logger.getInstance().writeTolog("> INITIALISING SUBSYSTEMS\n");
+        Logger.getInstance().writeln("> INITIALISING SUBSYSTEMS");
         window.init();
+        renderer.init();
         game.init();
 
         EngineOptions.logAllInfo();
     }
 
-    private void startGameLoop()
+    private void startGameLoop() throws Exception
     {
+        Logger.getInstance().writeln("> STARTING GAME LOOP");
+
+        game.start();
+
         double lastTime = System.nanoTime() / 1000_000_000.0;
         double deltaTimeSum = 0;
         int frames = 0;
@@ -90,7 +97,7 @@ public class CoreLoop implements Runnable{
         }
     }
 
-    private void input(float deltaTime)
+    private void input(float deltaTime) throws Exception
     {
         game.input(deltaTime);
     }

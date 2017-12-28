@@ -46,7 +46,7 @@ public class OpenGLRenderer {
 
     public void init() throws Exception
     {
-        Logger.getInstance().writeTolog("> INITIALISING RENDERER\n");
+        Logger.getInstance().writeln("> INITIALISING RENDERER");
 
         float aspectRatio = (float)window.getWidth() / window.getHeight();
         projectionMatrix.setPerspective(EngineOptions.FOV, aspectRatio, EngineOptions.Z_NEAR, EngineOptions.Z_FAR);
