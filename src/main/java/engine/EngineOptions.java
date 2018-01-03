@@ -10,24 +10,23 @@ public class EngineOptions {
     static final String WINDOW_TITLE = "Television 2000";
 
     static final String OPERATING_SYSTEM = System.getProperty("os.name");
-    static final String OPERATING_SYSTEM_VERSION = System.getProperty("os.version");
-    static final String OPERATING_SYSTEM_ARCHITECTURE = System.getProperty("os.arch");
+    private static final String OPERATING_SYSTEM_VERSION = System.getProperty("os.version");
+    private static final String OPERATING_SYSTEM_ARCHITECTURE = System.getProperty("os.arch");
 
     static final int WINDOW_WIDTH = 1000;
     static final int WINDOW_HEIGHT = 700;
+    static final multiSamplingMode MULTISAMPLING = multiSamplingMode.X4;
+    static final boolean V_SYNC = false;
+    static final boolean BACK_FACE_CULLING = true ;
+    static final boolean FRUSTUM_CULLING = true;
 
     static final float Z_NEAR = 0.05f;
     static final float Z_FAR = 1000f;
     static final float FOV = 60f;
 
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG_MODE = true;
     public static final boolean LOG_TO_FILE = false;
     public static final float LOGGING_INTERVAL = 1;
-
-    static final multiSamplingMode MULTISAMPLING = multiSamplingMode.X4;
-    static final boolean V_SYNC = false;
-    static final boolean CULL_BACK_FACE = true ;
-    static final boolean FRUSTUM_CULLING = true;
 
     static final float POINT_SIZE = 3f;
     static final Vector3 UNICOLOR_COLOR = new Vector3(0.75f,0.75f,0.75f);
@@ -51,11 +50,11 @@ public class EngineOptions {
 
     static void logAllInfo()
     {
-        logGeneralInfo();
+        logSystemInfo();
         logOptionsStatus();
     }
 
-    private static void logGeneralInfo()
+    private static void logSystemInfo()
     {
         String info = "\n" +
         "OPERATING SYSTEM:      " + OPERATING_SYSTEM + "\n" +
@@ -75,12 +74,14 @@ public class EngineOptions {
     static void logOptionsStatus()
     {
         String info =
-        "DEBUG MODE:            " + convertBooleanToEnabledOrDisabled(DEBUG) + "\n" +
+        "DEBUG MODE:            " + convertBooleanToEnabledOrDisabled(DEBUG_MODE) + "\n" +
         "LOGGING INTERVAL       " + LOGGING_INTERVAL + "sec" + "\n" +
         "\n" +
         "RESOLUTION:            " + WINDOW_WIDTH + " x " + WINDOW_HEIGHT + "\n" +
         "MULTISAMPLING:         " + MULTISAMPLING + "\n" +
         "VSYNC:                 " + convertBooleanToEnabledOrDisabled(V_SYNC)  + "\n" +
+        "BACKFACE CULLING:      " + convertBooleanToEnabledOrDisabled(BACK_FACE_CULLING) + "\n" +
+        "FRUSTUM CULLING:       " + convertBooleanToEnabledOrDisabled(FRUSTUM_CULLING) + "\n" +
         "\n" +
         "SHADED GEOMETRY:       " + convertBooleanToEnabledOrDisabled(IS_SHADED) + "\n" +
         "SHOW DEPTH:            " + convertBooleanToEnabledOrDisabled(SHOW_DEPTH) + "\n" +
@@ -91,8 +92,6 @@ public class EngineOptions {
         "USE NORMAL MAPS:       " + convertBooleanToEnabledOrDisabled(ENABLE_NORMAL_MAPPING) + "\n" +
         "USE SPECULAR MAPS:     " + convertBooleanToEnabledOrDisabled(ENABLE_GLOSS_MAPPING) + "\n" +
         "USE ILLUMINATION MAPS: " + convertBooleanToEnabledOrDisabled(ENABLE_ILLUMINATION_MAPPING) + "\n" +
-        "\n" +
-        "BACKFACE CULLING:      " + convertBooleanToEnabledOrDisabled(CULL_BACK_FACE) + "\n" +
         "\n";
 
         Logger.getInstance().write(info);

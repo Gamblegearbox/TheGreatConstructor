@@ -75,7 +75,7 @@ public class CoreLoop implements Runnable{
             double currentTime = System.nanoTime() / 1000_000_000.0;
             double deltaTime = currentTime - lastTime;
 
-            if(EngineOptions.DEBUG)
+            if(EngineOptions.DEBUG_MODE)
             {
                 deltaTimeSum += deltaTime;
 

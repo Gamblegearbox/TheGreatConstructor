@@ -6,6 +6,9 @@ import gameObject.GameObject;
 import interfaces.InterfaceGame;
 import math.Vector3;
 import utils.Logger;
+import utils.Utils;
+
+import java.util.List;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -16,13 +19,14 @@ public class Game implements InterfaceGame {
     private Scene[] scenes;
     private Scene activeScene = null;
 
+
     private float anim_X = 0;
     private float anim_Y = 0;
     private float animSpeed = 1f;
     private float time = 0;
     private Material sceneMaterial;
 
-    //DEBUG VALUES
+    //DEBUG_MODE VALUES
     private float deltaTimeSum;
 
     public Game(OpenGLRenderer _renderer)
@@ -76,7 +80,7 @@ public class Game implements InterfaceGame {
             anim_Y = 0;
         }
 
-        if(KeyboardInput.isKeyDown(GLFW_KEY_L))
+        if(KeyboardInput.isKeyPressedOnce(GLFW_KEY_L))
         {
             switchScene(1);
         }
@@ -98,7 +102,7 @@ public class Game implements InterfaceGame {
             temp.setRotation(0, time,0);
         }
 
-        if(EngineOptions.DEBUG)
+        if(EngineOptions.DEBUG_MODE)
         {
             deltaTimeSum += deltaTime;
 

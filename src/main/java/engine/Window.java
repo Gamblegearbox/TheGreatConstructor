@@ -102,7 +102,6 @@ public class Window {
         // Make the window visible
         glfwShowWindow(windowHandle);
 
-        //TODO: Arrays.fill(KeyboardInput.keys, KeyboardInput.IDLE_STATE); // init all keys with idle state
         GL.createCapabilities();
     }
 
@@ -139,7 +138,6 @@ public class Window {
     public void update()
     {
         glfwSwapBuffers(windowHandle);
-        //TODO: KeyboardInput.update();
         glfwPollEvents();
     }
 
