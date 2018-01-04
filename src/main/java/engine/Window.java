@@ -54,7 +54,7 @@ public class Window {
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
         // MULTISAMPLING
-        glfwWindowHint(GLFW_SAMPLES, EngineOptions.MULTISAMPLING.ordinal());
+        glfwWindowHint(GLFW_SAMPLES, EngineOptions.getOptionAsInt("MULTISAMPLING"));
 
         // Create the window
         windowHandle = glfwCreateWindow(width, height, title, NULL, NULL);
@@ -90,7 +90,7 @@ public class Window {
         // Make the OpenGL context current
         glfwMakeContextCurrent(windowHandle);
 
-        if (EngineOptions.V_SYNC) {
+        if (EngineOptions.getOptionAsBoolean("V_SYNC")) {
             // Enable v-sync
             glfwSwapInterval(1);
         }

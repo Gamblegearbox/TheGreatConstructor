@@ -20,7 +20,7 @@ public class Logger {
     {
         logs = new HashMap<>();
 
-        if (EngineOptions.LOG_TO_FILE)
+        if (EngineOptions.getOptionAsBoolean("LOG_TO_FILE"))
         {
             File logFile = new File("EngineLogFile.txt");
 
@@ -58,7 +58,7 @@ public class Logger {
 
     public void write(String _log)
     {
-        if (EngineOptions.LOG_TO_FILE)
+        if (EngineOptions.getOptionAsBoolean("LOG_TO_FILE"))
         {
             try {
                 out.write(_log);
@@ -75,7 +75,7 @@ public class Logger {
 
     public void writeln(String _log)
     {
-        if (EngineOptions.LOG_TO_FILE)
+        if (EngineOptions.getOptionAsBoolean("LOG_TO_FILE"))
         {
             try
             {
@@ -95,7 +95,7 @@ public class Logger {
 
     public void outputLoggedData()
     {
-        if (EngineOptions.LOG_TO_FILE)
+        if (EngineOptions.getOptionAsBoolean("LOG_TO_FILE"))
         {
             try
             {
@@ -123,7 +123,7 @@ public class Logger {
 
     public void cleanup()
     {
-        if (EngineOptions.LOG_TO_FILE)
+        if (EngineOptions.getOptionAsBoolean("LOG_TO_FILE"))
         {
             try {
                 out.write("\n");

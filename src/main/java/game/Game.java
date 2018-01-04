@@ -102,11 +102,11 @@ public class Game implements InterfaceGame {
             temp.setRotation(0, time,0);
         }
 
-        if(EngineOptions.DEBUG_MODE)
+        if(EngineOptions.getOptionAsBoolean("DEBUG_MODE"))
         {
             deltaTimeSum += deltaTime;
 
-            if( deltaTimeSum > EngineOptions.LOGGING_INTERVAL)
+            if( deltaTimeSum > EngineOptions.getOptionAsFloat("LOGGING_INTERVAL"))
             {
                 Logger.getInstance().outputLoggedData();
                 deltaTimeSum = 0;

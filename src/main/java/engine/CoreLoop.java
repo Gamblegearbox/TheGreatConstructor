@@ -14,7 +14,7 @@ public class CoreLoop implements Runnable{
     public CoreLoop()
     {
         gameLoopThread = new Thread(this, "GAME_LOOP_THREAD");
-        window = new Window(EngineOptions.WINDOW_TITLE, EngineOptions.WINDOW_WIDTH, EngineOptions.WINDOW_HEIGHT);
+        window = new Window(EngineOptions.WINDOW_TITLE, EngineOptions.getOptionAsInt("WINDOW_WIDTH"), EngineOptions.getOptionAsInt("WINDOW_HEIGHT"));
         renderer =  new OpenGLRenderer(window);
         game = new Game(renderer);
     }
@@ -57,8 +57,6 @@ public class CoreLoop implements Runnable{
         window.init();
         renderer.init();
         game.init();
-
-        EngineOptions.logAllInfo();
     }
 
     private void startGameLoop() throws Exception
@@ -75,7 +73,7 @@ public class CoreLoop implements Runnable{
             double currentTime = System.nanoTime() / 1000_000_000.0;
             double deltaTime = currentTime - lastTime;
 
-            if(EngineOptions.DEBUG_MODE)
+            if(EngineOptions.getOptionAsBoolean("DEBUG_MODE"))
             {
                 deltaTimeSum += deltaTime;
 
