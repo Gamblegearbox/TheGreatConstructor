@@ -26,7 +26,7 @@ public class KeyboardInput extends GLFWKeyCallback{
     }
     */
 
-    public static boolean isKeyPressedOnce(int _key)
+    public static boolean isKeyPressedOnce(int _key)//TODO: not working correctly
     {
         return keyStatus[_key] == GLFW_PRESS;
     }

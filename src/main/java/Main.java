@@ -25,8 +25,5 @@ public class Main {
             System.out.println("Could not find config file!");
             System.exit(-1);
         }
-
-
-
     }
 }

@@ -19,7 +19,6 @@ public class Game implements InterfaceGame {
     private Scene[] scenes;
     private Scene activeScene = null;
 
-
     private float anim_X = 0;
     private float anim_Y = 0;
     private float animSpeed = 1f;
