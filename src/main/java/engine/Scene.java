@@ -5,50 +5,46 @@ import math.Vector3;
 import utils.Logger;
 import utils.OBJLoader;
 
+import java.util.List;
+
 
 public class Scene {
 
-    private final Vector3 lightPosition;
-    private final GameObject[] gameObjects;
-    private final String sceneName;
+    private final String scnFilePath;
+
+    private Vector3 lightPosition;
+    private GameObject[] gameObjects;
+    private String sceneName;
     private boolean wasLoaded;
 
-    //todo: temporary
-    private String loadpath;    //todo: textfile with load paths?
-    private Material sceneMaterial;
-
-    public Scene(String _sceneName, Vector3 _lightPosition, int _numberOfObjects, String _path, Material _material)
+    public Scene(String _path)
     {
-        sceneName = _sceneName;
-        lightPosition = _lightPosition;
-        gameObjects = new GameObject[_numberOfObjects];
         wasLoaded = false;
-        loadpath = _path;
-        sceneMaterial = _material;
+        scnFilePath = _path;
     }
 
     public void load() throws Exception
     {
+        Material sceneMaterial = new Material(new Texture("/textures/iav.png"), new Texture("/textures/car_normals.png"), new Texture("/textures/cube/gloss.png"), new Texture("/textures/cube/illumination.png"));
+
         wasLoaded = true;
+        List<String> scnFileContent = utils.Utils.readAllLines(scnFilePath);
+
+        sceneName = scnFileContent.get(0);
+        lightPosition = createPositionFromString(scnFileContent.get(1));
 
         Logger.getInstance().writeln("> LOADING " + sceneName +  "...");
 
-        //todo: load objects here (experimental)
-        float x = 1;
-        float y = -1.5f;
-        float z = -3f;
-        Vector3 position = new Vector3(x,y,z);
+        //TODO: refine this for multiple objects
+        gameObjects = new GameObject[1];
+        String[] pathAndPos = scnFileContent.get(3).split(";");
 
         for(int i = 0 ; i < gameObjects.length; i++)
         {
-            position.set(x, y, z);
-
-            GameObject temp = new GameObject(OBJLoader.loadMesh(loadpath), sceneMaterial, 2f);
-            temp.setPosition(position);
+            GameObject temp = new GameObject(OBJLoader.loadMesh(pathAndPos[0]), sceneMaterial, 2f);
+            temp.setPosition(createPositionFromString(pathAndPos[1]));
             gameObjects[i] = temp;
-            z-=3f;
         }
-
     }
 
     public Vector3 getLightPosition()
@@ -71,5 +67,15 @@ public class Scene {
                 temp.cleanup();
             }
         }
+    }
+
+    private Vector3 createPositionFromString(String _string)
+    {
+        String[] positionAsString = _string.split(",");
+        float x = Float.parseFloat(positionAsString[0]);
+        float y = Float.parseFloat(positionAsString[1]);
+        float z = Float.parseFloat(positionAsString[2]);
+
+        return new Vector3(x, y, z);
     }
 }

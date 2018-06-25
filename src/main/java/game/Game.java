@@ -23,7 +23,7 @@ public class Game implements InterfaceGame {
     private float anim_Y = 0;
     private float animSpeed = 1f;
     private float time = 0;
-    private Material sceneMaterial;
+
 
     //DEBUG_MODE VALUES
     private float deltaTimeSum;
@@ -37,12 +37,11 @@ public class Game implements InterfaceGame {
     public void init() throws Exception
     {
         Logger.getInstance().writeln("> INITIALISING GAME");
-        sceneMaterial = new Material(new Texture("/textures/iav.png"), new Texture("/textures/car_normals.png"), new Texture("/textures/cube/gloss.png"), new Texture("/textures/cube/illumination.png"));
-        int NUMBER_OF_TEST_OBJECTS = 50;
+
 
         scenes = new Scene[2];
-        scenes[0] = new Scene("Main Menu", new Vector3(-1f,0.0f,1.0f), NUMBER_OF_TEST_OBJECTS, "/models/REF_ONE_CUBIC_METER.obj", sceneMaterial);
-        scenes[1] = new Scene("Test Level", new Vector3(1f,0.0f,0.5f), NUMBER_OF_TEST_OBJECTS, "/models/E_Engine.obj", sceneMaterial);
+        scenes[0] = new Scene("/PROTO_scenes/MainMenu.scn");
+        scenes[1] = new Scene("/PROTO_scenes/DemoScene.scn");
     }
 
     public void start() throws Exception
@@ -78,6 +77,7 @@ public class Game implements InterfaceGame {
         {
             anim_Y = 0;
         }
+
 
         if(KeyboardInput.isKeyPressedOnce(GLFW_KEY_L))
         {

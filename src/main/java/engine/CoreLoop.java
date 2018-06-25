@@ -4,6 +4,8 @@ import game.Game;
 import interfaces.InterfaceGame;
 import utils.Logger;
 
+import java.io.File;
+
 public class CoreLoop implements Runnable{
 
     private final Thread gameLoopThread;
