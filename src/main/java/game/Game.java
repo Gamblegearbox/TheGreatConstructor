@@ -4,11 +4,7 @@ import Input.KeyboardInput;
 import engine.*;
 import gameObject.GameObject;
 import interfaces.InterfaceGame;
-import math.Vector3;
 import utils.Logger;
-import utils.Utils;
-
-import java.util.List;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -18,6 +14,7 @@ public class Game implements InterfaceGame {
     private final OpenGLRenderer renderer;
     private Scene[] scenes;
     private Scene activeScene = null;
+    private int activeSceneIndex;
 
     private float anim_X = 0;
     private float anim_Y = 0;
@@ -38,15 +35,15 @@ public class Game implements InterfaceGame {
     {
         Logger.getInstance().writeln("> INITIALISING GAME");
 
-
         scenes = new Scene[2];
-        scenes[0] = new Scene("/PROTO_scenes/MainMenu.scn");
-        scenes[1] = new Scene("/PROTO_scenes/DemoScene.scn");
+        scenes[0] = new Scene("/scenes/MainMenu.scn");
+        scenes[1] = new Scene("/scenes/DemoScene.scn");
     }
 
     public void start() throws Exception
     {
-        switchScene(0);
+        activeSceneIndex = 0;
+        switchScene();
     }
 
     @Override
@@ -81,7 +78,8 @@ public class Game implements InterfaceGame {
 
         if(KeyboardInput.isKeyPressedOnce(GLFW_KEY_L))
         {
-            switchScene(1);
+            activeSceneIndex = (activeSceneIndex + 1) % scenes.length;
+            switchScene();
         }
     }
 
@@ -92,13 +90,15 @@ public class Game implements InterfaceGame {
 
         for (GameObject temp : gameObjects)
         {
-            float x = temp.getPosition().x;
-            x += anim_X;
-            float y = temp.getPosition().y;
-            y += anim_Y;
+            if(!temp.isStatic()) {
+                float x = temp.getPosition().x;
+                x += anim_X;
+                float y = temp.getPosition().y;
+                y += anim_Y;
 
-            temp.setPosition(x, y, temp.getPosition().z);
-            temp.setRotation(0, time,0);
+                temp.setPosition(x, y, temp.getPosition().z);
+                temp.setRotation(0, time, 0);
+            }
         }
 
         if(EngineOptions.getOptionAsBoolean("DEBUG_MODE"))
@@ -134,9 +134,9 @@ public class Game implements InterfaceGame {
         Logger.getInstance().cleanup();
     }
 
-    private void switchScene(int _index) throws Exception
+    private void switchScene() throws Exception
     {
-        activeScene = scenes[_index];
+        activeScene = scenes[activeSceneIndex];
         activeScene.load();
     }
 }

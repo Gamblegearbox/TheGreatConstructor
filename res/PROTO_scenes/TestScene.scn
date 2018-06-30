@@ -1,9 +1,0 @@
-TITLE = "Test Level"
-LIGHT_POSITION = 1,0.0,0.5
-
-STATIC OBJECTS
-#path to obj, position, material
-"/models/E_Engine.obj", 0,0,-1 ,sceneMaterial
-
-DYNAMIC OBJECTS
-#path to obj, position, material

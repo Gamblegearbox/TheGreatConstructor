@@ -27,6 +27,7 @@ public class Utils {
         try (BufferedReader br = new BufferedReader(new InputStreamReader(Utils.class.getClass().getResourceAsStream(fileName))))
         {
             String line;
+
             while ((line = br.readLine()) != null)
             {
                 list.add(line);

@@ -1,9 +1,0 @@
-TITLE = "Main Menu"
-LIGHT_POSITION = -1,0.0,1.0
-
-STATIC OBJECTS
-#path to obj, position, material
-"/models/REF_ONE_CUBIC_METER.obj", 0,0,-1 ,sceneMaterial
-
-DYNAMIC OBJECTS
-#path to obj, position, material

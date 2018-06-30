@@ -5,6 +5,7 @@ import math.Vector3;
 import utils.Logger;
 import utils.OBJLoader;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -25,24 +26,60 @@ public class Scene {
 
     public void load() throws Exception
     {
-        Material sceneMaterial = new Material(new Texture("/textures/iav.png"), new Texture("/textures/car_normals.png"), new Texture("/textures/cube/gloss.png"), new Texture("/textures/cube/illumination.png"));
-
         wasLoaded = true;
+        Material sceneMaterial = new Material(new Texture("/textures/_DEFAULT/defaultMap.png"), new Texture("/textures/_DEFAULT/defaultMap.png"), new Texture("/textures/_DEFAULT/defaultMap.png"), new Texture("/textures/_DEFAULT/defaultMap.png"));
+
         List<String> scnFileContent = utils.Utils.readAllLines(scnFilePath);
 
-        sceneName = scnFileContent.get(0);
-        lightPosition = createPositionFromString(scnFileContent.get(1));
+        List<String> objectDataFromFile = new ArrayList<>();
+
+
+        //PARSE SCENE FILE
+        for(String line : scnFileContent){
+
+            if(line.startsWith("#")){
+                continue;
+            }
+
+            if(line.startsWith("SCENE_TITLE")){
+                String[] temp = line.split("=");
+                line = temp[temp.length - 1];
+                line = line.replaceAll("\"", "");
+                line = line.trim();
+
+                sceneName = line;
+            }
+
+            if(line.startsWith("LIGHT_POSITION")){
+                String[] temp = line.split("=");
+                line = temp[temp.length - 1];
+                line = line.replaceAll("\"", "");
+                line = line.trim();
+
+                lightPosition = createPositionFromString(line);
+            }
+
+            if(line.startsWith("GO")){
+                String[] temp = line.split("=");
+                line = temp[temp.length - 1];
+
+                objectDataFromFile.add(line);
+            }
+        }
+
+        gameObjects = new GameObject[objectDataFromFile.size()];
 
         Logger.getInstance().writeln("> LOADING " + sceneName +  "...");
 
-        //TODO: refine this for multiple objects
-        gameObjects = new GameObject[1];
-        String[] pathAndPos = scnFileContent.get(3).split(";");
-
         for(int i = 0 ; i < gameObjects.length; i++)
         {
-            GameObject temp = new GameObject(OBJLoader.loadMesh(pathAndPos[0]), sceneMaterial, 2f);
-            temp.setPosition(createPositionFromString(pathAndPos[1]));
+            String[] objectData = objectDataFromFile.get(i).split(";");
+            String path = objectData[0].trim().replaceAll("\"", "");
+            String position = objectData[1].trim();
+            float boundingRadius = Float.parseFloat(objectData[2].trim());
+
+            GameObject temp = new GameObject(OBJLoader.loadMesh(path), sceneMaterial, boundingRadius,false);
+            temp.setPosition(createPositionFromString(position));
             gameObjects[i] = temp;
         }
     }

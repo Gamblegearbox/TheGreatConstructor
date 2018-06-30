@@ -16,8 +16,9 @@ public class GameObject {
     private final Material material;
     private final float boundingRadius;
     private boolean isVisible;
+    private boolean isStatic;
 
-    public GameObject(OpenGLMesh _mesh, Material _material, float _boundingRadius)
+    public GameObject(OpenGLMesh _mesh, Material _material, float _boundingRadius, boolean _isStatic)
     {
         position = new Vector3(0,0,0);
         scale = new Vector3(1,1,1);
@@ -27,6 +28,7 @@ public class GameObject {
 
         boundingRadius = _boundingRadius;
         setVisibility(true);
+        setIsStatic(_isStatic);
     }
 
     public void setVisibility(boolean _value)
@@ -37,6 +39,14 @@ public class GameObject {
     public boolean isVisible()
     {
         return isVisible;
+    }
+
+    public void setIsStatic(boolean _value){
+        isStatic = _value;
+    }
+
+    public boolean isStatic(){
+        return isStatic;
     }
 
     public float getBoundingRadius()
