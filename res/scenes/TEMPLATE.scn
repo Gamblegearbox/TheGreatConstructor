@@ -1,9 +1,0 @@
-SCENE_TITLE = "Main Menu"
-LIGHT_POSITION = -1,0.0,1.0
-
-#STATIC_OBJECTS (SO = "path to obj"; x ,y ,z)
-SO = "/models/_DEFAULT/dummyCube.obj"; 0,1.3,-5
-SO = "/models/affe.obj"; 0,0,-5
-SO = "/models/_DEFAULT/dummyCube.obj"; 0,-1.3,-5
-
-#DYNAMIC_OBJECTS (DO = "path to obj"; x ,y ,z)

@@ -96,10 +96,10 @@ void main()
 
         if(hasIlluminationMap)
         {
-            if(finalShadeFactor < 0.1)
-            {
-                finalColor.rgba += texture(illuminationMap_sampler, _uvCoord).rgba * illuminationColor; //TODO: think about that ...color from texture or fix color.. or both
-            }
+            //if(finalShadeFactor < 0.1)
+            //{
+                finalColor.rgba += texture(illuminationMap_sampler, _uvCoord).rgba;// * illuminationColor; //TODO: think about that ...color from texture or fix color.. or both
+            //}
         }
     }
 

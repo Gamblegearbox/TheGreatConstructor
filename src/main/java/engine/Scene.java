@@ -27,7 +27,7 @@ public class Scene {
     public void load() throws Exception
     {
         wasLoaded = true;
-        Material sceneMaterial = new Material(new Texture("/textures/_DEFAULT/defaultMap.png"), new Texture("/textures/_DEFAULT/defaultMap.png"), new Texture("/textures/_DEFAULT/defaultMap.png"), new Texture("/textures/_DEFAULT/defaultMap.png"));
+        Material sceneMaterial = new Material(new Texture("/GameJam1807/Textures/Color.png"), null, new Texture("/GameJam1807/Textures/Gloss.png"), new Texture("/GameJam1807/Textures/Illum.png"));
 
         List<String> scnFileContent = utils.Utils.readAllLines(scnFilePath);
 
