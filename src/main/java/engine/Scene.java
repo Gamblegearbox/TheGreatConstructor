@@ -65,6 +65,13 @@ public class Scene {
 
                 objectDataFromFile.add(line);
             }
+
+            if(line.startsWith("PO")){
+                String[] temp = line.split("=");
+                line = temp[temp.length - 1];
+
+                objectDataFromFile.add(line);
+            }
         }
 
         gameObjects = new GameObject[objectDataFromFile.size()];

@@ -2,6 +2,6 @@ SCENE_TITLE = "Demo Scene 01"
 LIGHT_POSITION = 10,0,5.0
 
 #STATIC_OBJECTS (GO = "path to obj file"; x ,y ,z)
-GO = "/GameJam1807/OBJ/prototype_logo.obj"; -20, -16,-30; 2.5
-GO = "/GameJam1807/OBJ/prototype_ship.obj"; -0,-0,-12; 2.5
-GO = "/GameJam1807/OBJ/prototype_ship_blaster.obj"; -0,-0,-12; 2.5
+GO = "/GameJam1807/OBJ/ui_prototype_logo.obj"; -20, -16,-30; 2.5
+GO = "/GameJam1807/OBJ/player_ship_type_01.obj"; -0,-0,-12; 2.5
+GO = "/GameJam1807/OBJ/fx_ship_engine_flame.obj"; -0,-0,-12; 2.5

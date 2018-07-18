@@ -21,6 +21,8 @@ public class Game implements InterfaceGame {
     private float animSpeed = 20f;
     private float time = 0;
 
+    float shotX = 0;
+    float shotY = 0;
 
     //DEBUG_MODE VALUES
     private float deltaTimeSum;
@@ -106,7 +108,6 @@ public class Game implements InterfaceGame {
             GameObject ship = gameObjects[1];
             GameObject blaster = gameObjects[2];
             float x = ship.getPosition().x;
-
             float y = ship.getPosition().y;
 
             ship.setPosition(x, y, ship.getPosition().z);
@@ -120,6 +121,15 @@ public class Game implements InterfaceGame {
 
             GameObject ship = gameObjects[1];
             GameObject blaster = gameObjects[2];
+            GameObject shot = gameObjects[gameObjects.length-1];
+
+            if(shot.getPosition().y > 25f){
+                shotX = ship.getPosition().x;
+                shotY = ship.getPosition().y + 10f;
+            }
+            else{
+                shotY += deltaTime*100;
+            }
 
             float x = ship.getPosition().x;
             x += anim_X;
@@ -132,6 +142,9 @@ public class Game implements InterfaceGame {
             blaster.setRotation(90, 0, 0);
             blaster.setScale(1,1,Math.abs((float)Math.sin(time*20000f)));
 
+            shot.setPosition(shotX, shotY, ship.getPosition().z - 1.5f);
+            shot.setRotation(90, time*200f, 0);
+
             GameObject enemy = gameObjects[3];
             enemy.setRotation(90, 0, 0);
             GameObject enemy1 = gameObjects[4];
@@ -140,19 +153,7 @@ public class Game implements InterfaceGame {
             enemy2.setRotation(90, 0, 0);
 
         }
-        /*
-        for (GameObject temp : gameObjects)
-        {
-            if(!temp.isStatic()) {
-                float x = temp.getPosition().x;
-                x += anim_X;
-                float y = temp.getPosition().y;
-                y += anim_Y;
 
-                temp.setPosition(x, y, temp.getPosition().z);
-                temp.setRotation(0, time, 0);
-            }
-        }*/
 
         if(EngineOptions.getOptionAsBoolean("DEBUG_MODE"))
         {
