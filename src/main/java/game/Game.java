@@ -123,7 +123,7 @@ public class Game implements InterfaceGame {
             GameObject blaster = gameObjects[2];
             GameObject shot = gameObjects[gameObjects.length-1];
 
-            if(shot.getPosition().y > 25f){
+            if(shot.getPosition().y > ship.getPosition().y + 80f){
                 shotX = ship.getPosition().x;
                 shotY = ship.getPosition().y + 10f;
             }
@@ -147,10 +147,7 @@ public class Game implements InterfaceGame {
 
             GameObject enemy = gameObjects[3];
             enemy.setRotation(90, 0, 0);
-            GameObject enemy1 = gameObjects[4];
-            enemy1.setRotation(90, 0, 0);
-            GameObject enemy2 = gameObjects[5];
-            enemy2.setRotation(90, 0, 0);
+
 
         }
 

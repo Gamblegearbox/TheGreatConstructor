@@ -1,5 +1,6 @@
 SCENE_TITLE = "Main Menu"
 LIGHT_POSITION = 1,0,1.0
+SCENE_MATERIAL = ""
 
 #STATIC_OBJECTS (GO = "path to obj"; x ,y ,z; bounding radius)
-GO = "/GameJam1807/OBJ/ui_prototype_logo.obj"; 0, 0,-10; 2.5
+MESH = "/GameJam1807/OBJ/ui_prototype_logo.obj"; 0, 0,-10; 2.5
