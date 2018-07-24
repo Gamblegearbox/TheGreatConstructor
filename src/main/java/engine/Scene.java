@@ -65,9 +65,6 @@ public class Scene {
             }
 
             if(line.startsWith("MESH")){
-                String[] temp = line.split("=");
-                line = temp[temp.length - 1];
-
                 objectDataFromFile.add(line);
             }
         }
@@ -77,15 +74,17 @@ public class Scene {
 
         Logger.getInstance().writeln("> LOADING " + sceneName +  "...");
 
-        for(int i = 0 ; i < gameObjects.length; i++)
-        {
-            String[] objectData = objectDataFromFile.get(i).split(";");
-            String path = objectData[0].trim().replaceAll("\"", "");
-            String position = objectData[1].trim();
-            float boundingRadius = Float.parseFloat(objectData[2].trim());
+        for(int i = 0 ; i < gameObjects.length; i++) {
+
+            String[] line = objectDataFromFile.get(i).split("=");
+            String objectData = line[line.length - 1];
+
+            String[] objectDataTokens = objectData.split(";");
+
+            String path = objectDataTokens[0].trim().replaceAll("\"", "");
+            float boundingRadius = Float.parseFloat(objectDataTokens[1].trim());
 
             GameObject temp = new GameObject(OBJLoader.loadMesh(path), sceneMaterial, boundingRadius,false);
-            temp.setPosition(createPositionFromString(position));
             gameObjects[i] = temp;
         }
     }

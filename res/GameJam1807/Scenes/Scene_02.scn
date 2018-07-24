@@ -1,10 +1,12 @@
 SCENE_TITLE = "Demo Scene 02"
 LIGHT_POSITION = 10,0,5.0
 SCENE_MATERIAL = ""
+
 #GAME_OBJECTS (GO = "path to obj file"; x ,y ,z, bounding radius)
-MESH = "/GameJam1807/OBJ/ui_prototype_logo.obj"; -20, -16,-30; 2.5
-MESH = "/GameJam1807/OBJ/player_ship_type_01.obj"; -0,-15,-52; 2.5
-MESH = "/GameJam1807/OBJ/fx_ship_engine_flame.obj"; -0,-15,-52; 2.5
-MESH = "/GameJam1807/OBJ/enemy_type_01.obj"; -0,12,-52; 2.5
-MESH = "/GameJam1807/OBJ/fx_projectile.obj"; 0,0,-52; 1
+MESH = "/GameJam1807/OBJ/ui_prototype_logo.obj"; 2.5
+MESH = "/GameJam1807/OBJ/player_ship_type_01.obj"; 2.5
+MESH = "/GameJam1807/OBJ/fx_ship_engine_flame.obj"; 2.5
+MESH = "/GameJam1807/OBJ/enemy_type_01.obj"; 2.5
+MESH = "/GameJam1807/OBJ/fx_projectile.obj"; 1
+MESH = "/GameJam1807/OBJ/fx_projectile.obj"; 1
 
