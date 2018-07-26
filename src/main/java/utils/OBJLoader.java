@@ -10,7 +10,7 @@ import java.util.List;
 
 public class OBJLoader {
 
-    public static OpenGLMesh loadMesh(String fileName) throws Exception
+    public static OpenGLMesh loadMesh(String fileName, float boundingRadius) throws Exception
     {
         List<String> lines = Utils.readAllLines(fileName);
 
@@ -59,11 +59,11 @@ public class OBJLoader {
                     break;
             }
         }
-        return reorderLists(vertices, textures, normals, faces);
+        return reorderLists(vertices, textures, normals, faces, boundingRadius);
     }
 
     private static OpenGLMesh reorderLists(List<Vector3f> _verticesList, List<Vector2f> _uvCoordsList,
-                                     List<Vector3f> _normalsList, List<Face> _facesList)
+                                     List<Vector3f> _normalsList, List<Face> _facesList, float boundingRadius)
     {
         List<Integer> indicesList = new ArrayList<>();
 
@@ -92,7 +92,7 @@ public class OBJLoader {
         int[] indices;          // = new int[indicesList.size()]; <-- redundant!
         indices = indicesList.stream().mapToInt((Integer v) -> v).toArray();
 
-        return new OpenGLMesh(vertices, normals, uvCoords, indices);
+        return new OpenGLMesh(vertices, normals, uvCoords, indices, boundingRadius);
     }
 
     private static void processFaceVertex(IdxGroup indices, List<Vector2f> textCoordList,

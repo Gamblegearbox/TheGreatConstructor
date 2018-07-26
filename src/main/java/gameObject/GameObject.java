@@ -14,11 +14,10 @@ public class GameObject {
     private final Quaternionf rotation;
     private final OpenGLMesh mesh;
     private final Material material;
-    private final float boundingRadius;
     private boolean isVisible;
     private boolean isStatic;
 
-    public GameObject(OpenGLMesh _mesh, Material _material, float _boundingRadius, boolean _isStatic)
+    public GameObject(OpenGLMesh _mesh, Material _material, boolean _isStatic)
     {
         position = new Vector3(0,0,0);
         scale = new Vector3(1,1,1);
@@ -26,7 +25,7 @@ public class GameObject {
         mesh = _mesh;
         material = _material;
 
-        boundingRadius = _boundingRadius;
+
         setVisibility(true);
         setIsStatic(_isStatic);
     }
@@ -47,11 +46,6 @@ public class GameObject {
 
     public boolean isStatic(){
         return isStatic;
-    }
-
-    public float getBoundingRadius()
-    {
-        return boundingRadius;
     }
 
     public void setPosition(Vector3 _position)

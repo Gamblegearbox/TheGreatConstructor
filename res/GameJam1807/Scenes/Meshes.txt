@@ -1,0 +1,5 @@
+MESH = "Logo"; "/GameJam1807/OBJ/ui_prototype_logo.obj"; 2.5
+MESH = "ship"; "/GameJam1807/OBJ/player_ship_type_01.obj"; 2.5
+MESH = "shipFlame"; "/GameJam1807/OBJ/fx_ship_engine_flame.obj"; 2.5
+MESH = "enemy_1"; "/GameJam1807/OBJ/enemy_type_01.obj"; 2.5
+MESH = "shot_1"; "/GameJam1807/OBJ/fx_projectile.obj"; 1

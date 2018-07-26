@@ -19,6 +19,7 @@ public class OpenGLMesh {
     public static final int NORMALS = 1;
     public static final int UV_COORDS = 2;
 
+    private final float boundingRadius;
     private final int vaoID;
     private final int vboID_vertices;
     private final int vboID_normals;
@@ -26,8 +27,9 @@ public class OpenGLMesh {
     private final int vboID_indices;
     private final int vertexCount;
 
-    public OpenGLMesh(float[] _vertices, float[] _normals, float[] _uvCoords, int[] _indices)
+    public OpenGLMesh(float[] _vertices, float[] _normals, float[] _uvCoords, int[] _indices, float _boundingRadius)
     {
+        boundingRadius = _boundingRadius;
         vertexCount = _indices.length;
 
         vaoID = glGenVertexArrays();
@@ -72,6 +74,11 @@ public class OpenGLMesh {
     public int getVertexCount()
     {
         return vertexCount;
+    }
+
+    public float getBoundingRadius()
+    {
+        return boundingRadius;
     }
 
     public void cleanup()

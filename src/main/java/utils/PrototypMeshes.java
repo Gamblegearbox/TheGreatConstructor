@@ -52,7 +52,7 @@ public class PrototypMeshes {
             4,5,1,
         };
 
-        return new OpenGLMesh(vertices, normals, uvCoords, indices);
+        return new OpenGLMesh(vertices, normals, uvCoords, indices, 1);
     }
 
     public static OpenGLMesh triangle()
@@ -75,6 +75,6 @@ public class PrototypMeshes {
             0, 1, 2,
         };
 
-        return new OpenGLMesh(vertices, normals, uvCoords, indices);
+        return new OpenGLMesh(vertices, normals, uvCoords, indices, 1);
     }
 }

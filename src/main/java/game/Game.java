@@ -40,6 +40,8 @@ public class Game implements InterfaceGame {
     {
         Logger.getInstance().writeln("> INITIALISING GAME");
 
+        MeshLibrary.loadMeshes("/GameJam1807/Scenes/Meshes.txt");
+
         scenes = new Scene[3];
         scenes[0] = new Scene("/GameJam1807/Scenes/MainMenu.scn");
         scenes[1] = new Scene("/GameJam1807/Scenes/Scene_01.scn");

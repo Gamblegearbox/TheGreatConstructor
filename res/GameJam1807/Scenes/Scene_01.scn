@@ -2,7 +2,7 @@ SCENE_TITLE = "Demo Scene 01"
 LIGHT_POSITION = 10,0,5.0
 SCENE_MATERIAL = ""
 
-#STATIC_OBJECTS (GO = "path to obj file"; x ,y ,z)
-MESH = "/GameJam1807/OBJ/ui_prototype_logo.obj"; 2.5
-MESH = "/GameJam1807/OBJ/player_ship_type_01.obj"; 2.5
-MESH = "/GameJam1807/OBJ/fx_ship_engine_flame.obj"; 2.5
+#GAME_OBJECTS (GO = tag from mesh library")
+GO = "Logo"
+GO = "ship"
+GO = "shipFlame"

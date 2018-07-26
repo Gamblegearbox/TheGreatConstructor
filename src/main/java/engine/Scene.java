@@ -15,7 +15,6 @@ public class Scene {
 
     private Vector3 lightPosition;
     private GameObject[] gameObjects;
-    private List<OpenGLMesh> meshPool;
     private String sceneName;
     private boolean wasLoaded;
 
@@ -31,7 +30,6 @@ public class Scene {
         Material sceneMaterial = new Material(new Texture("/GameJam1807/Textures/Color.png"), null, new Texture("/GameJam1807/Textures/Gloss.png"), new Texture("/GameJam1807/Textures/Illum.png"));
 
         List<String> scnFileContent = utils.Utils.readAllLines(scnFilePath);
-        List<OpenGLMesh> meshPool = new ArrayList<>();
         List<String> objectDataFromFile = new ArrayList<>();
 
 
@@ -64,7 +62,7 @@ public class Scene {
                 //TODO: load scene material here
             }
 
-            if(line.startsWith("MESH")){
+            if(line.startsWith("GO")){
                 objectDataFromFile.add(line);
             }
         }
@@ -81,10 +79,9 @@ public class Scene {
 
             String[] objectDataTokens = objectData.split(";");
 
-            String path = objectDataTokens[0].trim().replaceAll("\"", "");
-            float boundingRadius = Float.parseFloat(objectDataTokens[1].trim());
+            String tag = objectDataTokens[0].trim().replaceAll("\"", "");
 
-            GameObject temp = new GameObject(OBJLoader.loadMesh(path), sceneMaterial, boundingRadius,false);
+            GameObject temp = new GameObject(MeshLibrary.getMeshByTag(tag), sceneMaterial, false);
             gameObjects[i] = temp;
         }
     }

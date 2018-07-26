@@ -116,7 +116,7 @@ public class OpenGLRenderer {
                 for (int i = 0; i < NUMBER_OF_FRUSTUM_PLANES; i++)
                 {
                     Vector4 plane = frustumPlanes[i];
-                    if (plane.x * position.x + plane.y * position.y + plane.z * position.z + plane.w <= -temp.getBoundingRadius() )
+                    if (plane.x * position.x + plane.y * position.y + plane.z * position.z + plane.w <= -temp.getMesh().getBoundingRadius() )
                     {
                         isInsideFrustum = false;
                     }
