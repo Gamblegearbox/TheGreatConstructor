@@ -1,5 +1,7 @@
 package utils;
 
+import math.Vector3;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -50,4 +52,13 @@ public class Utils {
         return floatArray;
     }
 
+    public static Vector3 createPositionFromString(String _string)
+    {
+        String[] positionAsString = _string.split(",");
+        float x = Float.parseFloat(positionAsString[0]);
+        float y = Float.parseFloat(positionAsString[1]);
+        float z = Float.parseFloat(positionAsString[2]);
+
+        return new Vector3(x, y, z);
+    }
 }

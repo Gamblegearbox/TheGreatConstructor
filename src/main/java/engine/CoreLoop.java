@@ -1,17 +1,15 @@
 package engine;
 
 import game.Game;
-import interfaces.InterfaceGame;
+import interfaces.IF_Game;
 import utils.Logger;
-
-import java.io.File;
 
 public class CoreLoop implements Runnable{
 
     private final Thread gameLoopThread;
     private final Window window;
     private final OpenGLRenderer renderer;
-    private final InterfaceGame game;
+    private final IF_Game game;
 
     public CoreLoop()
     {

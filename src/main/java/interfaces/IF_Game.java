@@ -1,7 +1,7 @@
 package interfaces;
 
 
-public interface InterfaceGame {
+public interface IF_Game {
 
     void init() throws Exception;
 

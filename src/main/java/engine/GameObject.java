@@ -1,7 +1,6 @@
-package gameObject;
+package engine;
 
-import engine.Material;
-import engine.OpenGLMesh;
+import interfaces.IF_GameObjectBehaviour;
 import math.Vector3;
 import org.joml.Quaternionf;
 import utils.Conversions;
@@ -13,18 +12,18 @@ public class GameObject {
     private final Vector3 scale;
     private final Quaternionf rotation;
     private final OpenGLMesh mesh;
-    private final Material material;
+    private final IF_GameObjectBehaviour behaviour;
     private boolean isVisible;
     private boolean isStatic;
 
-    public GameObject(OpenGLMesh _mesh, Material _material, boolean _isStatic)
+    public GameObject(OpenGLMesh _mesh, IF_GameObjectBehaviour _behaviour, boolean _isStatic)
     {
         position = new Vector3(0,0,0);
         scale = new Vector3(1,1,1);
         rotation = new Quaternionf();
-        mesh = _mesh;
-        material = _material;
 
+        mesh = _mesh;
+        behaviour = _behaviour;
 
         setVisibility(true);
         setIsStatic(_isStatic);
@@ -114,9 +113,8 @@ public class GameObject {
         return mesh;
     }
 
-    public Material getMaterial()
-    {
-        return material;
+    public void update(float _deltaTime){
+        behaviour.update(this, _deltaTime);
     }
 
     public void cleanup()

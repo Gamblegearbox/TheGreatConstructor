@@ -1,0 +1,1 @@
+MATERIAL = "default"; "/GameJam1807/Textures/Color.png"; none; "/GameJam1807/Textures/Gloss.png"; "/GameJam1807/Textures/Illum.png"

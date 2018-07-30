@@ -1,37 +1,34 @@
 package engine;
 
-import gameObject.GameObject;
 import math.Vector3;
 import utils.Logger;
-import utils.OBJLoader;
+import utils.Utils;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 
 public class Scene {
 
     private final String scnFilePath;
 
     private Vector3 lightPosition;
-    private GameObject[] gameObjects;
+    private Map<String, GameObject> gameObjectMap;
     private String sceneName;
-    private boolean wasLoaded;
+    private Material sceneMaterial;
 
-    public Scene(String _path)
+    public Scene(String _path, Material sceneMaterial) throws Exception
     {
-        wasLoaded = false;
         scnFilePath = _path;
+        this.sceneMaterial = sceneMaterial;
+
+        gameObjectMap = new HashMap<>();
+        load();
     }
 
-    public void load() throws Exception
+    private void load() throws Exception
     {
-        wasLoaded = true;
-        Material sceneMaterial = new Material(new Texture("/GameJam1807/Textures/Color.png"), null, new Texture("/GameJam1807/Textures/Gloss.png"), new Texture("/GameJam1807/Textures/Illum.png"));
-
         List<String> scnFileContent = utils.Utils.readAllLines(scnFilePath);
-        List<String> objectDataFromFile = new ArrayList<>();
-
 
         //PARSE SCENE FILE
         for(String line : scnFileContent){
@@ -55,35 +52,21 @@ public class Scene {
                 line = line.replaceAll("\"", "");
                 line = line.trim();
 
-                lightPosition = createPositionFromString(line);
+                lightPosition = Utils.createPositionFromString(line);
             }
 
-            if(line.startsWith("SCENE_MATERIAL")){
-                //TODO: load scene material here
-            }
 
-            if(line.startsWith("GO")){
-                objectDataFromFile.add(line);
-            }
         }
 
+        Logger.getInstance().writeln("> INITIALIZING " + sceneName +  "...");
+    }
 
-        gameObjects = new GameObject[objectDataFromFile.size()];
+    public  void addGameObject(String tag, GameObject go){
+        gameObjectMap.put(tag, go);
+    }
 
-        Logger.getInstance().writeln("> LOADING " + sceneName +  "...");
-
-        for(int i = 0 ; i < gameObjects.length; i++) {
-
-            String[] line = objectDataFromFile.get(i).split("=");
-            String objectData = line[line.length - 1];
-
-            String[] objectDataTokens = objectData.split(";");
-
-            String tag = objectDataTokens[0].trim().replaceAll("\"", "");
-
-            GameObject temp = new GameObject(MeshLibrary.getMeshByTag(tag), sceneMaterial, false);
-            gameObjects[i] = temp;
-        }
+    public String getSceneName(){
+        return sceneName;
     }
 
     public Vector3 getLightPosition()
@@ -91,30 +74,32 @@ public class Scene {
         return lightPosition;
     }
 
-    public GameObject[] getGameObjects()
+    public Material getSceneMaterial(){
+        return sceneMaterial;
+    }
+
+    public Map<String, GameObject> getGameObjects()
     {
-        return gameObjects;
+        return gameObjectMap;
+    }
+
+    public GameObject getGameObjectByTag(String tag){
+        return gameObjectMap.get(tag);
+    }
+
+    public void update(float _deltaTime){
+        for(GameObject temp: gameObjectMap.values()){
+            temp.update(_deltaTime);
+        }
     }
 
     public void cleanup()
     {
-        if(wasLoaded)
+        Logger.getInstance().writeln("> CLEANING UP " + sceneName);
+        for (GameObject temp : gameObjectMap.values())
         {
-            Logger.getInstance().writeln("> CLEANING UP " + sceneName);
-            for (GameObject temp : gameObjects)
-            {
-                temp.cleanup();
-            }
+            temp.cleanup();
         }
-    }
 
-    private Vector3 createPositionFromString(String _string)
-    {
-        String[] positionAsString = _string.split(",");
-        float x = Float.parseFloat(positionAsString[0]);
-        float y = Float.parseFloat(positionAsString[1]);
-        float z = Float.parseFloat(positionAsString[2]);
-
-        return new Vector3(x, y, z);
     }
 }

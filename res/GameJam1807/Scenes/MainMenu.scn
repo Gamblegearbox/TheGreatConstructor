@@ -1,6 +1,3 @@
 SCENE_TITLE = "Main Menu"
 LIGHT_POSITION = 1,0,1.0
-SCENE_MATERIAL = ""
 
-#GAME_OBJECTS (GO = tag from mesh library")
-GO = "Logo"

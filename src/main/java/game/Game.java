@@ -2,30 +2,22 @@ package game;
 
 import Input.KeyboardInput;
 import engine.*;
-import gameObject.GameObject;
-import interfaces.InterfaceGame;
+import engine.GameObject;
+import interfaces.IF_Game;
+import interfaces.IF_GameObjectBehaviour;
 import utils.Logger;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.lwjgl.glfw.GLFW.*;
 
 
-public class Game implements InterfaceGame {
+public class Game implements IF_Game {
 
     private final OpenGLRenderer renderer;
     private Scene[] scenes;
-    private Scene activeScene = null;
-    private int activeSceneIndex;
-
-    private float anim_X = 0;
-    private float anim_Y = 0;
-    private float animSpeed = 20f;
-    private float time = 0;
-
-    float shotX_1 = 0;
-    float shotY_1 = 0;
-
-    float shotX_2 = 0;
-    float shotY_2 = 0;
+    private Scene activeScene = null;;
 
     //DEBUG_MODE VALUES
     private float deltaTimeSum;
@@ -41,150 +33,59 @@ public class Game implements InterfaceGame {
         Logger.getInstance().writeln("> INITIALISING GAME");
 
         MeshLibrary.loadMeshes("/GameJam1807/Scenes/Meshes.txt");
+        MaterialLibrary.loadMaterials("/GameJam1807/Scenes/Materials.txt");
 
-        scenes = new Scene[3];
-        scenes[0] = new Scene("/GameJam1807/Scenes/MainMenu.scn");
-        scenes[1] = new Scene("/GameJam1807/Scenes/Scene_01.scn");
-        scenes[2] = new Scene("/GameJam1807/Scenes/Scene_02.scn");
+        scenes = new Scene[2];
+        scenes[0] = new Scene("/GameJam1807/Scenes/MainMenu.scn", MaterialLibrary.getMaterialByTag("default"));
+        GameObject temp = new GameObject(MeshLibrary.getMeshByTag("Logo"), new LogoBehaviour(), false);
+        temp.setPosition(0,0, -15);
+        scenes[0].addGameObject("logo", temp);
+
+        scenes[1] = new Scene("/GameJam1807/Scenes/Scene_01.scn", MaterialLibrary.getMaterialByTag("default"));
+        temp = new GameObject(MeshLibrary.getMeshByTag("Logo"), new NoBehaviour(), false);
+        temp.setPosition(-15,-12,-25);
+        scenes[1].addGameObject("logo", temp);
+
+        temp = new GameObject(MeshLibrary.getMeshByTag("ship"), new PlayerBehaviour(), false);
+        temp.setPosition(15,0,-25);
+        scenes[1].addGameObject("ship", temp);
+
+        temp = new GameObject(MeshLibrary.getMeshByTag("shipFlame"), new NoBehaviour(), false);
+        temp.setPosition(15,0,-25);
+        scenes[1].addGameObject("shipFlame", temp);
+
+        temp = new GameObject(MeshLibrary.getMeshByTag("enemy_1"), new EnemyBehaviour(),false);
+        temp.setPosition(-15,0,-25);
+        scenes[1].addGameObject("enemy_1", temp);
     }
 
     public void start() throws Exception
     {
-        activeSceneIndex = 0;
-        switchScene();
+        switchScene(0);
     }
 
     @Override
     public void input(float deltaTime) throws Exception
     {
-        if(KeyboardInput.isKeyDown(GLFW_KEY_RIGHT))
+        if(KeyboardInput.isKeyPressedOnce(GLFW_KEY_ESCAPE))
         {
-            anim_X = animSpeed * deltaTime;
+            switchScene(0);
         }
-        else if(KeyboardInput.isKeyDown(GLFW_KEY_LEFT))
-        {
-            anim_X = -animSpeed * deltaTime;
-        }
-        else
-        {
-            anim_X = 0;
-        }
-
-        if(KeyboardInput.isKeyDown(GLFW_KEY_UP))
-        {
-            anim_Y = animSpeed * deltaTime;
-        }
-        else if(KeyboardInput.isKeyDown(GLFW_KEY_DOWN))
-        {
-            anim_Y = -animSpeed * deltaTime;
-        }
-        else
-        {
-            anim_Y = 0;
-        }
-
 
         if(KeyboardInput.isKeyPressedOnce(GLFW_KEY_1))
         {
-            activeSceneIndex = 1;
-            switchScene();
-        }
-
-        if(KeyboardInput.isKeyPressedOnce(GLFW_KEY_2))
-        {
-            activeSceneIndex = 2;
-            switchScene();
-        }
-
-        if(KeyboardInput.isKeyPressedOnce(GLFW_KEY_ESCAPE))
-        {
-            activeSceneIndex = 0;
-            switchScene();
+            switchScene(1);
         }
     }
 
     @Override
-    public void update(float deltaTime)
+    public void update(float _deltaTime)
     {
-        float menuCameraOffset = -25f;
-        float gameCameraOffset = -65;
-
-        GameObject[] gameObjects = activeScene.getGameObjects();
-
-        if(activeSceneIndex==0) {
-            GameObject logo = gameObjects[0];
-            logo.setPosition(0, 0, -15);
-        }
-
-        if(activeSceneIndex==1){
-            GameObject logo = gameObjects[0];
-            GameObject ship = gameObjects[1];
-            GameObject blaster = gameObjects[2];
-
-            logo.setPosition(-15, -12, menuCameraOffset);
-            ship.setPosition(0, 0, menuCameraOffset);
-            ship.setRotation(0, time, 0);
-            blaster.setPosition(0, 0, menuCameraOffset);
-            blaster.setRotation(0, time, 0);
-            blaster.setScale(1,1,Math.abs((float)Math.sin(time*20000f)));
-        }
-
-        if(activeSceneIndex==2){
-            GameObject logo = gameObjects[0];
-            GameObject ship = gameObjects[1];
-            GameObject blaster = gameObjects[2];
-            GameObject shot_1 = gameObjects[gameObjects.length-1];
-            GameObject shot_2 = gameObjects[gameObjects.length-2];
-
-            logo.setPosition(-15, -12, menuCameraOffset);
-
-            if(shot_1.getPosition().x > ship.getPosition().x + 100f){
-                shotX_1 = ship.getPosition().x + 10f;
-                shotY_1 = ship.getPosition().y - 1.8f;
-            }
-            else{
-                shotX_1 += deltaTime*250;
-            }
-
-            if(shot_2.getPosition().x > ship.getPosition().x + 75f){
-                shotX_2 = ship.getPosition().x + 10f;
-                shotY_2 = ship.getPosition().y - 1.8f;
-            }
-            else{
-                shotX_2 += deltaTime*250;
-            }
-
-
-            float x = ship.getPosition().x;
-            x += anim_X;
-            float y = ship.getPosition().y;
-            y += anim_Y;
-
-            ship.setPosition(x, y, gameCameraOffset);
-            ship.setRotation(0, -90, 0);
-            blaster.setPosition(x, y, gameCameraOffset);
-            blaster.setRotation(0, -90, 0);
-            blaster.setScale(1,1,Math.abs((float)Math.sin(time*20000f)));
-
-            shot_1.setPosition(shotX_1, shotY_1, gameCameraOffset);
-            shot_1.setRotation(0, -90, time*10);
-            shot_1.setScale(1,(float)Math.sin(time*200f),3*Math.abs((float)Math.sin(time*200f)));
-
-            shot_2.setPosition(shotX_2, shotY_2, gameCameraOffset);
-            shot_2.setRotation(0, -90, time*10);
-            shot_2.setScale(1,(float)Math.sin(time*200f),3*Math.abs((float)Math.sin(time*200f)));
-
-            GameObject enemy = gameObjects[3];
-            enemy.setPosition(25, 15, gameCameraOffset);
-            enemy.setRotation(0, 90, 0);
-
-
-        }
-
+        activeScene.update(_deltaTime);
 
         if(EngineOptions.getOptionAsBoolean("DEBUG_MODE"))
         {
-            deltaTimeSum += deltaTime;
+            deltaTimeSum += _deltaTime;
 
             if( deltaTimeSum > EngineOptions.getOptionAsFloat("LOGGING_INTERVAL"))
             {
@@ -192,8 +93,6 @@ public class Game implements InterfaceGame {
                 deltaTimeSum = 0;
             }
         }
-
-        time += deltaTime * 15;
     }
 
     @Override
@@ -215,9 +114,9 @@ public class Game implements InterfaceGame {
         Logger.getInstance().cleanup();
     }
 
-    private void switchScene() throws Exception
+    private void switchScene(int index) throws Exception
     {
-        activeScene = scenes[activeSceneIndex];
-        activeScene.load();
+        activeScene = scenes[index];
+        Logger.getInstance().writeln("> LOADING " + activeScene.getSceneName() +  "...");
     }
 }
