@@ -1,5 +1,6 @@
 package engine;
 
+import interfaces.IF_SceneObject;
 import math.Vector3;
 import utils.Logger;
 import utils.Utils;
@@ -13,7 +14,7 @@ public class Scene {
     private final String scnFilePath;
 
     private Vector3 lightPosition;
-    private Map<String, GameObject> gameObjectMap;
+    private Map<String, IF_SceneObject> sceneObjects;
     private String sceneName;
     private Material sceneMaterial;
 
@@ -22,7 +23,7 @@ public class Scene {
         scnFilePath = _path;
         this.sceneMaterial = sceneMaterial;
 
-        gameObjectMap = new HashMap<>();
+        sceneObjects = new HashMap<>();
         load();
     }
 
@@ -61,8 +62,8 @@ public class Scene {
         Logger.getInstance().writeln("> INITIALIZING " + sceneName +  "...");
     }
 
-    public  void addGameObject(String tag, GameObject go){
-        gameObjectMap.put(tag, go);
+    public  void addSceneObject(String tag, IF_SceneObject _sceneObject){
+        sceneObjects.put(tag, _sceneObject);
     }
 
     public String getSceneName(){
@@ -78,17 +79,17 @@ public class Scene {
         return sceneMaterial;
     }
 
-    public Map<String, GameObject> getGameObjects()
+    public Map<String, IF_SceneObject> getGameObjects()
     {
-        return gameObjectMap;
+        return sceneObjects;
     }
 
-    public GameObject getGameObjectByTag(String tag){
-        return gameObjectMap.get(tag);
+    public IF_SceneObject getSceneObjectByTag(String tag){
+        return sceneObjects.get(tag);
     }
 
     public void update(float _deltaTime){
-        for(GameObject temp: gameObjectMap.values()){
+        for(IF_SceneObject temp: sceneObjects.values()){
             temp.update(_deltaTime);
         }
     }
@@ -96,9 +97,9 @@ public class Scene {
     public void cleanup()
     {
         Logger.getInstance().writeln("> CLEANING UP " + sceneName);
-        for (GameObject temp : gameObjectMap.values())
+        for (IF_SceneObject temp : sceneObjects.values())
         {
-            temp.cleanup();
+            temp.getMeshAndTransform().cleanup();
         }
 
     }

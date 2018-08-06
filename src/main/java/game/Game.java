@@ -2,13 +2,9 @@ package game;
 
 import Input.KeyboardInput;
 import engine.*;
-import engine.GameObject;
+import engine.MeshAndTransform;
 import interfaces.IF_Game;
-import interfaces.IF_GameObjectBehaviour;
 import utils.Logger;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -18,6 +14,11 @@ public class Game implements IF_Game {
     private final OpenGLRenderer renderer;
     private Scene[] scenes;
     private Scene activeScene = null;;
+
+
+    Player player;
+    Enemy enemy;
+    Projectile projectile;
 
     //DEBUG_MODE VALUES
     private float deltaTimeSum;
@@ -32,31 +33,28 @@ public class Game implements IF_Game {
     {
         Logger.getInstance().writeln("> INITIALISING GAME");
 
-        MeshLibrary.loadMeshes("/GameJam1807/Scenes/Meshes.txt");
-        MaterialLibrary.loadMaterials("/GameJam1807/Scenes/Materials.txt");
+        MeshLibrary.loadMeshes("/TestGameContent/Scenes/Meshes.txt");
+        MaterialLibrary.loadMaterials("/TestGameContent/Scenes/Materials.txt");
+
+        player = new Player(new MeshAndTransform(MeshLibrary.getMeshByTag("Ship")));
+        player.getMeshAndTransform().setPosition(-15,0,-25);
+        player.getMeshAndTransform().setRotation(0,-90,0);
+
+        enemy = new Enemy(new MeshAndTransform(MeshLibrary.getMeshByTag("Enemy_1")));
+        enemy.getMeshAndTransform().setPosition(15,0,-25);
+
+        projectile = new Projectile(new MeshAndTransform(MeshLibrary.getMeshByTag("Projectile_1")));
 
         scenes = new Scene[2];
-        scenes[0] = new Scene("/GameJam1807/Scenes/MainMenu.scn", MaterialLibrary.getMaterialByTag("default"));
-        GameObject temp = new GameObject(MeshLibrary.getMeshByTag("Logo"), new LogoBehaviour(), false);
-        temp.setPosition(0,0, -15);
-        scenes[0].addGameObject("logo", temp);
+        scenes[0] = new Scene("/TestGameContent/Scenes/MainMenu.scn", MaterialLibrary.getMaterialByTag("default"));
+        scenes[1] = new Scene("/TestGameContent/Scenes/Scene_01.scn", MaterialLibrary.getMaterialByTag("default"));
 
-        scenes[1] = new Scene("/GameJam1807/Scenes/Scene_01.scn", MaterialLibrary.getMaterialByTag("default"));
-        temp = new GameObject(MeshLibrary.getMeshByTag("Logo"), new NoBehaviour(), false);
-        temp.setPosition(-15,-12,-25);
-        scenes[1].addGameObject("logo", temp);
 
-        temp = new GameObject(MeshLibrary.getMeshByTag("ship"), new PlayerBehaviour(), false);
-        temp.setPosition(15,0,-25);
-        scenes[1].addGameObject("ship", temp);
+        scenes[0].addSceneObject("Logo", new Logo(new MeshAndTransform(MeshLibrary.getMeshByTag("Logo"))));
+        scenes[1].addSceneObject("Player", player);
+        scenes[1].addSceneObject("Enemy", enemy);
+        scenes[1].addSceneObject("Shot1", projectile);
 
-        temp = new GameObject(MeshLibrary.getMeshByTag("shipFlame"), new NoBehaviour(), false);
-        temp.setPosition(15,0,-25);
-        scenes[1].addGameObject("shipFlame", temp);
-
-        temp = new GameObject(MeshLibrary.getMeshByTag("enemy_1"), new EnemyBehaviour(),false);
-        temp.setPosition(-15,0,-25);
-        scenes[1].addGameObject("enemy_1", temp);
     }
 
     public void start() throws Exception
@@ -75,6 +73,11 @@ public class Game implements IF_Game {
         if(KeyboardInput.isKeyPressedOnce(GLFW_KEY_1))
         {
             switchScene(1);
+        }
+
+        if(KeyboardInput.isKeyPressedOnce(GLFW_KEY_SPACE))
+        {
+            projectile.start(player.getMeshAndTransform().getPosition());
         }
     }
 

@@ -1,5 +1,6 @@
 package engine;
 
+import interfaces.IF_SceneObject;
 import math.Matrix4;
 import math.Vector3;
 import math.Vector4;
@@ -92,7 +93,7 @@ public class OpenGLRenderer {
             window.setResized(false);
         }
 
-        Map<String, GameObject> gameObjects = _scene.getGameObjects();
+        Map<String, IF_SceneObject> gameObjects = _scene.getGameObjects();
         Vector3 lightPosition = _scene.getLightPosition();
 
         //UPLOAD FRAME RELEVANT UNIFORMS HERE
@@ -109,9 +110,11 @@ public class OpenGLRenderer {
                 viewProjectionMatrix.calcFrustumPlane(i, frustumPlanes[i]);
             }
 
-            for(GameObject temp : gameObjects.values())
+            for(IF_SceneObject sceneObject : gameObjects.values())
             {
+                MeshAndTransform temp = sceneObject.getMeshAndTransform();
                 //IS OBJECT INSIDE FRUSTUM?
+
                 Vector3 position = temp.getPosition();
                 boolean isInsideFrustum = true;
                 for (int i = 0; i < NUMBER_OF_FRUSTUM_PLANES; i++)
@@ -130,8 +133,10 @@ public class OpenGLRenderer {
         //RENDER ALL VISIBLE OBJECTS
         int totalVerticesInFrame = 0;
         Material material = _scene.getSceneMaterial();
-        for(GameObject temp : gameObjects.values())
+        for(IF_SceneObject sceneObject : gameObjects.values())
         {
+            MeshAndTransform temp = sceneObject.getMeshAndTransform();
+
             if(temp.isVisible())
             {
                 OpenGLMesh mesh = temp.getMesh();
