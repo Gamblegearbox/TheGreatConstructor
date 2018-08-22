@@ -1,1 +1,1 @@
-MATERIAL = "default"; "/TestGameContent/Textures/Color.png"; none; "/TestGameContent/Textures/Gloss.png"; "/TestGameContent/Textures/Illum.png"
+MATERIAL = "default"; "/TestGameContent/Textures/Atlas_1_COLOR.png"; none; "/TestGameContent/Textures/Gloss.png"; "/TestGameContent/Textures/Illum.png"

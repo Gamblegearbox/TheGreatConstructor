@@ -17,8 +17,6 @@ public class Game implements IF_Game {
 
 
     Player player;
-    Enemy enemy;
-    Projectile projectile;
 
     //DEBUG_MODE VALUES
     private float deltaTimeSum;
@@ -36,24 +34,16 @@ public class Game implements IF_Game {
         MeshLibrary.loadMeshes("/TestGameContent/Scenes/Meshes.txt");
         MaterialLibrary.loadMaterials("/TestGameContent/Scenes/Materials.txt");
 
-        player = new Player(new MeshAndTransform(MeshLibrary.getMeshByTag("Ship")));
-        player.getMeshAndTransform().setPosition(-15,0,-25);
-        player.getMeshAndTransform().setRotation(0,-90,0);
-
-        enemy = new Enemy(new MeshAndTransform(MeshLibrary.getMeshByTag("Enemy_1")));
-        enemy.getMeshAndTransform().setPosition(15,0,-25);
-
-        projectile = new Projectile(new MeshAndTransform(MeshLibrary.getMeshByTag("Projectile_1")));
+        player = new Player(new MeshAndTransform(MeshLibrary.getMeshByTag("HoverTruck")));
+        player.getMeshAndTransform().setPosition(0,-1,-5);
 
         scenes = new Scene[2];
         scenes[0] = new Scene("/TestGameContent/Scenes/MainMenu.scn", MaterialLibrary.getMaterialByTag("default"));
         scenes[1] = new Scene("/TestGameContent/Scenes/Scene_01.scn", MaterialLibrary.getMaterialByTag("default"));
 
-
         scenes[0].addSceneObject("Logo", new Logo(new MeshAndTransform(MeshLibrary.getMeshByTag("Logo"))));
         scenes[1].addSceneObject("Player", player);
-        scenes[1].addSceneObject("Enemy", enemy);
-        scenes[1].addSceneObject("Shot1", projectile);
+
 
     }
 
@@ -77,7 +67,7 @@ public class Game implements IF_Game {
 
         if(KeyboardInput.isKeyPressedOnce(GLFW_KEY_SPACE))
         {
-            projectile.start(player.getMeshAndTransform().getPosition());
+
         }
     }
 

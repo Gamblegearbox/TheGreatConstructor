@@ -3,3 +3,4 @@ MESH = "Ship"; "/TestGameContent/Meshes/player_ship_type_01.obj"; 2.5
 MESH = "ShipFlame"; "/TestGameContent/Meshes/fx_ship_engine_flame.obj"; 2.5
 MESH = "Enemy_1"; "/TestGameContent/Meshes/enemy_type_01.obj"; 2.5
 MESH = "Projectile_1"; "/TestGameContent/Meshes/fx_projectile.obj"; 1
+MESH = "HoverTruck"; "/TestGameContent/Meshes/HoverTruck.obj"; 1

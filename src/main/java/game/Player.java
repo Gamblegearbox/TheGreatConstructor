@@ -6,6 +6,8 @@ import interfaces.IF_SceneObject;
 public class Player implements IF_SceneObject {
 
     float time = 0;
+    float rotSpeed = 5.0f;
+
     MeshAndTransform meshAndTransform;
 
     public Player(MeshAndTransform _meshAndTransform){
@@ -19,8 +21,8 @@ public class Player implements IF_SceneObject {
 
     @Override
     public void update(float _deltaTime){
-        time += _deltaTime;
-        float sin = (float)Math.sin(time);
-        meshAndTransform.setPosition(meshAndTransform.getPosition().x, sin*15f, meshAndTransform.getPosition().z);
+        time += _deltaTime * rotSpeed;
+
+        meshAndTransform.setRotation(0, time,0);
     }
 }
