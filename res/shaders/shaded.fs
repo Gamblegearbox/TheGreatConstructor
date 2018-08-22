@@ -69,7 +69,7 @@ void main()
     {
         float finalShadeFactor = 0;
         // CALC AMBIENT
-        float ambient = 0.05; //TODO:uniform
+        float ambient = 0.25; //TODO:uniform
 
         // CALC DIFFUSE
         float diffuse = max(dot(currentNormal, normalize(lightPosition)),0.0);
