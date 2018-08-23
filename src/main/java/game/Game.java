@@ -35,7 +35,8 @@ public class Game implements IF_Game {
         MaterialLibrary.loadMaterials("/TestGameContent/Scenes/Materials.txt");
 
         player = new Player(new MeshAndTransform(MeshLibrary.getMeshByTag("HoverTruck")));
-        player.getMeshAndTransform().setPosition(0,-1,-5);
+        player.getMeshAndTransform().setRotation(90,0,0);
+
 
         scenes = new Scene[2];
         scenes[0] = new Scene("/TestGameContent/Scenes/MainMenu.scn", MaterialLibrary.getMaterialByTag("default"));
@@ -43,8 +44,6 @@ public class Game implements IF_Game {
 
         scenes[0].addSceneObject("Logo", new Logo(new MeshAndTransform(MeshLibrary.getMeshByTag("Logo"))));
         scenes[1].addSceneObject("Player", player);
-
-
     }
 
     public void start() throws Exception
