@@ -1,10 +1,15 @@
 package interfaces;
 
-import engine.MeshAndTransform;
+import engine.OpenGLMesh;
+import engine.Transform;
 
 public interface IF_SceneObject {
 
-    MeshAndTransform getMeshAndTransform();
+    Transform getTransform();
+
+    OpenGLMesh getMesh();
 
     void update(float _deltaTime);
+
+    void cleanup();
 }

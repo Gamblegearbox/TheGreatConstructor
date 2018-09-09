@@ -2,7 +2,7 @@ package game;
 
 import Input.KeyboardInput;
 import engine.*;
-import engine.MeshAndTransform;
+import engine.Transform;
 import interfaces.IF_Game;
 import utils.Logger;
 
@@ -34,15 +34,15 @@ public class Game implements IF_Game {
         MeshLibrary.loadMeshes("/TestGameContent/Scenes/Meshes.txt");
         MaterialLibrary.loadMaterials("/TestGameContent/Scenes/Materials.txt");
 
-        player = new Player(new MeshAndTransform(MeshLibrary.getMeshByTag("HoverTruck")));
-        player.getMeshAndTransform().setRotation(90,0,0);
+        player = new Player(MeshLibrary.getMeshByTag("HoverTruck"));
+        player.getTransform().setRotation(90,0,0);
 
 
         scenes = new Scene[2];
         scenes[0] = new Scene("/TestGameContent/Scenes/MainMenu.scn", MaterialLibrary.getMaterialByTag("default"));
         scenes[1] = new Scene("/TestGameContent/Scenes/Scene_01.scn", MaterialLibrary.getMaterialByTag("default"));
 
-        scenes[0].addSceneObject("Logo", new Logo(new MeshAndTransform(MeshLibrary.getMeshByTag("Logo"))));
+        scenes[0].addSceneObject("Logo", new Logo(MeshLibrary.getMeshByTag("Logo")));
         scenes[1].addSceneObject("Player", player);
     }
 

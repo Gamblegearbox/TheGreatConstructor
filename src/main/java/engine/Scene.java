@@ -56,7 +56,6 @@ public class Scene {
                 lightPosition = Utils.createPositionFromString(line);
             }
 
-
         }
 
         Logger.getInstance().writeln("> INITIALIZING " + sceneName +  "...");
@@ -99,7 +98,7 @@ public class Scene {
         Logger.getInstance().writeln("> CLEANING UP " + sceneName);
         for (IF_SceneObject temp : sceneObjects.values())
         {
-            temp.getMeshAndTransform().cleanup();
+            temp.cleanup();
         }
 
     }

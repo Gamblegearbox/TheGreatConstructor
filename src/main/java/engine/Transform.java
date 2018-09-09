@@ -5,22 +5,19 @@ import org.joml.Quaternionf;
 import utils.Conversions;
 
 
-public class MeshAndTransform {
+public class Transform {
 
     private final Vector3 position;
     private final Vector3 scale;
     private final Quaternionf rotation;
-    private final OpenGLMesh mesh;
     private boolean isVisible;
     private boolean isStatic;
 
-    public MeshAndTransform(OpenGLMesh _mesh)
+    public Transform()
     {
         position = new Vector3(0,0,0);
         scale = new Vector3(1,1,1);
         rotation = new Quaternionf();
-
-        mesh = _mesh;
 
         setVisibility(true);
     }
@@ -104,13 +101,5 @@ public class MeshAndTransform {
         return rotation;
     }
 
-    public OpenGLMesh getMesh()
-    {
-        return mesh;
-    }
 
-    public void cleanup()
-    {
-        mesh.cleanup();
-    }
 }

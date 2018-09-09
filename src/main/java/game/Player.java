@@ -1,6 +1,7 @@
 package game;
 
-import engine.MeshAndTransform;
+import engine.Transform;
+import engine.OpenGLMesh;
 import interfaces.IF_SceneObject;
 
 public class Player implements IF_SceneObject {
@@ -10,15 +11,17 @@ public class Player implements IF_SceneObject {
     float y = 0;
     float speed = 5.0f;
 
-    MeshAndTransform meshAndTransform;
+    Transform transform;
+    OpenGLMesh mesh;
 
-    public Player(MeshAndTransform _meshAndTransform){
-        meshAndTransform = _meshAndTransform;
+    public Player(OpenGLMesh _mesh){
+        transform = new Transform();
+        mesh = _mesh;
     }
 
     @Override
-    public MeshAndTransform getMeshAndTransform(){
-        return meshAndTransform;
+    public Transform getTransform(){
+        return transform;
     }
 
     @Override
@@ -34,6 +37,16 @@ public class Player implements IF_SceneObject {
         }
 
 
-        meshAndTransform.setPosition(x,y,z);
+        transform.setPosition(x,y,z);
+    }
+
+    public OpenGLMesh getMesh()
+    {
+        return mesh;
+    }
+
+    public void cleanup()
+    {
+        mesh.cleanup();
     }
 }

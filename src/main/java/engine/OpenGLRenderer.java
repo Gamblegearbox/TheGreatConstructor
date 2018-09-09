@@ -82,6 +82,7 @@ public class OpenGLRenderer {
 
     public void render(Scene _scene)
     {
+        int totalVerticesInFrame = 0;
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
         if ( window.isResized() )
@@ -112,7 +113,8 @@ public class OpenGLRenderer {
 
             for(IF_SceneObject sceneObject : gameObjects.values())
             {
-                MeshAndTransform temp = sceneObject.getMeshAndTransform();
+                Transform temp = sceneObject.getTransform();
+
                 //IS OBJECT INSIDE FRUSTUM?
 
                 Vector3 position = temp.getPosition();
@@ -120,7 +122,7 @@ public class OpenGLRenderer {
                 for (int i = 0; i < NUMBER_OF_FRUSTUM_PLANES; i++)
                 {
                     Vector4 plane = frustumPlanes[i];
-                    if (plane.x * position.x + plane.y * position.y + plane.z * position.z + plane.w <= -temp.getMesh().getBoundingRadius() )
+                    if (plane.x * position.x + plane.y * position.y + plane.z * position.z + plane.w <= -sceneObject.getMesh().getBoundingRadius() )
                     {
                         isInsideFrustum = false;
                     }
@@ -131,15 +133,14 @@ public class OpenGLRenderer {
         }
 
         //RENDER ALL VISIBLE OBJECTS
-        int totalVerticesInFrame = 0;
         Material material = _scene.getSceneMaterial();
         for(IF_SceneObject sceneObject : gameObjects.values())
         {
-            MeshAndTransform temp = sceneObject.getMeshAndTransform();
+            Transform temp = sceneObject.getTransform();
 
             if(temp.isVisible())
             {
-                OpenGLMesh mesh = temp.getMesh();
+                OpenGLMesh mesh = sceneObject.getMesh();
 
                 int vertexCount = mesh.getVertexCount();
                 totalVerticesInFrame += vertexCount;
