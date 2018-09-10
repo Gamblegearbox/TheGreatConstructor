@@ -34,16 +34,18 @@ public class Game implements IF_Game {
         MeshLibrary.loadMeshes("/TestGameContent/Scenes/Meshes.txt");
         MaterialLibrary.loadMaterials("/TestGameContent/Scenes/Materials.txt");
 
-        player = new Player(MeshLibrary.getMeshByTag("HoverTruck"));
-        player.getTransform().setRotation(90,0,0);
+        player = new Player();
 
-
+        //CREATE SCENES
         scenes = new Scene[2];
         scenes[0] = new Scene("/TestGameContent/Scenes/MainMenu.scn", MaterialLibrary.getMaterialByTag("default"));
         scenes[1] = new Scene("/TestGameContent/Scenes/Scene_01.scn", MaterialLibrary.getMaterialByTag("default"));
 
-        scenes[0].addSceneObject("Logo", new Logo(MeshLibrary.getMeshByTag("Logo")));
+        //ADD OBJECTS TO SCENES
+        scenes[0].addSceneObject("Logo", new Logo());
+
         scenes[1].addSceneObject("Player", player);
+        scenes[1].addSceneObject("Street", new Street());
     }
 
     public void start() throws Exception

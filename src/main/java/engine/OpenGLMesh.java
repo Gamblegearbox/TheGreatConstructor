@@ -27,6 +27,9 @@ public class OpenGLMesh {
     private final int vboID_indices;
     private final int vertexCount;
 
+
+    private FloatBuffer verticesBuffer;
+
     public OpenGLMesh(float[] _vertices, float[] _normals, float[] _uvCoords, int[] _indices, float _boundingRadius)
     {
         boundingRadius = _boundingRadius;
@@ -36,10 +39,8 @@ public class OpenGLMesh {
         glBindVertexArray(vaoID);
 
         vboID_vertices = glGenBuffers();
-        FloatBuffer verticesBuffer = BufferUtils.createFloatBuffer(_vertices.length);
-        verticesBuffer.put(_vertices).flip();
-        glBindBuffer(GL_ARRAY_BUFFER, vboID_vertices);
-        glBufferData(GL_ARRAY_BUFFER, verticesBuffer, GL_STATIC_DRAW);
+        verticesBuffer = BufferUtils.createFloatBuffer(_vertices.length);
+        updateVertices(_vertices);
         glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
 
         vboID_normals = glGenBuffers();
@@ -64,6 +65,12 @@ public class OpenGLMesh {
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
+    }
+
+    public void updateVertices(float[] _vertices){
+        verticesBuffer.put(_vertices).flip();
+        glBindBuffer(GL_ARRAY_BUFFER, vboID_vertices);
+        glBufferData(GL_ARRAY_BUFFER, verticesBuffer, GL_STATIC_DRAW);
     }
 
     public int getVaoID()

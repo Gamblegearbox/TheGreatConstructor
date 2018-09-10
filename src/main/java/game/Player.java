@@ -1,5 +1,6 @@
 package game;
 
+import engine.MeshLibrary;
 import engine.Transform;
 import engine.OpenGLMesh;
 import interfaces.IF_SceneObject;
@@ -14,9 +15,11 @@ public class Player implements IF_SceneObject {
     Transform transform;
     OpenGLMesh mesh;
 
-    public Player(OpenGLMesh _mesh){
+    public Player(){
+        mesh = MeshLibrary.getMeshByTag("HoverTruck");
+
         transform = new Transform();
-        mesh = _mesh;
+        transform.setRotation(90,0,0);
     }
 
     @Override

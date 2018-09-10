@@ -1,5 +1,6 @@
 package game;
 
+import engine.MeshLibrary;
 import engine.OpenGLMesh;
 import engine.Transform;
 import interfaces.IF_SceneObject;
@@ -12,9 +13,9 @@ public class Logo implements IF_SceneObject {
     private Transform transform;
     private OpenGLMesh mesh;
 
-    public Logo(OpenGLMesh _mesh) {
+    public Logo() {
         transform = new Transform();
-        mesh = _mesh;
+        mesh = MeshLibrary.getMeshByTag("Logo");
     }
 
     @Override
