@@ -1,2 +1,3 @@
 MESH = "Logo"; "/TestGameContent/Meshes/ui_logo.obj"; 2.5
-MESH = "HoverTruck"; "/TestGameContent/Meshes/HoverTruck.obj"; 2
+MESH = "Pickup"; "/TestGameContent/Meshes/Pickup.obj"; 2
+MESH = "Coupe"; "/TestGameContent/Meshes/Coupe.obj"; 2

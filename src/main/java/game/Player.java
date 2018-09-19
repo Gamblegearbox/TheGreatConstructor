@@ -10,16 +10,16 @@ public class Player implements IF_SceneObject {
     float x = 0;
     float z = 0;
     float y = 0;
-    float speed = 5.0f;
+    float speed = 15.0f;
 
     Transform transform;
     OpenGLMesh mesh;
 
     public Player(){
-        mesh = MeshLibrary.getMeshByTag("HoverTruck");
+        mesh = MeshLibrary.getMeshByTag("Coupe");
 
         transform = new Transform();
-        transform.setRotation(90,0,0);
+        transform.setPosition(2,-2,-7);
     }
 
     @Override
@@ -30,17 +30,9 @@ public class Player implements IF_SceneObject {
     @Override
     public void update(float _deltaTime){
 
-
-        x = 3f;
         y += _deltaTime * speed;
-        z = -10f;
 
-        if(y > 8){
-            y = -8;
-        }
-
-
-        transform.setPosition(x,y,z);
+        transform.setRotation(0,y,0);
     }
 
     public OpenGLMesh getMesh()
