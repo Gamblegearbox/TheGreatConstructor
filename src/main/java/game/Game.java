@@ -50,7 +50,7 @@ public class Game implements IF_Game {
 
     public void start() throws Exception
     {
-        switchScene(0);
+        switchScene(1);
     }
 
     @Override
