@@ -142,8 +142,8 @@ public class OpenGLRenderer {
             {
                 OpenGLMesh mesh = sceneObject.getMesh();
 
-                int vertexCount = mesh.getVertexCount();
-                totalVerticesInFrame += vertexCount;
+                int indicesCount = mesh.getIndicesCount();
+                totalVerticesInFrame += mesh.getVertexCount();
 
                 glBindVertexArray(mesh.getVaoID());
                 glEnableVertexAttribArray(OpenGLMesh.VERTICES);
@@ -154,7 +154,7 @@ public class OpenGLRenderer {
                 modelViewMatrix.multiply(modelMatrix, viewMatrix);
                 shader.setUniformData("modelViewMatrix", modelViewMatrix);
 
-                /* TODO: It's way more performance to do this only once in the init method.
+                /* TODO: It's way more performant to do this only once in the init method.
                 * But that would mean only on giant texture atlas and no texture changes during rendering.
                 * Or a few atlasses and the material only holds an index for an atlas*/
 
@@ -197,12 +197,12 @@ public class OpenGLRenderer {
 
                 if(EngineOptions.getOptionAsBoolean("SHOW_WIREFRAME"))
                 {
-                    glDrawElements(GL_TRIANGLES, vertexCount, GL_UNSIGNED_INT, 0);
-                    glDrawElements(GL_POINTS, vertexCount, GL_UNSIGNED_INT, 0);
+                    glDrawElements(GL_TRIANGLES, indicesCount, GL_UNSIGNED_INT, 0);
+                    glDrawElements(GL_POINTS, indicesCount, GL_UNSIGNED_INT, 0);
                 }
                 else
                 {
-                    glDrawElements(GL_TRIANGLES, vertexCount, GL_UNSIGNED_INT, 0);
+                    glDrawElements(GL_TRIANGLES, indicesCount, GL_UNSIGNED_INT, 0);
                 }
 
                 glDisableVertexAttribArray(OpenGLMesh.VERTICES);

@@ -26,6 +26,7 @@ public class OpenGLMesh {
     private final int vboID_uvCoords;
     private final int vboID_indices;
     private final int vertexCount;
+    private final int indicesCount;
 
 
     private FloatBuffer verticesBuffer;
@@ -33,7 +34,8 @@ public class OpenGLMesh {
     public OpenGLMesh(float[] _vertices, float[] _normals, float[] _uvCoords, int[] _indices, float _boundingRadius)
     {
         boundingRadius = _boundingRadius;
-        vertexCount = _indices.length;
+        vertexCount = _vertices.length / 3;
+        indicesCount = _indices.length;
 
         vaoID = glGenVertexArrays();
         glBindVertexArray(vaoID);
@@ -81,6 +83,10 @@ public class OpenGLMesh {
     public int getVertexCount()
     {
         return vertexCount;
+    }
+
+    public int getIndicesCount(){
+        return indicesCount;
     }
 
     public float getBoundingRadius()

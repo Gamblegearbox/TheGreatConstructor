@@ -12,10 +12,10 @@ public class Street implements IF_SceneObject {
 
     private float anim = 0;
 
-    private int lengthRes = 10;
-    private int widthRes = 10;
-    private float length = 2f;
-    private float width = 2f;
+    private final int lengthRes = 9;
+    private final int widthRes = 9;
+    private final float length = 2f;
+    private final float width = 2f;
 
     private float boundingRadius = 2;
 
@@ -26,7 +26,7 @@ public class Street implements IF_SceneObject {
 
     public Street(){
         transform = new Transform();
-        transform.setPosition(0,0,-5);
+        transform.setPosition(0,-2,-5);
 
         verts = new float[(lengthRes + 1) * (widthRes + 1) * 3];
         normals = new float[verts.length];
@@ -41,19 +41,19 @@ public class Street implements IF_SceneObject {
     private void calcVerts(){
 
         int index = 0;
-        for(int y = 0; y < lengthRes + 1; y++){
+        for(int z = 0; z < lengthRes + 1; z++){
             for(int x = 0; x < widthRes + 1; x++){
-                verts[index + 0] = x * (width / widthRes);
-                verts[index + 1] = y * (length / lengthRes);
-                verts[index + 2] = 0;
+                verts[index + 0] = (x * (width / widthRes)) - (width / 2);
+                verts[index + 1] = 0;
+                verts[index + 2] = z * (length / lengthRes) - (length / 2);
                 index += 3;
             }
         }
 
         for(int i = 0; i < normals.length; i+=3){
             normals[i+0] = 0;
-            normals[i+1] = 0;
-            normals[i+2] = 1;
+            normals[i+1] = 1;
+            normals[i+2] = 0;
         }
 
         for(int i = 0; i < uvCoords.length; i++){
@@ -63,8 +63,8 @@ public class Street implements IF_SceneObject {
         for (int ti = 0, vi = 0, y = 0; y < lengthRes; y++, vi++) {
             for (int x = 0; x < widthRes; x++, ti += 6, vi++) {
                 indices[ti + 0] = vi + 0;
-                indices[ti + 1] = indices[ti + 4] = vi + 1;
-                indices[ti + 2] = indices[ti + 3] = vi + widthRes + 1;
+                indices[ti + 1] = indices[ti + 4] = vi + widthRes + 1;
+                indices[ti + 2] = indices[ti + 3] = vi + 1;
                 indices[ti + 5] = vi + widthRes + 2;
             }
         }
@@ -83,7 +83,6 @@ public class Street implements IF_SceneObject {
 
     @Override
     public void update(float _deltaTime) {
-        anim += _deltaTime;
 
     }
 

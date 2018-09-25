@@ -85,7 +85,7 @@ void main()
         specularFactor = pow(specularFactor, SPECULAR_POWER);
 
         if(hasGlossMap) {
-            materialReflectance = texture(glossMap_sampler, _uvCoord).r; //TODO: put that into the alpha of the normal map
+            materialReflectance = texture(glossMap_sampler, _uvCoord).r;
         }
 
         specular = specularFactor * lightIntensity * materialReflectance;
@@ -96,7 +96,7 @@ void main()
 
         if(hasIlluminationMap)
         {
-            //if(finalShadeFactor < 0.1)
+            //if(finalShadeFactor < 0.1) //TODO: make 0.1 a treshold variable and pass it as uniform
             //{
                 finalColor.rgba += texture(illuminationMap_sampler, _uvCoord).rgba;// * illuminationColor; //TODO: think about that ...color from texture or fix color.. or both
             //}
