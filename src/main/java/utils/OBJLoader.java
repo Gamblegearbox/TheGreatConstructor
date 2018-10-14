@@ -1,7 +1,7 @@
 package utils;
 
 
-import engine.OpenGLMesh;
+import rendering.OpenGLMesh;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 

@@ -1,8 +1,8 @@
 package game;
 
-import engine.MeshLibrary;
-import engine.OpenGLMesh;
-import engine.Transform;
+import libraries.MeshLibrary;
+import rendering.OpenGLMesh;
+import core.Transform;
 import interfaces.IF_SceneObject;
 
 public class Logo implements IF_SceneObject {

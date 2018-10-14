@@ -1,0 +1,3 @@
+SOUND = "rotary"; "C:\\Users\\Peter\\Documents\\GitHub\\TheGreatConstructor\\res\\TestGameContent\\Sound\\rotary.ogg"
+SOUND = "crack"; "C:\\Users\\Peter\\Documents\\GitHub\\TheGreatConstructor\\res\\TestGameContent\\Sound\\crack.ogg"
+SOUND = "gearShift"; "C:\\Users\\Peter\\Documents\\GitHub\\TheGreatConstructor\\res\\TestGameContent\\Sound\\gearShift.ogg"

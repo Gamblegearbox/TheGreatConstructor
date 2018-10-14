@@ -1,4 +1,4 @@
-package engine;
+package rendering;
 
 public class Material {
 

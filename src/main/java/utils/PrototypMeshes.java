@@ -1,6 +1,6 @@
 package utils;
 
-import engine.OpenGLMesh;
+import rendering.OpenGLMesh;
 
 public class PrototypMeshes {
 

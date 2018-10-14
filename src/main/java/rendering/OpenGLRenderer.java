@@ -1,5 +1,6 @@
-package engine;
+package rendering;
 
+import core.*;
 import interfaces.IF_SceneObject;
 import math.Matrix4;
 import math.Vector3;
@@ -11,6 +12,7 @@ import java.util.Map;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.*;
+import static org.lwjgl.opengl.GL20.GL_SHADING_LANGUAGE_VERSION;
 import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
@@ -48,8 +50,9 @@ public class OpenGLRenderer {
 
     public void init() throws Exception
     {
-        Logger.getInstance().writeln("> INITIALISING RENDERER");
-        EngineOptions.logGpuInfo();
+        Logger.getInstance().writeln(">> INITIALISING RENDERER");
+        logGpuInfo();
+
         float aspectRatio = (float)window.getWidth() / window.getHeight();
         projectionMatrix.setPerspective(EngineOptions.getOptionAsFloat("FOV"), aspectRatio, EngineOptions.getOptionAsFloat("Z_NEAR"), EngineOptions.getOptionAsFloat("Z_FAR"));
 
@@ -78,6 +81,18 @@ public class OpenGLRenderer {
         {
             glPolygonMode(GL_FRONT_FACE, GL_FILL);
         }
+    }
+
+    public void logGpuInfo()
+    {
+        String info =
+                "\tOPENGL VENDOR:             " + glGetString(GL_VENDOR) + "\n" +
+                "\tRENDERER:                  " + glGetString(GL_RENDERER) + "\n" +
+                "\tOPENGL VERSION:            " + glGetString(GL_VERSION) + "\n" +
+                "\tGLSL VERSION:              " + glGetString(GL_SHADING_LANGUAGE_VERSION) + "\n" +
+                "\n";
+
+        Logger.getInstance().write(info);
     }
 
     public void render(Scene _scene)
@@ -218,14 +233,6 @@ public class OpenGLRenderer {
         }
     }
 
-    public void cleanup()
-    {
-        if (shader != null)
-        {
-            shader.cleanup();
-        }
-    }
-
     private void setupOpenGl()
     {
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -260,4 +267,13 @@ public class OpenGLRenderer {
         shader.link();
     }
 
+    public void cleanup()
+    {
+        Logger.getInstance().writeln(">> CLEANING UP RENDERER");
+
+        if (shader != null)
+        {
+            shader.cleanup();
+        }
+    }
 }

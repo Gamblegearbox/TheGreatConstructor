@@ -1,6 +1,6 @@
 package utils;
 
-import engine.EngineOptions;
+import core.EngineOptions;
 
 import java.io.BufferedWriter;
 import java.io.File;

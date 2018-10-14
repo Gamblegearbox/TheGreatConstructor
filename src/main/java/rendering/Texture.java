@@ -1,4 +1,4 @@
-package engine;
+package rendering;
 
 import de.matthiasmann.twl.utils.PNGDecoder;
 

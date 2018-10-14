@@ -1,7 +1,7 @@
 package interfaces;
 
-import engine.OpenGLMesh;
-import engine.Transform;
+import rendering.OpenGLMesh;
+import core.Transform;
 
 public interface IF_SceneObject {
 

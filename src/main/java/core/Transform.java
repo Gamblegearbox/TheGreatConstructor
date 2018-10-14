@@ -1,4 +1,4 @@
-package engine;
+package core;
 
 import math.Vector3;
 import org.joml.Quaternionf;

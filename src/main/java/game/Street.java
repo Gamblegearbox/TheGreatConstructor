@@ -1,9 +1,8 @@
 package game;
 
-import engine.OpenGLMesh;
-import engine.Transform;
+import rendering.OpenGLMesh;
+import core.Transform;
 import interfaces.IF_SceneObject;
-import utils.PrototypMeshes;
 
 public class Street implements IF_SceneObject {
 

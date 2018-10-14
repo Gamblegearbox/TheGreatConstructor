@@ -1,6 +1,5 @@
-import com.sun.org.apache.xpath.internal.SourceTree;
-import engine.CoreLoop;
-import engine.EngineOptions;
+import core.CoreLoop;
+import core.EngineOptions;
 import utils.Logger;
 
 public class Main {
@@ -15,7 +14,7 @@ public class Main {
             EngineOptions.logOptionsStatus();
 
             Logger.getInstance().writeln("> STARTING PROGRAM");
-            EngineOptions.logSystemInfo();
+            logSystemInfo();
 
             CoreLoop coreLoop = new CoreLoop();
             coreLoop.start();
@@ -25,5 +24,16 @@ public class Main {
             System.out.println("Could not find config file!");
             System.exit(-1);
         }
+    }
+
+    public static void logSystemInfo()
+    {
+        String info =
+                "\tOPERATING SYSTEM:          " + EngineOptions.OPERATING_SYSTEM + "\n" +
+                "\tVERSION:                   " + System.getProperty("os.version") + "\n" +
+                "\tARCHITECTURE:              " + System.getProperty("os.arch") + "\n" +
+                "\n";
+
+        Logger.getInstance().write(info);
     }
 }

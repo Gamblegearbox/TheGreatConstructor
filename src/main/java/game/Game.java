@@ -1,9 +1,14 @@
 package game;
 
-import Input.KeyboardInput;
-import engine.*;
-import engine.Transform;
+import audio.OpenALAudioSource;
+import input.KeyboardInput;
+import core.*;
 import interfaces.IF_Game;
+import libraries.AudioLibrary;
+import libraries.MaterialLibrary;
+import libraries.MeshLibrary;
+import rendering.OpenGLRenderer;
+import audio.OpenALAudioEngine;
 import utils.Logger;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -12,28 +17,32 @@ import static org.lwjgl.glfw.GLFW.*;
 public class Game implements IF_Game {
 
     private final OpenGLRenderer renderer;
+    private final OpenALAudioEngine audioEngine;
     private Scene[] scenes;
-    private Scene activeScene = null;;
-
+    private Scene activeScene = null;
 
     Player player;
+    OpenALAudioSource engineAudio;
 
     //DEBUG_MODE VALUES
     private float deltaTimeSum;
 
-    public Game(OpenGLRenderer _renderer)
+    public Game(OpenGLRenderer _renderer, OpenALAudioEngine _audioEngine)
     {
         renderer = _renderer;
+        audioEngine = _audioEngine;
     }
 
     @Override
     public void init() throws Exception
     {
-        Logger.getInstance().writeln("> INITIALISING GAME");
+        Logger.getInstance().writeln(">> INITIALISING GAME");
 
-        MeshLibrary.loadMeshes("/TestGameContent/Scenes/Meshes.txt");
-        MaterialLibrary.loadMaterials("/TestGameContent/Scenes/Materials.txt");
+        MeshLibrary.loadMeshes("/TestGameContent/Meshes.txt");
+        MaterialLibrary.loadMaterials("/TestGameContent/Materials.txt");
+        AudioLibrary.loadAudioFiles("/TestGameContent/Audio.txt");
 
+        engineAudio = new OpenALAudioSource();
         player = new Player();
 
         //CREATE SCENES
@@ -66,9 +75,9 @@ public class Game implements IF_Game {
             switchScene(1);
         }
 
-        if(KeyboardInput.isKeyPressedOnce(GLFW_KEY_SPACE))
+        if(KeyboardInput.isKeyDown(GLFW_KEY_SPACE))
         {
-
+            engineAudio.play(AudioLibrary.audioBufferIdMap.get("tool"));
         }
     }
 
@@ -98,14 +107,11 @@ public class Game implements IF_Game {
     @Override
     public void cleanup()
     {
-        renderer.cleanup();
-
+        Logger.getInstance().writeln(">> CLEANING UP GAME");
         for(Scene temp : scenes)
         {
             temp.cleanup();
         }
-
-        Logger.getInstance().cleanup();
     }
 
     private void switchScene(int index) throws Exception

@@ -1,4 +1,4 @@
-package engine;
+package core;
 
 import math.Vector3;
 import utils.Logger;
@@ -6,7 +6,6 @@ import utils.Utils;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.GL_SHADING_LANGUAGE_VERSION;
@@ -16,8 +15,8 @@ public class EngineOptions {
     static final String WINDOW_TITLE = "Television 2000";
     private static final HashMap<String, Float> options = new HashMap<>();
     private static List<String> configFileContent;
-    static final String OPERATING_SYSTEM = System.getProperty("os.name");
-    static final Vector3 UNICOLOR_COLOR = new Vector3(0.75f,0.75f,0.75f);
+    public static final String OPERATING_SYSTEM = System.getProperty("os.name");
+    public static final Vector3 UNICOLOR_COLOR = new Vector3(0.75f,0.75f,0.75f);
 
     public static boolean getOptionAsBoolean(String _option)
     {
@@ -65,29 +64,6 @@ public class EngineOptions {
         }
 
         return value;
-    }
-
-    public static void logSystemInfo()
-    {
-        String info =
-        "\tOPERATING SYSTEM:          " + OPERATING_SYSTEM + "\n" +
-        "\tVERSION:                   " + System.getProperty("os.version") + "\n" +
-        "\tARCHITECTURE:              " + System.getProperty("os.arch") + "\n" +
-        "\n";
-
-        Logger.getInstance().write(info);
-    }
-
-    public static void logGpuInfo()
-    {
-        String info =
-        "\tOPENGL VENDOR:             " + glGetString(GL_VENDOR) + "\n" +
-        "\tRENDERER:                  " + glGetString(GL_RENDERER) + "\n" +
-        "\tOPENGL VERSION:            " + glGetString(GL_VERSION) + "\n" +
-        "\tGLSL VERSION:              " + glGetString(GL_SHADING_LANGUAGE_VERSION) + "\n" +
-        "\n";
-
-        Logger.getInstance().write(info);
     }
 
     public static void logOptionsStatus()

@@ -1,5 +1,6 @@
-package engine;
+package core;
 
+import rendering.Material;
 import interfaces.IF_SceneObject;
 import math.Vector3;
 import utils.Logger;
@@ -95,7 +96,7 @@ public class Scene {
 
     public void cleanup()
     {
-        Logger.getInstance().writeln("> CLEANING UP " + sceneName);
+        Logger.getInstance().writeln(">>> CLEANING UP " + sceneName);
         for (IF_SceneObject temp : sceneObjects.values())
         {
             temp.cleanup();

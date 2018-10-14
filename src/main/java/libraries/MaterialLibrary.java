@@ -1,8 +1,8 @@
-package engine;
+package libraries;
 
+import rendering.Material;
+import rendering.Texture;
 import utils.Logger;
-import utils.OBJLoader;
-import utils.PrototypMeshes;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,7 +30,7 @@ public class MaterialLibrary {
             }
         }
 
-        Logger.getInstance().writeln("> LOADING MATERIALS...");
+        Logger.getInstance().writeln(">>> LOADING MATERIALS...");
 
         for(int i = 0 ; i < materialDataFromFile.size(); i++) {
 

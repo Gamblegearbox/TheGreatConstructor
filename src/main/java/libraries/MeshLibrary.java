@@ -1,5 +1,6 @@
-package engine;
+package libraries;
 
+import rendering.OpenGLMesh;
 import utils.Logger;
 import utils.OBJLoader;
 import utils.PrototypMeshes;
@@ -30,7 +31,7 @@ public class MeshLibrary {
             }
         }
 
-        Logger.getInstance().writeln("> LOADING MESHES...");
+        Logger.getInstance().writeln(">>> LOADING MESHES...");
 
         for(int i = 0 ; i < meshDataFromFile.size(); i++) {
 

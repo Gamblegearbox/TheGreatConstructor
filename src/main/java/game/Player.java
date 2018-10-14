@@ -1,8 +1,8 @@
 package game;
 
-import engine.MeshLibrary;
-import engine.Transform;
-import engine.OpenGLMesh;
+import libraries.MeshLibrary;
+import core.Transform;
+import rendering.OpenGLMesh;
 import interfaces.IF_SceneObject;
 
 public class Player implements IF_SceneObject {

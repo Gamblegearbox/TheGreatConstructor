@@ -1,7 +1,7 @@
-package engine;
+package core;
 
 
-import Input.KeyboardInput;
+import input.KeyboardInput;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWVidMode;
@@ -17,7 +17,6 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 public class Window {
 
     private final String title;
-    private GLFWKeyCallback keyCallback;
     private int width;
     private int height;
     private long windowHandle;
@@ -33,7 +32,7 @@ public class Window {
 
     public void init()
     {
-        Logger.getInstance().writeln("> INITIALISING WINDOW");
+        Logger.getInstance().writeln(">> INITIALISING WINDOW");
 
         // Setup an error callback. The default implementation
         // will print the error message in System.err.
@@ -75,6 +74,7 @@ public class Window {
         });
 
         // Setup a key callback. It will be called every time a key is pressed, repeated or released.
+        GLFWKeyCallback keyCallback;
         glfwSetKeyCallback(windowHandle, keyCallback = new KeyboardInput());
 
         // Get the resolution of the primary monitor
@@ -139,6 +139,11 @@ public class Window {
     {
         glfwSwapBuffers(windowHandle);
         glfwPollEvents();
+    }
+
+    public void cleanup(){
+        Logger.getInstance().writeln(">> CLEANING UP WINDOW");
+        //Nothing to do here, bro
     }
 
 }
