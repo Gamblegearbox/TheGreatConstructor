@@ -22,7 +22,7 @@ public class Game implements IF_Game {
     private Scene activeScene = null;
 
     Player player;
-    OpenALAudioSource engineAudio;
+
 
     //DEBUG_MODE VALUES
     private float deltaTimeSum;
@@ -38,11 +38,12 @@ public class Game implements IF_Game {
     {
         Logger.getInstance().writeln(">> INITIALISING GAME");
 
+        //LOAD ASSETS
         MeshLibrary.loadMeshes("/TestGameContent/Meshes.txt");
         MaterialLibrary.loadMaterials("/TestGameContent/Materials.txt");
         AudioLibrary.loadAudioFiles("/TestGameContent/Audio.txt");
 
-        engineAudio = new OpenALAudioSource();
+
         player = new Player();
 
         //CREATE SCENES
@@ -77,7 +78,7 @@ public class Game implements IF_Game {
 
         if(KeyboardInput.isKeyDown(GLFW_KEY_SPACE))
         {
-            engineAudio.play(AudioLibrary.audioBufferIdMap.get("tool"));
+
         }
     }
 
