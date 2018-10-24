@@ -12,6 +12,7 @@ public class OpenALAudioSource {
         sourceId = alGenSources();
         alSourcef(sourceId, AL_GAIN, 1f);
         alSourcef(sourceId, AL_PITCH, 1f);
+        alSourcef(sourceId, AL_VELOCITY, 1f);
         alSource3f(sourceId, AL_POSITION, 0, 0, 0);
 
     }
@@ -22,6 +23,14 @@ public class OpenALAudioSource {
 
         //Play the audio
         alSourcePlay(sourceId);
+    }
+
+    public void stop(){
+        alSourceStop(sourceId);
+    }
+
+    public void setPosition(float _x, float _y, float _z){
+        alSource3f(sourceId, AL_POSITION, _x, _y, _z);
     }
 
     public void cleanup(){
