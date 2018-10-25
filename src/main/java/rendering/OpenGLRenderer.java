@@ -57,7 +57,7 @@ public class OpenGLRenderer {
         projectionMatrix.setPerspective(EngineOptions.getOptionAsFloat("FOV"), aspectRatio, EngineOptions.getOptionAsFloat("Z_NEAR"), EngineOptions.getOptionAsFloat("Z_FAR"));
 
         setupOpenGl();
-        initShader();
+        loadShaders();
 
         shader.bind();
         shader.setUniformData("projectionMatrix", projectionMatrix);
@@ -259,11 +259,11 @@ public class OpenGLRenderer {
 
     }
 
-    private void initShader() throws Exception
+    private void loadShaders() throws Exception
     {
         shader = new ShaderProgram();
         shader.createVertexShader(Utils.loadResource("/shaders/shaded.vs"));
-        shader.createFragmentShader (Utils.loadResource("/shaders/shaded.fs"));
+        shader.createFragmentShader (Utils.loadResource("/shaders/debug/normals.fs"));
         shader.link();
     }
 
