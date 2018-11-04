@@ -21,10 +21,6 @@ import static org.lwjgl.opengl.GL30.glBindVertexArray;
 
 public class OpenGLRenderer {
 
-    public static final int DEFAULT_SHADER = 0;
-    public static final int NORMALS_SHADER = 1;
-    public static final int DEPTH_SHADER = 2;
-
     private static final int NUMBER_OF_FRUSTUM_PLANES = 6;
 
     private final Window window;
@@ -38,6 +34,7 @@ public class OpenGLRenderer {
     private final Vector4[] frustumPlanes;
     private final List<ShaderProgram> availableShaders;
     private ShaderProgram activeShader;
+    private int currentShaderIndex = 0;
 
     public OpenGLRenderer(Window _window)
     {
@@ -66,7 +63,7 @@ public class OpenGLRenderer {
 
         setupOpenGl();
         loadShaders();
-        activateShader(DEFAULT_SHADER);
+        activateShader(currentShaderIndex);
     }
 
     public void logGpuInfo()
@@ -118,6 +115,7 @@ public class OpenGLRenderer {
 
     private void loadShaders() throws Exception
     {
+        //TODO: put into config file
         String[] shadersToLoad = new String[]{
                 "/shaders/shaded.vs;/shaders/shaded.fs",
                 "/shaders/shaded.vs;/shaders/debug/normals.fs",
@@ -138,7 +136,7 @@ public class OpenGLRenderer {
         }
     }
 
-    public void activateShader(int _index){
+    private void activateShader(int _index){
         activeShader =  availableShaders.get(_index);
 
         activeShader.bind();
@@ -148,6 +146,12 @@ public class OpenGLRenderer {
         activeShader.setUniformData("normalMap_sampler", Texture.NORMALS);
         activeShader.setUniformData("glossMap_sampler", Texture.GLOSS);
         activeShader.setUniformData("illuminationMap_sampler", Texture.ILLUMINATION);
+    }
+
+    public void switchShader(){
+        currentShaderIndex++;
+        currentShaderIndex%=availableShaders.size();
+        activateShader(currentShaderIndex);
     }
 
     public void render(Scene _scene)

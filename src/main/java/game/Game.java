@@ -1,6 +1,5 @@
 package game;
 
-import audio.OpenALAudioSource;
 import input.KeyboardInput;
 import core.*;
 import interfaces.IF_Game;
@@ -26,6 +25,7 @@ public class Game implements IF_Game {
 
     //DEBUG_MODE VALUES
     private float deltaTimeSum;
+    private int activeShader = 0;
 
     public Game(OpenGLRenderer _renderer, OpenALAudioEngine _audioEngine)
     {
@@ -42,7 +42,6 @@ public class Game implements IF_Game {
         MeshLibrary.loadMeshes("/TestGameContent/Meshes.txt");
         MaterialLibrary.loadMaterials("/TestGameContent/Materials.txt");
         AudioLibrary.loadAudioFiles("/TestGameContent/Audio.txt");
-
 
         player = new Player();
 
@@ -76,10 +75,17 @@ public class Game implements IF_Game {
             switchScene(1);
         }
 
-        if(KeyboardInput.isKeyDown(GLFW_KEY_SPACE))
+        if(KeyboardInput.isKeyPressedOnce(GLFW_KEY_2))
         {
-
+            renderer.switchShader();
         }
+
+        if(KeyboardInput.isKeyRepeated(GLFW_KEY_SPACE))
+        {
+            System.out.println("SPACE");
+        }
+
+
     }
 
     @Override

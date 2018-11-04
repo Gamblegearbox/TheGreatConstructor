@@ -21,6 +21,7 @@ public class Window {
     private int height;
     private long windowHandle;
     private boolean isResized;
+    private GLFWKeyCallback keyCallback;    // This prevents our window from crashing later on. (Still don't know why?!)
 
     public Window(String title, int width, int height)
     {
@@ -74,7 +75,6 @@ public class Window {
         });
 
         // Setup a key callback. It will be called every time a key is pressed, repeated or released.
-        GLFWKeyCallback keyCallback;
         glfwSetKeyCallback(windowHandle, keyCallback = new KeyboardInput());
 
         // Get the resolution of the primary monitor
