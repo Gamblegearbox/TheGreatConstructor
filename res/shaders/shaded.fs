@@ -7,13 +7,7 @@ in float _vDepth;
 
 out vec4 fragColor;
 
-uniform vec3 unicolorColor;
-uniform float unicolorOpacity;
 uniform vec3 lightPosition;
-
-uniform bool isShaded;
-uniform bool showDepth;
-uniform bool enableNormalsToColor;
 
 uniform bool hasDiffuseMap;
 uniform bool hasNormalMap;
@@ -32,6 +26,7 @@ void main()
     vec4 diffuseColor;
     vec3 normalColor;
     float specularIntensity;
+    vec4 backupColor = vec4(1,1,1,1);
 
     vec4 illuminationColor = vec4(0.5, 0.8, 0.2, 1.0); //uniform
     float lightIntensity = 1.0;   //uniform
@@ -44,7 +39,7 @@ void main()
         finalColor = texture(diffuseMap_sampler, _uvCoord);
     }
     else {
-        finalColor = vec4(unicolorColor, unicolorOpacity);
+        finalColor = backupColor;
     }
 
     //CALC NORMAL
@@ -58,54 +53,41 @@ void main()
         currentNormal = _mvNormal;
     }
 
-    if(enableNormalsToColor) {
-            float r = (currentNormal.r + 1.0) * 0.5;
-            float g = (currentNormal.g + 1.0) * 0.5;
-            float b = (currentNormal.b + 1.0) * 0.5;
+    float finalShadeFactor = 0;
+    // CALC AMBIENT
+    float ambient = 0.25; //TODO:uniform
 
-            finalColor.rgba = vec4(r,g,b, 1.0);
+    // CALC DIFFUSE
+    float diffuse = max(dot(currentNormal, normalize(lightPosition)),0.0);
+
+    // CALC SPECULAR
+    float specular = 0;
+
+    //TODO: Variables for later
+    vec3 camera_direction = normalize(-_mvPosition);
+    vec3 from_light_dir = -normalize(lightPosition);
+    vec3 reflected_light = normalize(reflect(from_light_dir , currentNormal));
+    float specularFactor = max( dot(camera_direction, reflected_light), 0.0);
+    specularFactor = pow(specularFactor, SPECULAR_POWER);
+
+    if(hasGlossMap) {
+        materialReflectance = texture(glossMap_sampler, _uvCoord).r;
     }
-    else if(isShaded)
+
+    specular = specularFactor * lightIntensity * materialReflectance;
+
+    finalShadeFactor = ambient + diffuse + specular;
+
+    finalColor.rgb *= finalShadeFactor;
+
+    if(hasIlluminationMap)
     {
-        float finalShadeFactor = 0;
-        // CALC AMBIENT
-        float ambient = 0.25; //TODO:uniform
-
-        // CALC DIFFUSE
-        float diffuse = max(dot(currentNormal, normalize(lightPosition)),0.0);
-
-        // CALC SPECULAR
-        float specular = 0;
-
-        //TODO: Variables for later
-        vec3 camera_direction = normalize(-_mvPosition);
-        vec3 from_light_dir = -normalize(lightPosition);
-        vec3 reflected_light = normalize(reflect(from_light_dir , currentNormal));
-        float specularFactor = max( dot(camera_direction, reflected_light), 0.0);
-        specularFactor = pow(specularFactor, SPECULAR_POWER);
-
-        if(hasGlossMap) {
-            materialReflectance = texture(glossMap_sampler, _uvCoord).r;
-        }
-
-        specular = specularFactor * lightIntensity * materialReflectance;
-
-        finalShadeFactor = ambient + diffuse + specular;
-
-        finalColor.rgb *= finalShadeFactor;
-
-        if(hasIlluminationMap)
-        {
-            //if(finalShadeFactor < 0.1) //TODO: make 0.1 a treshold variable and pass it as uniform
-            //{
-                finalColor.rgba += texture(illuminationMap_sampler, _uvCoord).rgba;// * illuminationColor; //TODO: think about that ...color from texture or fix color.. or both
-            //}
-        }
+        //if(finalShadeFactor < 0.1) //TODO: make 0.1 a treshold variable and pass it as uniform
+        //{
+            finalColor.rgba += texture(illuminationMap_sampler, _uvCoord).rgba;// * illuminationColor; //TODO: think about that ...color from texture or fix color.. or both
+        //}
     }
 
-    if(showDepth) {
-        finalColor.rgb *= 1.0 - _vDepth;
-    }
 
     fragColor = clamp(finalColor,0,1);
 }

@@ -16,7 +16,6 @@ public class EngineOptions {
     private static final HashMap<String, Float> options = new HashMap<>();
     private static List<String> configFileContent;
     public static final String OPERATING_SYSTEM = System.getProperty("os.name");
-    public static final Vector3 UNICOLOR_COLOR = new Vector3(0.75f,0.75f,0.75f);
 
     public static boolean getOptionAsBoolean(String _option)
     {
@@ -101,7 +100,7 @@ public class EngineOptions {
 
     public static void saveSettingToFile()
     {
-        //TODO: saving if setting where modified during game
+        //TODO: saving if setting were modified during game
     }
 
 }

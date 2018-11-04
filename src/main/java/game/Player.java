@@ -19,6 +19,7 @@ public class Player implements IF_SceneObject {
     int count = 0;
     int limit = 10000;
 
+
     private final int minGear = -1;
     private final int maxGear = 5;
 
@@ -47,6 +48,8 @@ public class Player implements IF_SceneObject {
     @Override
     public void update(float _deltaTime){
 
+        y += _deltaTime * 9;
+
         if(isEngineRunning){
             count++;
 
@@ -72,7 +75,7 @@ public class Player implements IF_SceneObject {
             shiftDown();
         }
 
-
+        transform.setRotation(0,y, 0);
 
 
     }

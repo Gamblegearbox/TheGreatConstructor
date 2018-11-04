@@ -8,6 +8,8 @@ import math.Vector4;
 import utils.Logger;
 import utils.Utils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -19,7 +21,12 @@ import static org.lwjgl.opengl.GL30.glBindVertexArray;
 
 public class OpenGLRenderer {
 
+    public static final int DEFAULT_SHADER = 0;
+    public static final int NORMALS_SHADER = 1;
+    public static final int DEPTH_SHADER = 2;
+
     private static final int NUMBER_OF_FRUSTUM_PLANES = 6;
+
     private final Window window;
 
     private final Matrix4 projectionMatrix;
@@ -29,12 +36,13 @@ public class OpenGLRenderer {
     private final Matrix4 viewProjectionMatrix;
 
     private final Vector4[] frustumPlanes;
-    private ShaderProgram shader;
+    private final List<ShaderProgram> availableShaders;
+    private ShaderProgram activeShader;
 
     public OpenGLRenderer(Window _window)
     {
         this.window = _window;
-
+        availableShaders = new ArrayList<>();
         projectionMatrix = new Matrix4();
         modelMatrix = new Matrix4();
         viewMatrix = new Matrix4();
@@ -58,29 +66,7 @@ public class OpenGLRenderer {
 
         setupOpenGl();
         loadShaders();
-
-        shader.bind();
-        shader.setUniformData("projectionMatrix", projectionMatrix);
-        shader.setUniformData("unicolorColor", EngineOptions.UNICOLOR_COLOR);
-        shader.setUniformData("unicolorOpacity", EngineOptions.getOptionAsFloat("UNICOLOR_OPACITY"));
-
-        shader.setUniformData("isShaded", EngineOptions.getOptionAsInt("IS_SHADED"));
-        shader.setUniformData("showDepth", EngineOptions.getOptionAsInt("SHOW_DEPTH"));
-        shader.setUniformData("enableNormalsToColor", EngineOptions.getOptionAsInt("ENABLE_NORMALS_TO_COLOR"));
-
-        shader.setUniformData("diffuseMap_sampler", Texture.DIFFUSE);
-        shader.setUniformData("normalMap_sampler", Texture.NORMALS);
-        shader.setUniformData("glossMap_sampler", Texture.GLOSS);
-        shader.setUniformData("illuminationMap_sampler", Texture.ILLUMINATION);
-
-        if(EngineOptions.getOptionAsBoolean("SHOW_WIREFRAME"))
-        {
-            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        }
-        else
-        {
-            glPolygonMode(GL_FRONT_FACE, GL_FILL);
-        }
+        activateShader(DEFAULT_SHADER);
     }
 
     public void logGpuInfo()
@@ -95,6 +81,75 @@ public class OpenGLRenderer {
         Logger.getInstance().write(info);
     }
 
+    private void setupOpenGl()
+    {
+        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+
+        glPointSize(EngineOptions.getOptionAsFloat("POINT_SIZE"));
+
+        glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_LESS);
+
+        glEnable(GL_STENCIL_TEST);
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        if(EngineOptions.getOptionAsBoolean("BACK_FACE_CULLING"))
+        {
+            glEnable(GL_CULL_FACE);
+            glCullFace(GL_BACK);
+        }
+        else
+        {
+            glDisable(GL_CULL_FACE);
+        }
+
+        if(EngineOptions.getOptionAsBoolean("SHOW_WIREFRAME"))
+        {
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        }
+        else
+        {
+            glPolygonMode(GL_FRONT_FACE, GL_FILL);
+        }
+
+    }
+
+    private void loadShaders() throws Exception
+    {
+        String[] shadersToLoad = new String[]{
+                "/shaders/shaded.vs;/shaders/shaded.fs",
+                "/shaders/shaded.vs;/shaders/debug/normals.fs",
+                "/shaders/shaded.vs;/shaders/debug/depth.fs"
+        };
+
+        for(String path : shadersToLoad) {
+            String[] pathTokens = path.split(";");
+            String vertexShaderPath = pathTokens[0];
+            String fragmentShaderPath = pathTokens[1];
+
+            ShaderProgram shader = new ShaderProgram();
+            shader.createVertexShader(Utils.loadResource(vertexShaderPath));
+            shader.createFragmentShader(Utils.loadResource(fragmentShaderPath));
+            shader.link();
+
+            availableShaders.add(shader);
+        }
+    }
+
+    public void activateShader(int _index){
+        activeShader =  availableShaders.get(_index);
+
+        activeShader.bind();
+        activeShader.setUniformData("projectionMatrix", projectionMatrix);
+
+        activeShader.setUniformData("diffuseMap_sampler", Texture.DIFFUSE);
+        activeShader.setUniformData("normalMap_sampler", Texture.NORMALS);
+        activeShader.setUniformData("glossMap_sampler", Texture.GLOSS);
+        activeShader.setUniformData("illuminationMap_sampler", Texture.ILLUMINATION);
+    }
+
     public void render(Scene _scene)
     {
         int totalVerticesInFrame = 0;
@@ -104,7 +159,7 @@ public class OpenGLRenderer {
         {
             float aspectRatio = (float)window.getWidth() / window.getHeight();
             projectionMatrix.setPerspective(EngineOptions.getOptionAsFloat("FOV"), aspectRatio, EngineOptions.getOptionAsFloat("Z_NEAR"), EngineOptions.getOptionAsFloat("Z_FAR"));
-            shader.setUniformData("projectionMatrix", projectionMatrix);
+            activeShader.setUniformData("projectionMatrix", projectionMatrix);
             glViewport(0, 0, window.getWidth(), window.getHeight());
             window.setResized(false);
         }
@@ -113,7 +168,7 @@ public class OpenGLRenderer {
         Vector3 lightPosition = _scene.getLightPosition();
 
         //UPLOAD FRAME RELEVANT UNIFORMS HERE
-        shader.setUniformData("lightPosition", lightPosition);
+        activeShader.setUniformData("lightPosition", lightPosition);
 
         //FILTER OBJECTS FOR FRUSTUM CULLING
         if(EngineOptions.getOptionAsBoolean("FRUSTUM_CULLING"))
@@ -167,46 +222,46 @@ public class OpenGLRenderer {
 
                 modelMatrix.setModelValues(temp.getPosition(), temp.getRotation(), temp.getScale());
                 modelViewMatrix.multiply(modelMatrix, viewMatrix);
-                shader.setUniformData("modelViewMatrix", modelViewMatrix);
+                activeShader.setUniformData("modelViewMatrix", modelViewMatrix);
 
                 /* TODO: It's way more performant to do this only once in the init method.
                 * But that would mean only on giant texture atlas and no texture changes during rendering.
                 * Or a few atlasses and the material only holds an index for an atlas*/
 
                 if(EngineOptions.getOptionAsBoolean("ENABLE_DIFFUSE_MAPPING") && material.hasDiffuseMap()) {
-                    shader.setUniformData("hasDiffuseMap", 1);
+                    activeShader.setUniformData("hasDiffuseMap", 1);
                     glActiveTexture(GL_TEXTURE0);
                     glBindTexture(GL_TEXTURE_2D, material.getDiffuseMap().getID());
                 }
                 else {
-                    shader.setUniformData("hasDiffuseMap", 0);
+                    activeShader.setUniformData("hasDiffuseMap", 0);
                 }
 
                 if(EngineOptions.getOptionAsBoolean("ENABLE_NORMAL_MAPPING") && material.hasNormalMap()) {
-                    shader.setUniformData("hasNormalMap", 1);
+                    activeShader.setUniformData("hasNormalMap", 1);
                     glActiveTexture(GL_TEXTURE1);
                     glBindTexture(GL_TEXTURE_2D, material.getNormalMap().getID());
                 }
                 else {
-                    shader.setUniformData("hasNormalMap", 0);
+                    activeShader.setUniformData("hasNormalMap", 0);
                 }
 
                 if(EngineOptions.getOptionAsBoolean("ENABLE_GLOSS_MAPPING") && material.hasGlossMap()) {
-                    shader.setUniformData("hasGlossMap", 1);
+                    activeShader.setUniformData("hasGlossMap", 1);
                     glActiveTexture(GL_TEXTURE2);
                     glBindTexture(GL_TEXTURE_2D, material.getGlossMap().getID());
                 }
                 else {
-                    shader.setUniformData("hasGlossMap", 0);
+                    activeShader.setUniformData("hasGlossMap", 0);
                 }
 
                 if(EngineOptions.getOptionAsBoolean("ENABLE_ILLUMINATION_MAPPING") && material.hasIlluminationMap()) {
-                    shader.setUniformData("hasIlluminationMap", 1);
+                    activeShader.setUniformData("hasIlluminationMap", 1);
                     glActiveTexture(GL_TEXTURE3);
                     glBindTexture(GL_TEXTURE_2D, material.getIlluminationMap().getID());
                 }
                 else {
-                    shader.setUniformData("hasIlluminationMap", 0);
+                    activeShader.setUniformData("hasIlluminationMap", 0);
                 }
                 /*****************************************************************************/
 
@@ -233,46 +288,13 @@ public class OpenGLRenderer {
         }
     }
 
-    private void setupOpenGl()
-    {
-        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
-        glPointSize(EngineOptions.getOptionAsFloat("POINT_SIZE"));
-
-        glEnable(GL_DEPTH_TEST);
-        glDepthFunc(GL_LESS);
-
-        glEnable(GL_STENCIL_TEST);
-
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-        if(EngineOptions.getOptionAsBoolean("BACK_FACE_CULLING"))
-        {
-            glEnable(GL_CULL_FACE);
-            glCullFace(GL_BACK);
-        }
-        else
-        {
-            glDisable(GL_CULL_FACE);
-        }
-
-    }
-
-    private void loadShaders() throws Exception
-    {
-        shader = new ShaderProgram();
-        shader.createVertexShader(Utils.loadResource("/shaders/shaded.vs"));
-        shader.createFragmentShader (Utils.loadResource("/shaders/debug/normals.fs"));
-        shader.link();
-    }
 
     public void cleanup()
     {
         Logger.getInstance().writeln(">> CLEANING UP RENDERER");
 
-        if (shader != null)
-        {
+        for(ShaderProgram shader : availableShaders){
             shader.cleanup();
         }
     }

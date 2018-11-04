@@ -20,5 +20,5 @@ void main()
 
     _mvNormal = normalize(modelViewMatrix * vec4(normal, 0.0)).xyz;
     _mvPosition = mvPos.xyz;
-    _vDepth = gl_Position.z / 7.0;       //TODO: put value for wireframe depth in uniform
+    _vDepth = gl_Position.z;
 }
