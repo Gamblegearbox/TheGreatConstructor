@@ -10,7 +10,7 @@ out vec4 fragColor;
 
 void main()
 {
-    float depthRange = 7.0;
+    float depthRange = 25.0;
     vec4 finalColor = vec4(1,1,1,1);
     finalColor.rgb *= 1.0 - (_vDepth / depthRange);
 

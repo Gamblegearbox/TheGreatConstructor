@@ -10,7 +10,7 @@ import interfaces.IF_SceneObject;
 
 import static org.lwjgl.glfw.GLFW.*;
 
-public class Player implements IF_SceneObject {
+public class Car implements IF_SceneObject {
 
     float x = 0;
     float z = 0;
@@ -31,13 +31,12 @@ public class Player implements IF_SceneObject {
     OpenALAudioSource audioEngine;
     OpenALAudioSource audioSecondary;
 
-    public Player(){
+    public Car(){
         mesh = MeshLibrary.getMeshByTag("Coupe");
         audioEngine = new OpenALAudioSource();
         audioSecondary = new OpenALAudioSource();
 
         transform = new Transform();
-        transform.setPosition(2,-2,-7);
     }
 
     @Override

@@ -13,8 +13,8 @@ public class Street implements IF_SceneObject {
 
     private final int lengthRes = 9;
     private final int widthRes = 9;
-    private final float length = 2f;
-    private final float width = 2f;
+    private final float length = 200f;
+    private final float width = 10f;
 
     private float boundingRadius = 2;
 

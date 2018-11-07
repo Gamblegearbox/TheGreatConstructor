@@ -20,12 +20,12 @@ public class Game implements IF_Game {
     private Scene[] scenes;
     private Scene activeScene = null;
 
-    Player player;
-
+    Car car_1;
+    Car car_2;
+    Car car_3;
 
     //DEBUG_MODE VALUES
     private float deltaTimeSum;
-    private int activeShader = 0;
 
     public Game(OpenGLRenderer _renderer, OpenALAudioEngine _audioEngine)
     {
@@ -43,7 +43,12 @@ public class Game implements IF_Game {
         MaterialLibrary.loadMaterials("/TestGameContent/Materials.txt");
         AudioLibrary.loadAudioFiles("/TestGameContent/Audio.txt");
 
-        player = new Player();
+        car_1 = new Car();
+        car_1.transform.setPosition(2,-2,-7);
+        car_2 = new Car();
+        car_2.transform.setPosition(-2,-2,-14);
+        car_3 = new Car();
+        car_3.transform.setPosition(0,-2,-20);
 
         //CREATE SCENES
         scenes = new Scene[2];
@@ -53,7 +58,9 @@ public class Game implements IF_Game {
         //ADD OBJECTS TO SCENES
         scenes[0].addSceneObject("Logo", new Logo());
 
-        scenes[1].addSceneObject("Player", player);
+        scenes[1].addSceneObject("Car_1", car_1);
+        scenes[1].addSceneObject("Car_2", car_2);
+        scenes[1].addSceneObject("Car_3", car_3);
         scenes[1].addSceneObject("Street", new Street());
     }
 
@@ -79,12 +86,6 @@ public class Game implements IF_Game {
         {
             renderer.switchShader();
         }
-
-        if(KeyboardInput.isKeyRepeated(GLFW_KEY_SPACE))
-        {
-            System.out.println("SPACE");
-        }
-
 
     }
 

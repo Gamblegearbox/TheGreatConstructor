@@ -88,8 +88,24 @@ void main()
         //}
     }
 
+    //FOG https://vicrucann.github.io/tutorials/osg-shader-fog/
+    const float FOG_MIN = 5;
+    const float FOG_MAX = 50;
+    vec4 fogColor = vec4(0.5, 0.7, 0.9, 1.0);
+    float fogFactor;
 
-    fragColor = clamp(finalColor,0,1);
+    fogFactor = 1.0 - (FOG_MAX - _vDepth) / (FOG_MAX - FOG_MIN);
+
+    if(_vDepth >= FOG_MAX){
+        fogFactor = 1;
+    }
+
+    if(_vDepth <= FOG_MIN){
+        fogFactor = 0;
+    }
+
+    finalColor = clamp(finalColor,0,1);
+    fragColor = mix(finalColor, fogColor, fogFactor);
 }
 
 

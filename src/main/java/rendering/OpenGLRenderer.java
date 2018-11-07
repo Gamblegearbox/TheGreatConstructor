@@ -80,7 +80,7 @@ public class OpenGLRenderer {
 
     private void setupOpenGl()
     {
-        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+        glClearColor(0.5f, 0.7f, 0.9f, 1.0f);
 
         glPointSize(EngineOptions.getOptionAsFloat("POINT_SIZE"));
 
@@ -117,9 +117,9 @@ public class OpenGLRenderer {
     {
         //TODO: put into config file
         String[] shadersToLoad = new String[]{
-                "/shaders/shaded.vs;/shaders/shaded.fs",
-                "/shaders/shaded.vs;/shaders/debug/normals.fs",
-                "/shaders/shaded.vs;/shaders/debug/depth.fs"
+                "/shaders/vertex.vs;/shaders/gameplay.fs",
+                "/shaders/vertex.vs;/shaders/debug/normals.fs",
+                "/shaders/vertex.vs;/shaders/debug/depth.fs"
         };
 
         for(String path : shadersToLoad) {
@@ -137,7 +137,7 @@ public class OpenGLRenderer {
     }
 
     private void activateShader(int _index){
-        activeShader =  availableShaders.get(_index);
+        activeShader = availableShaders.get(_index);
 
         activeShader.bind();
         activeShader.setUniformData("projectionMatrix", projectionMatrix);
@@ -190,7 +190,6 @@ public class OpenGLRenderer {
                 Transform temp = sceneObject.getTransform();
 
                 //IS OBJECT INSIDE FRUSTUM?
-
                 Vector3 position = temp.getPosition();
                 boolean isInsideFrustum = true;
                 for (int i = 0; i < NUMBER_OF_FRUSTUM_PLANES; i++)
