@@ -15,6 +15,10 @@ public class Texture {
     public static final int GLOSS = 2;
     public static final int ILLUMINATION = 3;
 
+    //TODO: gradient test --> make this more global
+    public static final int GRADIENT_SHADING = 4;
+    public static final int GRADIENT_LIGHT_COLOR = 5;
+
 
     public Texture(String _filePath) throws Exception
     {

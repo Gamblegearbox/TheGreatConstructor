@@ -1,42 +1,29 @@
 package utils;
 
-import math.Vector3;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
+import math.Vector3;
+import java.io.File;
+import java.nio.file.Files;
 import java.util.List;
-import java.util.Scanner;
 
 public class Utils {
 
     public static String loadResource(String fileName) throws Exception
     {
-        String result;
-
-        try (InputStream in = Utils.class.getClass().getResourceAsStream(fileName))
-        {
-            result = new Scanner(in, "UTF-8").useDelimiter("\\A").next();       //TODO: this crashes when using java 9...why?
-        }
+        File path = new File(fileName);
+        String result = new String(Files.readAllBytes(path.toPath()));
 
         return result;
     }
 
-    public static List<String> readAllLines(String fileName) throws Exception
+    public static List<String> readAllLines(String _path) throws Exception
     {
-        List<String> list = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(Utils.class.getClass().getResourceAsStream(fileName))))
-        {
-            String line;
+        File file = new File(_path);
+        List<String> result;
 
-            while ((line = br.readLine()) != null)
-            {
-                list.add(line);
-            }
-        }
+        result = Files.readAllLines(file.toPath());
 
-        return list;
+        return result;
     }
 
     public static float[] listToArray(List<Float> list)

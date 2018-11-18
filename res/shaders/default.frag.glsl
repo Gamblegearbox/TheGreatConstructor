@@ -19,54 +19,54 @@ uniform sampler2D normalMap_sampler;
 uniform sampler2D glossMap_sampler;
 uniform sampler2D illuminationMap_sampler;
 
-const float SPECULAR_POWER = 128;
+uniform vec4 fogColor;
+
+const float SPECULAR_POWER = 256;
 
 void main()
 {
-    vec4 diffuseColor;
-    vec3 normalColor;
-    float specularIntensity;
     vec4 backupColor = vec4(1,1,1,1);
 
-    vec4 illuminationColor = vec4(0.5, 0.8, 0.2, 1.0); //uniform
-    float lightIntensity = 1.0;   //uniform
-    float materialReflectance = 1.0 ; //uniform
-    vec3 lightColor = vec3(1.0,1.0,1.0); //uniform
+    //UNIFORMS?
+    vec4 illuminationColor = vec4(0.5, 0.8, 0.2, 1.0);
+    vec3 lightColor = vec3(1.0,1.0,1.0);
+    float lightIntensity = 1.0;
+    float materialReflectance = 1.0 ;
 
-    vec4 finalColor;
+
+    //SET COLOR
+    vec4 color = backupColor;
 
     if(hasDiffuseMap) {
-        finalColor = texture(diffuseMap_sampler, _uvCoord);
-    }
-    else {
-        finalColor = backupColor;
+        color = texture(diffuseMap_sampler, _uvCoord);
     }
 
     //CALC NORMAL
-    vec3 currentNormal;
+    vec3 normal = _mvNormal;
 
     if(hasNormalMap) {
-        currentNormal = normalize(texture(normalMap_sampler, _uvCoord).rgb * 2.0 - 1.0);
-        currentNormal = normalize(_mvNormal + currentNormal);
-    }
-    else {
-        currentNormal = _mvNormal;
+        normal = normalize(texture(normalMap_sampler, _uvCoord).rgb * 2.0 - 1.0);
+        normal = normalize(_mvNormal + normal);
     }
 
-    float finalShadeFactor = 0;
-    // CALC AMBIENT
+
+    // CALC AMBIENT TERM
     float ambient = 0.25; //TODO:uniform
 
-    // CALC DIFFUSE
-    float diffuse = max(dot(currentNormal, normalize(lightPosition)),0.0);
+    // CALC DIFFUSE TERM
+    vec3 position = vec3(0,0,0);//TODO: later: camera position
+    vec3 lightDirection = lightPosition - position;
+    lightDirection = normalize(lightDirection);
 
-    // CALC SPECULAR
+    float diffuse = max(0.0, dot(lightDirection, normal));
+
+    // CALC SPECULAR TERM
     float specular = 0;
 
     //TODO: Variables for later
     vec3 camera_direction = normalize(-_mvPosition);
     vec3 from_light_dir = -normalize(lightPosition);
-    vec3 reflected_light = normalize(reflect(from_light_dir , currentNormal));
+    vec3 reflected_light = normalize(reflect(from_light_dir , normal));
     float specularFactor = max( dot(camera_direction, reflected_light), 0.0);
     specularFactor = pow(specularFactor, SPECULAR_POWER);
 
@@ -76,22 +76,24 @@ void main()
 
     specular = specularFactor * lightIntensity * materialReflectance;
 
-    finalShadeFactor = ambient + diffuse + specular;
+    float finalShadeFactor = ambient + diffuse + specular;
 
-    finalColor.rgb *= finalShadeFactor;
+    color.rgb *= finalShadeFactor;
 
+    /*
     if(hasIlluminationMap)
     {
         //if(finalShadeFactor < 0.1) //TODO: make 0.1 a treshold variable and pass it as uniform
         //{
-            finalColor.rgba += texture(illuminationMap_sampler, _uvCoord).rgba;// * illuminationColor; //TODO: think about that ...color from texture or fix color.. or both
+            color.rgba += texture(illuminationMap_sampler, _uvCoord).rgba;// * illuminationColor; //TODO: think about that ...color from texture or fix color.. or both
         //}
     }
+    */
+
 
     //FOG https://vicrucann.github.io/tutorials/osg-shader-fog/
     const float FOG_MIN = 5;
     const float FOG_MAX = 50;
-    vec4 fogColor = vec4(0.5, 0.7, 0.9, 1.0);
     float fogFactor;
 
     fogFactor = 1.0 - (FOG_MAX - _vDepth) / (FOG_MAX - FOG_MIN);
@@ -104,8 +106,8 @@ void main()
         fogFactor = 0;
     }
 
-    finalColor = clamp(finalColor,0,1);
-    fragColor = mix(finalColor, fogColor, fogFactor);
+    color = clamp(color,0,1);
+    fragColor = mix(color, fogColor, fogFactor);
 }
 
 

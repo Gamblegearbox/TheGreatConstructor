@@ -17,17 +17,35 @@ public class KeyboardInput extends GLFWKeyCallback{
 
     public static boolean isKeyRepeated(int _key)
     {
-        return keyStatus[_key] != GLFW_RELEASE;
+        return keyStatus[_key] == GLFW_PRESS || keyStatus[_key] == GLFW_REPEAT;
     }
 
     public static boolean isKeyPressedOnce(int _key)
     {
         boolean answer = keyStatus[_key] == GLFW_PRESS;
         if(answer == true){
-            keyStatus[_key] = 3;
+            keyStatus[_key] = -1;
             return true;
         }else{
             return false;
+        }
+    }
+
+    public static boolean isKeyReleased(int _key)
+    {
+        boolean answer = keyStatus[_key] == GLFW_RELEASE;
+        if(answer == true){
+            keyStatus[_key] = -1;
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public static void init(){
+
+        for(int i = 0; i < keyStatus.length; i++){
+            keyStatus[i] = -1;
         }
     }
 

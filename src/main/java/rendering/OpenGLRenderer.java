@@ -2,6 +2,7 @@ package rendering;
 
 import core.*;
 import interfaces.IF_SceneObject;
+import libraries.MaterialLibrary;
 import math.Matrix4;
 import math.Vector3;
 import math.Vector4;
@@ -80,7 +81,12 @@ public class OpenGLRenderer {
 
     private void setupOpenGl()
     {
-        glClearColor(0.5f, 0.7f, 0.9f, 1.0f);
+        glClearColor(
+                EngineOptions.getOptionAsFloat("CLEAR_COLOR_R"),
+                EngineOptions.getOptionAsFloat("CLEAR_COLOR_G"),
+                EngineOptions.getOptionAsFloat("CLEAR_COLOR_B"),
+                EngineOptions.getOptionAsFloat("CLEAR_COLOR_A")
+        );
 
         glPointSize(EngineOptions.getOptionAsFloat("POINT_SIZE"));
 
@@ -117,9 +123,10 @@ public class OpenGLRenderer {
     {
         //TODO: put into config file
         String[] shadersToLoad = new String[]{
-                "/shaders/vertex.vs;/shaders/gameplay.fs",
-                "/shaders/vertex.vs;/shaders/debug/normals.fs",
-                "/shaders/vertex.vs;/shaders/debug/depth.fs"
+                "./res/shaders/default.vert.glsl;./res/shaders/default.frag.glsl",
+                "./res/shaders/default.vert.glsl;./res/shaders/gradient.frag.glsl",
+                "./res/shaders/default.vert.glsl;./res/shaders/debug/normals.frag.glsl",
+                "./res/shaders/default.vert.glsl;./res/shaders/debug/depth.frag.glsl"
         };
 
         for(String path : shadersToLoad) {
@@ -146,6 +153,15 @@ public class OpenGLRenderer {
         activeShader.setUniformData("normalMap_sampler", Texture.NORMALS);
         activeShader.setUniformData("glossMap_sampler", Texture.GLOSS);
         activeShader.setUniformData("illuminationMap_sampler", Texture.ILLUMINATION);
+        activeShader.setUniformData("shading_sampler", Texture.GRADIENT_SHADING);
+        activeShader.setUniformData("lightColor_sampler", Texture.GRADIENT_LIGHT_COLOR);
+
+        activeShader.setUniformData("fogColor",
+                EngineOptions.getOptionAsFloat("CLEAR_COLOR_R"),
+                EngineOptions.getOptionAsFloat("CLEAR_COLOR_G"),
+                EngineOptions.getOptionAsFloat("CLEAR_COLOR_B"),
+                EngineOptions.getOptionAsFloat("CLEAR_COLOR_A")
+        );
     }
 
     public void switchShader(){
@@ -154,7 +170,7 @@ public class OpenGLRenderer {
         activateShader(currentShaderIndex);
     }
 
-    public void render(Scene _scene)
+    public void render(Scene _scene, Vector3 _lightPosition, float _dayTime)
     {
         int totalVerticesInFrame = 0;
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
@@ -169,10 +185,11 @@ public class OpenGLRenderer {
         }
 
         Map<String, IF_SceneObject> gameObjects = _scene.getGameObjects();
-        Vector3 lightPosition = _scene.getLightPosition();
+
 
         //UPLOAD FRAME RELEVANT UNIFORMS HERE
-        activeShader.setUniformData("lightPosition", lightPosition);
+        activeShader.setUniformData("lightPosition", _lightPosition);
+        activeShader.setUniformData("daytime", _dayTime);
 
         //FILTER OBJECTS FOR FRUSTUM CULLING
         if(EngineOptions.getOptionAsBoolean("FRUSTUM_CULLING"))
@@ -230,6 +247,12 @@ public class OpenGLRenderer {
                 /* TODO: It's way more performant to do this only once in the init method.
                 * But that would mean only on giant texture atlas and no texture changes during rendering.
                 * Or a few atlasses and the material only holds an index for an atlas*/
+
+                //TODO: gradient test
+                glActiveTexture(GL_TEXTURE4);
+                glBindTexture(GL_TEXTURE_2D, MaterialLibrary.getGradientByTag("shading").getID());
+                glActiveTexture(GL_TEXTURE5);
+                glBindTexture(GL_TEXTURE_2D, MaterialLibrary.getGradientByTag("lightColor").getID());
 
                 if(EngineOptions.getOptionAsBoolean("ENABLE_DIFFUSE_MAPPING") && material.hasDiffuseMap()) {
                     activeShader.setUniformData("hasDiffuseMap", 1);

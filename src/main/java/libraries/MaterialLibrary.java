@@ -12,21 +12,23 @@ import java.util.Map;
 public class MaterialLibrary {
 
     public static final Map<String, Material> materialMap = new HashMap<>();
+    public static final Map<String, Texture> gradientMap = new HashMap<>();
 
     public static void loadMaterials(String filePath)throws Exception {
 
         List<String> fileContent = utils.Utils.readAllLines(filePath);
         List<String> materialDataFromFile = new ArrayList<>();
+        List<String> gradientDataFromFile = new ArrayList<>();
 
         //PARSE MESH FILE
         for(String line : fileContent){
 
-            if(line.startsWith("#")){
-                continue;
-            }
-
             if(line.startsWith("MATERIAL")){
                 materialDataFromFile.add(line);
+            }
+
+            if(line.startsWith("GRADIENT")){
+                gradientDataFromFile.add(line);
             }
         }
 
@@ -49,7 +51,25 @@ public class MaterialLibrary {
             Texture gloss = glossPath.equals("none") ? null : new Texture(glossPath);
             Texture illum = illumPath.equals("none") ? null : new Texture(illumPath);
 
+            Logger.getInstance().writeln("\t\tTAG: " + tag + "\n\t\t\tDIFFUSE: " + diffusePath + "\n\t\t\tNORMALS: " + normalPath + "\n\t\t\tGLOSS: " + glossPath + "\n\t\t\tILLUMN: " + illumPath);
+
             materialMap.put(tag, new Material(diffuse, normal, gloss, illum));
+        }
+
+        Logger.getInstance().writeln(">>> LOADING GRADIENTS...");
+
+        for(int i = 0 ; i < gradientDataFromFile.size(); i++) {
+
+            String[] line = gradientDataFromFile.get(i).split("=");
+            String objectData = line[line.length - 1];
+
+            String[] objectDataTokens = objectData.split(";");
+            String tag = objectDataTokens[0].trim().replaceAll("\"", "");
+            String path = objectDataTokens[1].trim().replaceAll("\"", "");
+
+            Logger.getInstance().writeln("\t\t" + path);
+
+            gradientMap.put(tag, new Texture(path));
         }
     }
 
@@ -62,5 +82,10 @@ public class MaterialLibrary {
         else{
             return new Material(null, null, null, null);
         }
+    }
+
+    public static Texture getGradientByTag(String tag){
+        return gradientMap.get(tag);
+        //TODO: fallback?
     }
 }

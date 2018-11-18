@@ -1,14 +1,10 @@
 package core;
 
-import math.Vector3;
 import utils.Logger;
 import utils.Utils;
 
 import java.util.HashMap;
 import java.util.List;
-
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL20.GL_SHADING_LANGUAGE_VERSION;
 
 public class EngineOptions {
 

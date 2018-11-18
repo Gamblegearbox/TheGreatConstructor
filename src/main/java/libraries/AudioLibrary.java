@@ -55,6 +55,7 @@ public class AudioLibrary {
             String tag = objectDataTokens[0].trim().replaceAll("\"", "");
             String path = objectDataTokens[1].trim().replaceAll("\"", "");
 
+            Logger.getInstance().writeln("\t\t" + path);
 
             loadAudioFile(tag, path);
         }

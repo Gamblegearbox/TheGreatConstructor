@@ -7,7 +7,6 @@ public class Material {
     private final Texture glossMap;
     private final Texture illuminationMap;
 
-
     public Material(Texture _diffuseMap, Texture _normalMap, Texture _glossMap, Texture _illuminationMap)
     {
         diffuseMap = _diffuseMap;

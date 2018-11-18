@@ -2,13 +2,17 @@ import core.CoreLoop;
 import core.EngineOptions;
 import utils.Logger;
 
+import java.io.File;
+
 public class Main {
 
     public static void main(String[] args)
     {
         try
         {
-            EngineOptions.loadSettingFromFile("/config/engineOptions.ini");
+            String dir = System.getProperty("user.dir");
+
+            EngineOptions.loadSettingFromFile("./res/config/engineOptions.ini");
 
             Logger.getInstance().writeln("> SETTINGS LOADED FROM CONFIG FILE");
             EngineOptions.logOptionsStatus();

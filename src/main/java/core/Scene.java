@@ -14,7 +14,6 @@ public class Scene {
 
     private final String scnFilePath;
 
-    private Vector3 lightPosition;
     private Map<String, IF_SceneObject> sceneObjects;
     private String sceneName;
     private Material sceneMaterial;
@@ -47,16 +46,6 @@ public class Scene {
 
                 sceneName = line;
             }
-
-            if(line.startsWith("LIGHT_POSITION")){
-                String[] temp = line.split("=");
-                line = temp[temp.length - 1];
-                line = line.replaceAll("\"", "");
-                line = line.trim();
-
-                lightPosition = Utils.createPositionFromString(line);
-            }
-
         }
 
         Logger.getInstance().writeln("> INITIALIZING " + sceneName +  "...");
@@ -68,11 +57,6 @@ public class Scene {
 
     public String getSceneName(){
         return sceneName;
-    }
-
-    public Vector3 getLightPosition()
-    {
-        return lightPosition;
     }
 
     public Material getSceneMaterial(){

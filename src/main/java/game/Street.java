@@ -56,7 +56,7 @@ public class Street implements IF_SceneObject {
         }
 
         for(int i = 0; i < uvCoords.length; i++){
-            uvCoords[i] = 1;
+            uvCoords[i] = 0;
         }
 
         for (int ti = 0, vi = 0, y = 0; y < lengthRes; y++, vi++) {

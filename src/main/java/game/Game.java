@@ -6,6 +6,7 @@ import interfaces.IF_Game;
 import libraries.AudioLibrary;
 import libraries.MaterialLibrary;
 import libraries.MeshLibrary;
+import math.Vector3;
 import rendering.OpenGLRenderer;
 import audio.OpenALAudioEngine;
 import utils.Logger;
@@ -17,12 +18,15 @@ public class Game implements IF_Game {
 
     private final OpenGLRenderer renderer;
     private final OpenALAudioEngine audioEngine;
+
     private Scene[] scenes;
     private Scene activeScene = null;
+    private Vector3 lightPosition = new Vector3(-15.0f, 5.0f, 1.0f);
+    private float daytime = 0.0f;
 
-    Car car_1;
-    Car car_2;
-    Car car_3;
+    private Car car_1;
+    private Car car_2;
+    private Car car_3;
 
     //DEBUG_MODE VALUES
     private float deltaTimeSum;
@@ -38,13 +42,16 @@ public class Game implements IF_Game {
     {
         Logger.getInstance().writeln(">> INITIALISING GAME");
 
+        //SET ALL KEYBOARD KEYS TO -1
+        KeyboardInput.init();
+
         //LOAD ASSETS
-        MeshLibrary.loadMeshes("/TestGameContent/Meshes.txt");
-        MaterialLibrary.loadMaterials("/TestGameContent/Materials.txt");
-        AudioLibrary.loadAudioFiles("/TestGameContent/Audio.txt");
+        MeshLibrary.loadMeshes("./res/TestGameContent/Meshes.txt");
+        MaterialLibrary.loadMaterials("./res/TestGameContent/Materials.txt");
+        AudioLibrary.loadAudioFiles("./res/TestGameContent/Audio.txt");
 
         car_1 = new Car();
-        car_1.transform.setPosition(2,-2,-7);
+        car_1.transform.setPosition(1,-2,-6);
         car_2 = new Car();
         car_2.transform.setPosition(-2,-2,-14);
         car_3 = new Car();
@@ -52,8 +59,8 @@ public class Game implements IF_Game {
 
         //CREATE SCENES
         scenes = new Scene[2];
-        scenes[0] = new Scene("/TestGameContent/Scenes/MainMenu.scn", MaterialLibrary.getMaterialByTag("default"));
-        scenes[1] = new Scene("/TestGameContent/Scenes/Scene_01.scn", MaterialLibrary.getMaterialByTag("default"));
+        scenes[0] = new Scene("./res/TestGameContent/Scenes/MainMenu.scn", MaterialLibrary.getMaterialByTag("default"));
+        scenes[1] = new Scene("./res/TestGameContent/Scenes/Scene_01.scn", MaterialLibrary.getMaterialByTag("default"));
 
         //ADD OBJECTS TO SCENES
         scenes[0].addSceneObject("Logo", new Logo());
@@ -94,6 +101,12 @@ public class Game implements IF_Game {
     {
         activeScene.update(_deltaTime);
 
+        daytime += 0.00001f;
+        if(daytime > 1.0){
+            daytime = 0;
+        }
+
+
         if(EngineOptions.getOptionAsBoolean("DEBUG_MODE"))
         {
             deltaTimeSum += _deltaTime;
@@ -109,7 +122,7 @@ public class Game implements IF_Game {
     @Override
     public void render()
     {
-        renderer.render(activeScene);
+        renderer.render(activeScene, lightPosition, daytime);
     }
 
     @Override

@@ -43,6 +43,8 @@ public class MeshLibrary {
             String path = objectDataTokens[1].trim().replaceAll("\"", "");
             float boundingRadius = Float.parseFloat(objectDataTokens[2].trim());
 
+            Logger.getInstance().writeln("\t\t" + path);
+
             meshMap.put(tag, OBJLoader.loadMesh(path, boundingRadius));
         }
     }
