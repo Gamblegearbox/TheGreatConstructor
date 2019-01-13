@@ -1,6 +1,7 @@
 package rendering;
 
 import de.matthiasmann.twl.utils.PNGDecoder;
+import utils.Logger;
 
 import java.nio.ByteBuffer;
 
@@ -14,24 +15,53 @@ public class Texture {
     public static final int NORMALS = 1;
     public static final int GLOSS = 2;
     public static final int ILLUMINATION = 3;
-
-    //TODO: gradient test --> make this more global
     public static final int GRADIENT_SHADING = 4;
     public static final int GRADIENT_LIGHT_COLOR = 5;
 
 
-    public Texture(String _filePath) throws Exception
+    public Texture(String _filePath)
     {
-        PNGDecoder decoder = new PNGDecoder(Texture.class.getResourceAsStream(_filePath));
-        ByteBuffer buffer = ByteBuffer.allocateDirect(4 * decoder.getHeight() * decoder.getWidth());
-        decoder.decode(buffer, decoder.getWidth() * 4, PNGDecoder.Format.RGBA);
-        buffer.flip();
+        ByteBuffer buffer;
 
+        int width = 10; //initial width
+        int height = 10; //initial height
+
+
+        try {
+            PNGDecoder decoder = new PNGDecoder(Texture.class.getResourceAsStream(_filePath));
+            width = decoder.getWidth();
+            height = decoder.getHeight();
+
+            buffer = ByteBuffer.allocateDirect(4 * height * width);
+            decoder.decode(buffer, width * 4, PNGDecoder.Format.RGBA);
+            buffer.flip();
+        } catch (Exception e){
+
+            Logger.getInstance().writeln("Could not load:" + _filePath + " --> generating default texture");
+
+            int bufferSize = 4 * height * width;
+            buffer = ByteBuffer.allocateDirect(bufferSize);
+
+            //Fill buffer with fake data
+            byte r = -24;
+            byte g = 43;
+            byte b = -76;
+            byte a = -1;
+
+            for(int i = 0; i < bufferSize; i+=4) {
+                buffer.put(i, r);
+                buffer.put(i+1, g);
+                buffer.put(i+2, b);
+                buffer.put(i+3, a);
+            }
+
+        }
         textureID = glGenTextures();
         glBindTexture(GL_TEXTURE_2D, textureID);
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, decoder.getWidth(), decoder.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+
         glGenerateMipmap(GL_TEXTURE_2D);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);

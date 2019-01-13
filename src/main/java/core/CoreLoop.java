@@ -2,25 +2,20 @@ package core;
 
 import game.Game;
 import interfaces.IF_Game;
-import rendering.OpenGLRenderer;
-import audio.OpenALAudioEngine;
 import utils.Logger;
 
 public class CoreLoop implements Runnable{
 
     private final Thread gameLoopThread;
     private final Window window;
-    private final OpenGLRenderer renderer;
-    private final OpenALAudioEngine sound;
     private final IF_Game game;
 
     public CoreLoop()
     {
         gameLoopThread = new Thread(this, "GAME_LOOP_THREAD");
         window = new Window(EngineOptions.WINDOW_TITLE, EngineOptions.getOptionAsInt("WINDOW_WIDTH"), EngineOptions.getOptionAsInt("WINDOW_HEIGHT"));
-        renderer =  new OpenGLRenderer(window);
-        sound = new OpenALAudioEngine();
-        game = new Game(renderer, sound);
+
+        game = new Game(window);
     }
 
     public void start()
@@ -42,7 +37,7 @@ public class CoreLoop implements Runnable{
     {
         try
         {
-            initSubSystems();
+            init();
             startGameLoop();
         }
         catch(Exception e)
@@ -55,12 +50,9 @@ public class CoreLoop implements Runnable{
         }
     }
 
-    private void initSubSystems() throws Exception
+    private void init() throws Exception
     {
-        Logger.getInstance().writeln("> INITIALISING SUBSYSTEMS");
         window.init();
-        renderer.init();
-        sound.init();
         game.init();
     }
 
@@ -120,8 +112,6 @@ public class CoreLoop implements Runnable{
     {
         Logger.getInstance().writeln("> CLEANING UP");
         game.cleanup();
-        sound.cleanup();
-        renderer.cleanup();
         window.cleanup();
         Logger.getInstance().cleanup();
     }

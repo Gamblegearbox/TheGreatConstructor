@@ -4,11 +4,9 @@ import input.KeyboardInput;
 import core.*;
 import interfaces.IF_Game;
 import libraries.AudioLibrary;
-import libraries.MaterialLibrary;
-import libraries.MeshLibrary;
 import math.Vector3;
-import rendering.OpenGLRenderer;
 import audio.OpenALAudioEngine;
+import rendering.DefaultRenderer;
 import utils.Logger;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -16,68 +14,68 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public class Game implements IF_Game {
 
-    private final OpenGLRenderer renderer;
+    private final DefaultRenderer renderer;
     private final OpenALAudioEngine audioEngine;
 
+    private Camera camera;
     private Scene[] scenes;
     private Scene activeScene = null;
-    private Vector3 lightPosition = new Vector3(-15.0f, 5.0f, 1.0f);
-    private float daytime = 0.0f;
+    private Vector3 lightPosition = new Vector3(0.0f, 10.0f, -5.0f);
 
-    private Car car_1;
-    private Car car_2;
-    private Car car_3;
+    //IN GAME TIME SETTINGS
+    private float timeOfDay = 0.0f; //from 0.0 to 1.0
+    private float lengthOfDayInSeconds = 60.0f;
 
     //DEBUG_MODE VALUES
     private float deltaTimeSum;
 
-    public Game(OpenGLRenderer _renderer, OpenALAudioEngine _audioEngine)
+    public Game(Window _window)
     {
-        renderer = _renderer;
-        audioEngine = _audioEngine;
+        renderer =  new DefaultRenderer(_window);
+        audioEngine = new OpenALAudioEngine();
     }
 
     @Override
     public void init() throws Exception
     {
         Logger.getInstance().writeln(">> INITIALISING GAME");
+        renderer.init();
+        audioEngine.init();
+        camera = new Camera();
+
+        //TODO: not working correct!
+        camera.getTransform().setPosition(0,-5,-15);
+        camera.getTransform().setRotation(30,0,0);
+
+
 
         //SET ALL KEYBOARD KEYS TO -1
         KeyboardInput.init();
 
         //LOAD ASSETS
-        MeshLibrary.loadMeshes("./res/TestGameContent/Meshes.txt");
-        MaterialLibrary.loadMaterials("./res/TestGameContent/Materials.txt");
-        AudioLibrary.loadAudioFiles("./res/TestGameContent/Audio.txt");
 
-        car_1 = new Car();
-        car_1.transform.setPosition(1,-2,-6);
-        car_2 = new Car();
-        car_2.transform.setPosition(-2,-2,-14);
-        car_3 = new Car();
-        car_3.transform.setPosition(0,-2,-20);
+        AudioLibrary.loadAudioFiles("./res/TestGameContent/Audio.txt");
 
         //CREATE SCENES
         scenes = new Scene[2];
-        scenes[0] = new Scene("./res/TestGameContent/Scenes/MainMenu.scn", MaterialLibrary.getMaterialByTag("default"));
-        scenes[1] = new Scene("./res/TestGameContent/Scenes/Scene_01.scn", MaterialLibrary.getMaterialByTag("default"));
+        scenes[0] = new Scene("./res/TestGameContent/Scenes/MainMenu.scn");
+        scenes[1] = new Scene("./res/TestGameContent/Scenes/Scene_01.scn");
 
-        //ADD OBJECTS TO SCENES
+        //CREATE AND ADD OBJECTS TO SCENES
         scenes[0].addSceneObject("Logo", new Logo());
+        //scenes[1].addSceneObject("Terrain", new Terrain());
+        scenes[1].addSceneObject("Water", new Water());
+        scenes[1].addSceneObject("Car", new Car());
 
-        scenes[1].addSceneObject("Car_1", car_1);
-        scenes[1].addSceneObject("Car_2", car_2);
-        scenes[1].addSceneObject("Car_3", car_3);
-        scenes[1].addSceneObject("Street", new Street());
     }
 
-    public void start() throws Exception
+    public void start()
     {
         switchScene(1);
     }
 
     @Override
-    public void input(float deltaTime) throws Exception
+    public void input(float deltaTime)
     {
         if(KeyboardInput.isKeyPressedOnce(GLFW_KEY_ESCAPE))
         {
@@ -99,13 +97,13 @@ public class Game implements IF_Game {
     @Override
     public void update(float _deltaTime)
     {
-        activeScene.update(_deltaTime);
-
-        daytime += 0.00001f;
-        if(daytime > 1.0){
-            daytime = 0;
+        //UPDATING IN GAME TIME
+        timeOfDay += 1.0/ lengthOfDayInSeconds * _deltaTime;
+        if(timeOfDay > 1.0){
+            timeOfDay = 0;
         }
 
+        activeScene.update(_deltaTime);
 
         if(EngineOptions.getOptionAsBoolean("DEBUG_MODE"))
         {
@@ -122,7 +120,7 @@ public class Game implements IF_Game {
     @Override
     public void render()
     {
-        renderer.render(activeScene, lightPosition, daytime);
+        renderer.render(activeScene, lightPosition, timeOfDay, camera);
     }
 
     @Override
@@ -133,9 +131,12 @@ public class Game implements IF_Game {
         {
             temp.cleanup();
         }
+
+        renderer.cleanup();
+        audioEngine.cleanup();
     }
 
-    private void switchScene(int index) throws Exception
+    private void switchScene(int index)
     {
         activeScene = scenes[index];
         Logger.getInstance().writeln("> LOADING " + activeScene.getSceneName() +  "...");

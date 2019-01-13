@@ -1,4 +1,0 @@
-MATERIAL = "default"; "/TestGameContent/Textures/Colors.png"; "none"; "/TestGameContent/Textures/Gloss.png"; "none"
-
-GRADIENT = "shading"; "/TestGameContent/Textures/gradient_shading.png"
-GRADIENT = "lightColor"; "/TestGameContent/Textures/gradient_lightColor.png"

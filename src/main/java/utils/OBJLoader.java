@@ -10,56 +10,59 @@ import java.util.List;
 
 public class OBJLoader {
 
-    public static OpenGLMesh loadMesh(String fileName, float boundingRadius) throws Exception
+    public static OpenGLMesh loadMesh(String fileName, float boundingRadius)
     {
-        List<String> lines = Utils.readAllLines(fileName);
+        try {
+            List<String> lines = Utils.readAllLines(fileName);
 
-        List<Vector3f> vertices = new ArrayList<>();
-        List<Vector2f> textures = new ArrayList<>();
-        List<Vector3f> normals = new ArrayList<>();
-        List<Face> faces = new ArrayList<>();
+            List<Vector3f> vertices = new ArrayList<>();
+            List<Vector2f> textures = new ArrayList<>();
+            List<Vector3f> normals = new ArrayList<>();
+            List<Face> faces = new ArrayList<>();
 
-        for (String line : lines)
-        {
-            String[] tokens = line.split("\\s+");
+            for (String line : lines) {
+                String[] tokens = line.split("\\s+");
 
-            switch (tokens[0])
-            {
-                case "v":
-                    // Geometric vertex
-                    Vector3f vec3f = new Vector3f(
-                            Float.parseFloat(tokens[1]),
-                            Float.parseFloat(tokens[2]),
-                            Float.parseFloat(tokens[3]));
-                    vertices.add(vec3f);
-                    break;
+                switch (tokens[0]) {
+                    case "v":
+                        // Geometric vertex
+                        Vector3f vec3f = new Vector3f(
+                                Float.parseFloat(tokens[1]),
+                                Float.parseFloat(tokens[2]),
+                                Float.parseFloat(tokens[3]));
+                        vertices.add(vec3f);
+                        break;
 
-                case "vt":
-                    // Texture coordinate
-                    Vector2f vec2f = new Vector2f(
-                            Float.parseFloat(tokens[1]),
-                            Float.parseFloat(tokens[2]));
-                    textures.add(vec2f);
-                    break;
+                    case "vt":
+                        // Texture coordinate
+                        Vector2f vec2f = new Vector2f(
+                                Float.parseFloat(tokens[1]),
+                                Float.parseFloat(tokens[2]));
+                        textures.add(vec2f);
+                        break;
 
-                case "vn":
-                    // Vertex normal
-                    Vector3f vec3fNorm = new Vector3f(
-                            Float.parseFloat(tokens[1]),
-                            Float.parseFloat(tokens[2]),
-                            Float.parseFloat(tokens[3]));
-                    normals.add(vec3fNorm);
-                    break;
-                case "f":
-                    Face face = new Face(tokens[1], tokens[2], tokens[3]);
-                    faces.add(face);
-                    break;
-                default:
-                    // Ignore other lines
-                    break;
+                    case "vn":
+                        // Vertex normal
+                        Vector3f vec3fNorm = new Vector3f(
+                                Float.parseFloat(tokens[1]),
+                                Float.parseFloat(tokens[2]),
+                                Float.parseFloat(tokens[3]));
+                        normals.add(vec3fNorm);
+                        break;
+                    case "f":
+                        Face face = new Face(tokens[1], tokens[2], tokens[3]);
+                        faces.add(face);
+                        break;
+                    default:
+                        // Ignore other lines
+                        break;
+                }
             }
+            return reorderLists(vertices, textures, normals, faces, boundingRadius);
+        } catch(Exception e) {
+            Logger.getInstance().writeln("Could not load:" + fileName + " --> loading default mesh");
+            return PrototypMeshes.cube();
         }
-        return reorderLists(vertices, textures, normals, faces, boundingRadius);
     }
 
     private static OpenGLMesh reorderLists(List<Vector3f> _verticesList, List<Vector2f> _uvCoordsList,

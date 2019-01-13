@@ -3,7 +3,6 @@ package game;
 import audio.OpenALAudioSource;
 import input.KeyboardInput;
 import libraries.AudioLibrary;
-import libraries.MeshLibrary;
 import core.Transform;
 import rendering.OpenGLMesh;
 import interfaces.IF_SceneObject;
@@ -12,10 +11,9 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public class Car implements IF_SceneObject {
 
-    float x = 0;
-    float z = 0;
-    float y = 0;
-    float speed = 15.0f;
+    float x = 0, y = 0f, z = 0f;
+
+    float speed = 5.0f;
     int count = 0;
     int limit = 10000;
 
@@ -26,17 +24,20 @@ public class Car implements IF_SceneObject {
     private boolean isEngineRunning = false;
     private int currentGear = 0;
 
-    Transform transform;
-    OpenGLMesh mesh;
-    OpenALAudioSource audioEngine;
-    OpenALAudioSource audioSecondary;
+    private Transform transform;
+    private OpenGLMesh mesh;
+
+    private OpenALAudioSource audioEngine;
+    private OpenALAudioSource audioSecondary;
+
 
     public Car(){
-        mesh = MeshLibrary.getMeshByTag("Coupe");
+        mesh = Assets.CAR_1;
         audioEngine = new OpenALAudioSource();
         audioSecondary = new OpenALAudioSource();
 
         transform = new Transform();
+
     }
 
     @Override
@@ -44,10 +45,13 @@ public class Car implements IF_SceneObject {
         return transform;
     }
 
+    public OpenGLMesh getMesh() {
+        return mesh;
+    }
+
+
     @Override
     public void update(float _deltaTime){
-
-        y += _deltaTime * 9;
 
         if(isEngineRunning){
             count++;
@@ -55,6 +59,23 @@ public class Car implements IF_SceneObject {
             if(count % 4000 == 0) {
                 audioEngine.play(AudioLibrary.audioBufferIdMap.get("rotary"));
             }
+
+            if(KeyboardInput.isKeyRepeated(GLFW_KEY_UP)){
+                z -= speed *_deltaTime;
+            }
+
+            if(KeyboardInput.isKeyRepeated(GLFW_KEY_DOWN)){
+                z += speed * _deltaTime;
+            }
+
+            if(KeyboardInput.isKeyRepeated(GLFW_KEY_LEFT)){
+                x -= speed * _deltaTime;
+            }
+
+            if(KeyboardInput.isKeyRepeated(GLFW_KEY_RIGHT)){
+                x += speed * _deltaTime;
+            }
+
 
             if(KeyboardInput.isKeyPressedOnce(GLFW_KEY_Q)){
                 shutDownEngine();
@@ -74,7 +95,7 @@ public class Car implements IF_SceneObject {
             shiftDown();
         }
 
-        transform.setRotation(0,y, 0);
+        transform.setPosition(x, y, z);
 
 
     }
@@ -112,10 +133,7 @@ public class Car implements IF_SceneObject {
 
     private void steer(){}
 
-    public OpenGLMesh getMesh()
-    {
-        return mesh;
-    }
+
 
     public void cleanup()
     {

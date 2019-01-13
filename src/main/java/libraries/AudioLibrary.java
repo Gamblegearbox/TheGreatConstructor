@@ -44,7 +44,6 @@ public class AudioLibrary {
             }
         }
 
-        Logger.getInstance().writeln(">>> LOADING AUDIO FILES...");
 
         for(int i = 0; i < audioDataFromFile.size(); i++){
 
@@ -55,7 +54,7 @@ public class AudioLibrary {
             String tag = objectDataTokens[0].trim().replaceAll("\"", "");
             String path = objectDataTokens[1].trim().replaceAll("\"", "");
 
-            Logger.getInstance().writeln("\t\t" + path);
+            Logger.getInstance().writeln("[" + AudioLibrary.class.getName() + "] loaded: " + path);
 
             loadAudioFile(tag, path);
         }

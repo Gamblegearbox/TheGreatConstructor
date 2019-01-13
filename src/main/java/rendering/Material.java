@@ -2,6 +2,7 @@ package rendering;
 
 public class Material {
 
+
     private final Texture diffuseMap;
     private final Texture normalMap;
     private final Texture glossMap;
@@ -35,23 +36,4 @@ public class Material {
         return illuminationMap;
     }
 
-    public boolean hasDiffuseMap()
-    {
-        return diffuseMap != null;
-    }
-
-    public boolean hasNormalMap()
-    {
-        return normalMap != null;
-    }
-
-    public boolean hasGlossMap()
-    {
-        return glossMap != null;
-    }
-
-    public boolean hasIlluminationMap()
-    {
-        return illuminationMap != null;
-    }
 }

@@ -2,6 +2,9 @@ package math;
 
 public class Vector3 {
 
+    public static final Vector3 ZERO = new Vector3(0f,0f,0f);
+    public static final Vector3 ONE = new Vector3(1f,1f,1f);
+
     public float x;
     public float y;
     public float z;

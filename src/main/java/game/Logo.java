@@ -1,6 +1,5 @@
 package game;
 
-import libraries.MeshLibrary;
 import rendering.OpenGLMesh;
 import core.Transform;
 import interfaces.IF_SceneObject;
@@ -15,7 +14,7 @@ public class Logo implements IF_SceneObject {
 
     public Logo() {
         transform = new Transform();
-        mesh = MeshLibrary.getMeshByTag("Logo");
+        mesh = Assets.LOGO;
     }
 
     @Override
@@ -36,7 +35,7 @@ public class Logo implements IF_SceneObject {
         float sin = (float)Math.sin(time);
         float fastSin = (float)Math.sin(fastTime);
 
-        transform.setPosition(sin, 0, sin-15);
+        transform.setPosition(sin, 0, sin);
         transform.setRotation(fastSin*5, sin*20, sin*5);
     }
 

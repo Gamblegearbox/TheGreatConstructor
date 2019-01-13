@@ -16,12 +16,11 @@ public class Scene {
 
     private Map<String, IF_SceneObject> sceneObjects;
     private String sceneName;
-    private Material sceneMaterial;
 
-    public Scene(String _path, Material sceneMaterial) throws Exception
+    public Scene(String _path) throws Exception
     {
         scnFilePath = _path;
-        this.sceneMaterial = sceneMaterial;
+
 
         sceneObjects = new HashMap<>();
         load();
@@ -57,10 +56,6 @@ public class Scene {
 
     public String getSceneName(){
         return sceneName;
-    }
-
-    public Material getSceneMaterial(){
-        return sceneMaterial;
     }
 
     public Map<String, IF_SceneObject> getGameObjects()

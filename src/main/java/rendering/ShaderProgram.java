@@ -1,17 +1,18 @@
 package rendering;
 
-
 import math.Matrix4;
 import math.Vector3;
 import org.lwjgl.system.MemoryStack;
 import java.nio.FloatBuffer;
 import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL32.GL_GEOMETRY_SHADER;
 
 class ShaderProgram {
 
     private final int programID;
 
     private int vertexShaderId;
+    private int geometryShaderId;
     private int fragmentShaderId;
 
     ShaderProgram() throws Exception
@@ -24,18 +25,19 @@ class ShaderProgram {
         }
     }
 
-    void createVertexShader(String shaderCode) throws Exception
-    {
-        vertexShaderId = createShader(shaderCode, GL_VERTEX_SHADER);
+    void createVertexShader(String _shaderCode) throws Exception {
+        vertexShaderId = createShader(_shaderCode, GL_VERTEX_SHADER);
     }
 
-    void createFragmentShader(String shaderCode) throws Exception
-    {
-        fragmentShaderId = createShader(shaderCode, GL_FRAGMENT_SHADER);
+    void createGeometryShader(String _shaderCode) throws Exception{
+        geometryShaderId = createShader(_shaderCode, GL_GEOMETRY_SHADER);
     }
 
-    private int createShader(String shaderCode, int shaderType) throws Exception
-    {
+    void createFragmentShader(String _shaderCode) throws Exception {
+        fragmentShaderId = createShader(_shaderCode, GL_FRAGMENT_SHADER);
+    }
+
+    private int createShader(String shaderCode, int shaderType) throws Exception {
         int shaderId = glCreateShader(shaderType);
 
         if (shaderId == 0)
@@ -56,8 +58,7 @@ class ShaderProgram {
         return shaderId;
     }
 
-    void setUniformData(String _uniformName, Matrix4 _matrix)
-    {
+    void setUniformData(String _uniformName, Matrix4 _matrix) {
         int uniformLocation = glGetUniformLocation(programID, _uniformName);
 
         /*
@@ -77,38 +78,33 @@ class ShaderProgram {
         }
     }
 
-    void setUniformData(String _uniformName, int _value)
-    {
+    void setUniformData(String _uniformName, int _value) {
+
         int uniformLocation = glGetUniformLocation(programID, _uniformName);
         glUniform1i(uniformLocation, _value);
     }
 
-    void setUniformData(String _uniformName, float _value)
-    {
+    void setUniformData(String _uniformName, float _value) {
         int uniformLocation = glGetUniformLocation(programID, _uniformName);
         glUniform1f(uniformLocation, _value);
     }
 
-    void setUniformData(String _uniformName, Vector3 _value)
-    {
+    void setUniformData(String _uniformName, Vector3 _value) {
         int uniformLocation = glGetUniformLocation(programID, _uniformName);
         glUniform3f(uniformLocation, _value.x, _value.y, _value.z);
     }
 
-    void setUniformData(String _uniformName, float _x, float _y, float _z)
-    {
+    void setUniformData(String _uniformName, float _x, float _y, float _z) {
         int uniformLocation = glGetUniformLocation(programID, _uniformName);
         glUniform3f(uniformLocation, _x, _y, _z);
     }
 
-    void setUniformData(String _uniformName, float _r, float _g, float _b, float _a)
-    {
+    void setUniformData(String _uniformName, float _r, float _g, float _b, float _a) {
         int uniformLocation = glGetUniformLocation(programID, _uniformName);
         glUniform4f(uniformLocation, _r, _g, _b, _a);
     }
 
-    void link() throws Exception
-    {
+    void link() throws Exception {
         glLinkProgram(programID);
         if (glGetProgrami(programID, GL_LINK_STATUS) == 0)
         {
@@ -142,11 +138,16 @@ class ShaderProgram {
         glUseProgram(0);
     }
 
-    void cleanup()
-    {
+    void cleanup() {
         unbind();
         if (programID != 0)
         {
+            glDetachShader(programID, vertexShaderId);
+            glDetachShader(programID, geometryShaderId);
+            glDetachShader(programID, fragmentShaderId);
+            glDeleteShader(vertexShaderId);
+            glDeleteShader(geometryShaderId);
+            glDeleteShader(fragmentShaderId);
             glDeleteProgram(programID);
         }
     }

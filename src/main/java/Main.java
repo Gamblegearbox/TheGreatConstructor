@@ -8,24 +8,26 @@ public class Main {
 
     public static void main(String[] args)
     {
+        String dir = System.getProperty("user.dir");
+        String path = "./res/config/engineOptions.ini";
+
         try
         {
-            String dir = System.getProperty("user.dir");
+            EngineOptions.loadSettingFromFile(path);
 
-            EngineOptions.loadSettingFromFile("./res/config/engineOptions.ini");
+            Logger.getInstance().writeln("[" + Main.class.getName() + "] system info:");
+            logSystemInfo();
 
-            Logger.getInstance().writeln("> SETTINGS LOADED FROM CONFIG FILE");
+            Logger.getInstance().writeln("[" + Main.class.getName() + "] current setting:");
             EngineOptions.logOptionsStatus();
 
-            Logger.getInstance().writeln("> STARTING PROGRAM");
-            logSystemInfo();
 
             CoreLoop coreLoop = new CoreLoop();
             coreLoop.start();
         }
         catch(Exception e)
         {
-            System.out.println("Could not find config file!");
+            Logger.getInstance().writeln("[" + Main.class.getName() + "] could not load config file under:" + path + " [closing application]");
             System.exit(-1);
         }
     }

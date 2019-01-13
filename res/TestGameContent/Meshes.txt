@@ -1,3 +1,0 @@
-MESH = "Logo"; ".\\res\\TestGameContent\\Meshes\\ui_logo.obj"; 2.5
-MESH = "Pickup"; ".\\res\\TestGameContent\\Meshes\\Pickup.obj"; 2
-MESH = "Coupe"; ".\\res\\TestGameContent\\Meshes\\Coupe.obj"; 2
