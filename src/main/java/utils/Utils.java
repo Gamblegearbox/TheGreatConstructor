@@ -1,7 +1,7 @@
 package utils;
 
+import org.joml.Vector3f;
 
-import math.Vector3;
 import java.io.File;
 import java.nio.file.Files;
 import java.util.List;
@@ -39,13 +39,13 @@ public class Utils {
         return floatArray;
     }
 
-    public static Vector3 createPositionFromString(String _string)
+    public static Vector3f createPositionFromString(String _string)
     {
         String[] positionAsString = _string.split(",");
         float x = Float.parseFloat(positionAsString[0]);
         float y = Float.parseFloat(positionAsString[1]);
         float z = Float.parseFloat(positionAsString[2]);
 
-        return new Vector3(x, y, z);
+        return new Vector3f(x, y, z);
     }
 }

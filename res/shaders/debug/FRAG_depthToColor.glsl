@@ -9,7 +9,7 @@ out vec4 fragColor;
 
 void main()
 {
-    float depthRange = 30.0;
+    float depthRange = 80.0;
 
     vec4 tintColor = vec4(1.0,1.0,1.0,1.0);
 

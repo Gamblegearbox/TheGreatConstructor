@@ -1,6 +1,7 @@
 package core;
 
 import game.Game;
+import input.MouseInput;
 import interfaces.IF_Game;
 import utils.Logger;
 
@@ -8,13 +9,14 @@ public class CoreLoop implements Runnable{
 
     private final Thread gameLoopThread;
     private final Window window;
+    private final MouseInput mouseInput;
     private final IF_Game game;
 
     public CoreLoop()
     {
         gameLoopThread = new Thread(this, "GAME_LOOP_THREAD");
         window = new Window(EngineOptions.WINDOW_TITLE, EngineOptions.getOptionAsInt("WINDOW_WIDTH"), EngineOptions.getOptionAsInt("WINDOW_HEIGHT"));
-
+        mouseInput = new MouseInput();
         game = new Game(window);
     }
 
@@ -53,6 +55,7 @@ public class CoreLoop implements Runnable{
     private void init() throws Exception
     {
         window.init();
+        mouseInput.init(window);
         game.init();
     }
 
@@ -84,7 +87,7 @@ public class CoreLoop implements Runnable{
             }
             float dt = (float)deltaTime;
 
-            input(dt);
+            input();
             update(dt);
             render();
 
@@ -92,14 +95,15 @@ public class CoreLoop implements Runnable{
         }
     }
 
-    private void input(float deltaTime) throws Exception
+    private void input()
     {
-        game.input(deltaTime);
+        mouseInput.input(window);
+        game.input(mouseInput);
     }
 
     private void update(float deltaTime)
     {
-        game.update(deltaTime);
+        game.update(deltaTime, mouseInput);
     }
 
     private void render()

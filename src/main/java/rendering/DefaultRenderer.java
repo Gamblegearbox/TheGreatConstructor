@@ -3,9 +3,9 @@ package rendering;
 import core.*;
 import game.Assets;
 import interfaces.IF_SceneObject;
-import math.Matrix4;
-import math.Vector3;
-import math.Vector4;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
 import utils.Logger;
 import utils.Utils;
 
@@ -24,17 +24,11 @@ public class DefaultRenderer {
 
     private static final int NUMBER_OF_FRUSTUM_PLANES = 6;
 
-    private final Vector4 CLEAR_COLOR = new Vector4(0.1f, 0.1f, 0.1f, 1.0f);
+    private final Vector4f CLEAR_COLOR = new Vector4f(0.1f, 0.1f, 0.1f, 1.0f);
 
     private final Window window;
-
-    private final Matrix4 projectionMatrix;
-    private final Matrix4 modelMatrix;
-    private final Matrix4 viewMatrix;
-    private final Matrix4 modelViewMatrix;
-    private final Matrix4 viewProjectionMatrix;
-
-    private final Vector4[] frustumPlanes;
+    private Transformation transformation;
+    private Matrix4f projectionMatrix = new Matrix4f();
 
     //SHADER AND MATERIAL STUFF TODO: put somewhere more global or stick with renderer?
     private final List<ShaderProgram> availableShaders;
@@ -49,18 +43,15 @@ public class DefaultRenderer {
     {
         this.window = _window;
         availableShaders = new ArrayList<>();
-        projectionMatrix = new Matrix4();
-        modelMatrix = new Matrix4();
-        viewMatrix = new Matrix4();
-        modelViewMatrix = new Matrix4();
-        viewProjectionMatrix = new Matrix4();
+        transformation = new Transformation();
 
-        frustumPlanes = new Vector4[6];
+/*
+        frustumPlanes = new Vector4f[6];
         for (int i = 0; i < 6; i++)
         {
-            frustumPlanes[i] = new Vector4();
+            frustumPlanes[i] = new Vector4f();
         }
-
+        */
     }
 
     public void init() throws Exception
@@ -68,8 +59,7 @@ public class DefaultRenderer {
         Logger.getInstance().writeln(">> INITIALISING RENDERER");
         logGpuInfo();
 
-        float aspectRatio = (float)window.getWidth() / window.getHeight();
-        projectionMatrix.setPerspective(EngineOptions.getOptionAsFloat("FOV"), aspectRatio, EngineOptions.getOptionAsFloat("Z_NEAR"), EngineOptions.getOptionAsFloat("Z_FAR"));
+        projectionMatrix = transformation.getProjectionMatrix(EngineOptions.getOptionAsFloat("FOV"), window.getWidth(), window.getHeight(), EngineOptions.getOptionAsFloat("Z_NEAR"), EngineOptions.getOptionAsFloat("Z_FAR"));
 
         materialAtlas = new Material(Assets.ATLAS_COLORS, null, Assets.ATLAS_GLOSS, Assets.ATLAS_EMIT);
         shadingGradient = Assets.GRADIENT_SHADING;
@@ -153,7 +143,6 @@ public class DefaultRenderer {
         activeShader = availableShaders.get(_index);
 
         activeShader.bind();
-        activeShader.setUniformData("projectionMatrix", projectionMatrix);
 
         activeShader.setUniformData("diffuseMap_sampler", Texture.DIFFUSE);
         activeShader.setUniformData("normalMap_sampler", Texture.NORMALS);
@@ -161,6 +150,28 @@ public class DefaultRenderer {
         activeShader.setUniformData("illuminationMap_sampler", Texture.ILLUMINATION);
         activeShader.setUniformData("shading_sampler", Texture.GRADIENT_SHADING);
         activeShader.setUniformData("lightColor_sampler", Texture.GRADIENT_LIGHT_COLOR);
+
+        //Upload textures
+        if(materialAtlas.getDiffuseMap() != null) {
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, materialAtlas.getDiffuseMap().getID());
+        }
+
+        if(materialAtlas.getNormalMap() != null) {
+            glActiveTexture(GL_TEXTURE1);
+            glBindTexture(GL_TEXTURE_2D, materialAtlas.getNormalMap().getID());
+        }
+
+        if(materialAtlas.getGlossMap() != null) {
+            glActiveTexture(GL_TEXTURE2);
+            glBindTexture(GL_TEXTURE_2D, materialAtlas.getGlossMap().getID());
+        }
+
+        if(materialAtlas.getIlluminationMap() != null) {
+            glActiveTexture(GL_TEXTURE3);
+            glBindTexture(GL_TEXTURE_2D, materialAtlas.getIlluminationMap().getID());
+        }
+
     }
 
     public void switchShader(){
@@ -169,24 +180,25 @@ public class DefaultRenderer {
         activateShader(currentShaderIndex);
     }
 
-    public void render(Scene _scene, Vector3 _lightPosition, float _dayTime, Camera _camera) {
+    public void render(Scene _scene, Vector3f _lightPosition, float _dayTime, Camera _camera) {
+
         int totalVerticesInFrame = 0;
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
+        projectionMatrix = transformation.getProjectionMatrix(EngineOptions.getOptionAsFloat("FOV"), window.getWidth(), window.getHeight(), EngineOptions.getOptionAsFloat("Z_NEAR"), EngineOptions.getOptionAsFloat("Z_FAR"));
+        activeShader.setUniformData("projectionMatrix", projectionMatrix);
+
         if ( window.isResized() )
         {
-            float aspectRatio = (float)window.getWidth() / window.getHeight();
-            projectionMatrix.setPerspective(EngineOptions.getOptionAsFloat("FOV"), aspectRatio, EngineOptions.getOptionAsFloat("Z_NEAR"), EngineOptions.getOptionAsFloat("Z_FAR"));
+            projectionMatrix = transformation.getProjectionMatrix(EngineOptions.getOptionAsFloat("FOV"), window.getWidth(), window.getHeight(), EngineOptions.getOptionAsFloat("Z_NEAR"), EngineOptions.getOptionAsFloat("Z_FAR"));
             activeShader.setUniformData("projectionMatrix", projectionMatrix);
             glViewport(0, 0, window.getWidth(), window.getHeight());
             window.setResized(false);
         }
 
-        Map<String, IF_SceneObject> gameObjects = _scene.getGameObjects();
+        Matrix4f viewMatrix = transformation.getViewMatrix(_camera);
 
-        //UPDATE VIEW MATRIX
-        viewMatrix.setIdentity();
-        viewMatrix.setModelValues(_camera.getTransform().getPosition(), _camera.getTransform().getRotation(), Vector3.ONE);
+        Map<String, IF_SceneObject> gameObjects = _scene.getGameObjects();
 
         //UPLOAD FRAME RELEVANT UNIFORMS HERE
         activeShader.setUniformData("lightPosition", _lightPosition);
@@ -198,15 +210,16 @@ public class DefaultRenderer {
         glActiveTexture(GL_TEXTURE5);
         glBindTexture(GL_TEXTURE_2D, lightColorGradient.getID());
 
+        /*
         //FILTER OBJECTS FOR FRUSTUM CULLING
         if(EngineOptions.getOptionAsBoolean("FRUSTUM_CULLING"))
         {
-            viewProjectionMatrix.multiply(projectionMatrix, viewMatrix);
+            //viewMatrix.mul(projectionMatrix, viewProjectionMatrix);
 
             //UPDATE FRUSTUM PLANES TODO: Add option to freeze update (don't update the planes)
             for(int i = 0; i < NUMBER_OF_FRUSTUM_PLANES; i++)
             {
-                viewProjectionMatrix.calcFrustumPlane(i, frustumPlanes[i]);
+                viewProjectionMatrix.frustumPlane(i, frustumPlanes[i]);
             }
 
             for(IF_SceneObject sceneObject : gameObjects.values())
@@ -214,11 +227,11 @@ public class DefaultRenderer {
                 Transform temp = sceneObject.getTransform();
 
                 //IS OBJECT INSIDE FRUSTUM?
-                Vector3 position = temp.getPosition();
+                Vector3f position = temp.getPosition();
                 boolean isInsideFrustum = true;
                 for (int i = 0; i < NUMBER_OF_FRUSTUM_PLANES; i++)
                 {
-                    Vector4 plane = frustumPlanes[i];
+                    Vector4f plane = frustumPlanes[i];
                     if (plane.x * position.x + plane.y * position.y + plane.z * position.z + plane.w <= -sceneObject.getMesh().getBoundingRadius() )
                     {
                         isInsideFrustum = false;
@@ -227,7 +240,7 @@ public class DefaultRenderer {
 
                 temp.setVisibility(isInsideFrustum);
             }
-        }
+        }*/
 
         //RENDER ALL VISIBLE OBJECTS
         for(IF_SceneObject sceneObject : gameObjects.values())
@@ -237,64 +250,17 @@ public class DefaultRenderer {
             if(temp.isVisible())
             {
                 OpenGLMesh mesh = sceneObject.getMesh();
-
-                int indicesCount = mesh.getIndicesCount();
                 totalVerticesInFrame += mesh.getVertexCount();
+
+                Matrix4f modelViewMatrix = transformation.getModelViewMatrix(temp, viewMatrix);
+                activeShader.setUniformData("modelViewMatrix", modelViewMatrix);
 
                 glBindVertexArray(mesh.getVaoID());
                 glEnableVertexAttribArray(OpenGLMesh.VERTICES);
                 glEnableVertexAttribArray(OpenGLMesh.NORMALS);
                 glEnableVertexAttribArray(OpenGLMesh.UV_COORDS);
 
-                modelMatrix.setModelValues(temp.getPosition(), temp.getRotation(), temp.getScale());
-                modelViewMatrix.multiply(viewMatrix, modelMatrix);
-                activeShader.setUniformData("modelViewMatrix", modelViewMatrix);
-
-                if(EngineOptions.getOptionAsBoolean("ENABLE_DIFFUSE_MAPPING") && materialAtlas.getDiffuseMap() != null) {
-                    activeShader.setUniformData("hasDiffuseMap", 1);
-                    glActiveTexture(GL_TEXTURE0);
-                    glBindTexture(GL_TEXTURE_2D, materialAtlas.getDiffuseMap().getID());
-                }
-                else {
-                    activeShader.setUniformData("hasDiffuseMap", 0);
-                }
-
-                if(EngineOptions.getOptionAsBoolean("ENABLE_NORMAL_MAPPING") && materialAtlas.getNormalMap() != null) {
-                    activeShader.setUniformData("hasNormalMap", 1);
-                    glActiveTexture(GL_TEXTURE1);
-                    glBindTexture(GL_TEXTURE_2D, materialAtlas.getNormalMap().getID());
-                }
-                else {
-                    activeShader.setUniformData("hasNormalMap", 0);
-                }
-
-                if(EngineOptions.getOptionAsBoolean("ENABLE_GLOSS_MAPPING") && materialAtlas.getGlossMap() != null) {
-                    activeShader.setUniformData("hasGlossMap", 1);
-                    glActiveTexture(GL_TEXTURE2);
-                    glBindTexture(GL_TEXTURE_2D, materialAtlas.getGlossMap().getID());
-                }
-                else {
-                    activeShader.setUniformData("hasGlossMap", 0);
-                }
-
-                if(EngineOptions.getOptionAsBoolean("ENABLE_ILLUMINATION_MAPPING") && materialAtlas.getIlluminationMap() != null) {
-                    activeShader.setUniformData("hasIlluminationMap", 1);
-                    glActiveTexture(GL_TEXTURE3);
-                    glBindTexture(GL_TEXTURE_2D, materialAtlas.getIlluminationMap().getID());
-                }
-                else {
-                    activeShader.setUniformData("hasIlluminationMap", 0);
-                }
-
-
-                if(EngineOptions.getOptionAsBoolean("SHOW_WIREFRAME"))
-                {
-                    glDrawElements(GL_TRIANGLES, indicesCount, GL_UNSIGNED_INT, 0);
-                }
-                else
-                {
-                    glDrawElements(GL_TRIANGLES, indicesCount, GL_UNSIGNED_INT, 0);
-                }
+                glDrawElements(GL_TRIANGLES, mesh.getIndicesCount(), GL_UNSIGNED_INT, 0);
 
                 glDisableVertexAttribArray(OpenGLMesh.VERTICES);
                 glDisableVertexAttribArray(OpenGLMesh.NORMALS);

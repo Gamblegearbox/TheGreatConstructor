@@ -33,7 +33,8 @@ public class Terrain implements IF_SceneObject {
 
         calcVerts();
 
-        mesh = new OpenGLMesh(verts, normals, uvCoords, indices, boundingRadius);
+        //mesh = new OpenGLMesh(verts, normals, uvCoords, indices, boundingRadius);
+        mesh = Assets.ENV_1;
         transform.setPosition(0,0,0);
     }
 

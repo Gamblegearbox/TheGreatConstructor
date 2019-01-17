@@ -1,23 +1,21 @@
 package core;
 
-import math.Vector3;
-import org.joml.Quaternionf;
-import utils.Conversions;
 
+import org.joml.Vector3f;
 
 public class Transform {
 
-    private final Vector3 position;
-    private final Vector3 scale;
-    private final Quaternionf rotation;
+    private final Vector3f position;
+    private final Vector3f scale;
+    private final Vector3f rotation;
     private boolean isVisible;
     private boolean isStatic;
 
     public Transform()
     {
-        position = new Vector3(0,0,0);
-        scale = new Vector3(1,1,1);
-        rotation = new Quaternionf();
+        position = new Vector3f(0,0,0);
+        scale = new Vector3f(1,1,1);
+        rotation = new Vector3f(0,0,0);
 
         setVisibility(true);
     }
@@ -40,7 +38,7 @@ public class Transform {
         return isStatic;
     }
 
-    public void setPosition(Vector3 _position)
+    public void setPosition(Vector3f _position)
     {
         position.x = _position.x;
         position.y = _position.y;
@@ -54,12 +52,12 @@ public class Transform {
         position.z = _z;
     }
 
-    public Vector3 getPosition()
+    public Vector3f getPosition()
     {
         return position;
     }
 
-    public void setScale(Vector3 _scale)
+    public void setScale(Vector3f _scale)
     {
         scale.x = _scale.x;
         scale.y = _scale.y;
@@ -73,30 +71,37 @@ public class Transform {
         scale.z = _z;
     }
 
-    public Vector3 getScale()
+    public Vector3f getScale()
     {
         return scale;
     }
 
-    public void setRotation(Quaternionf _rotation)
+    public void setRotation(Vector3f _rotation)
     {
-        rotation.w = _rotation.w;
         rotation.x = _rotation.x;
         rotation.y = _rotation.y;
         rotation.z = _rotation.z;
     }
 
-    public void setRotation(Vector3 _rotation)
+    public void setRotation(float _x, float _y, float _z)
+    {
+        rotation.x = _x;
+        rotation.y = _y;
+        rotation.z = _z;
+    }
+/*
+    public void setRotation(Vector3f _rotation)
     {
         Conversions.convertEulerToQuaternion(_rotation.x, _rotation.y, _rotation.z, rotation);
     }
-
+*/
+/*
     public void setRotation(float _x, float _y, float _z)
     {
         Conversions.convertEulerToQuaternion(_x, _y, _z, rotation);
     }
-
-    public Quaternionf getRotation()
+*/
+    public Vector3f getRotation()
     {
         return rotation;
     }

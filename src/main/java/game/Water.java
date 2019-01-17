@@ -13,8 +13,8 @@ public class Water implements IF_SceneObject {
 
     private final int lengthRes = 50;
     private final int widthRes = 50;
-    private final float length = 20f;
-    private final float width = 20f;
+    private final float length = 43.3f;
+    private final float width = 45f;
 
     private float boundingRadius = 2;
 
@@ -34,7 +34,7 @@ public class Water implements IF_SceneObject {
         calcVerts();
 
         mesh = new OpenGLMesh(verts, normals, uvCoords, indices, boundingRadius);
-        transform.setPosition(0,0,0);
+        transform.setPosition(20,-3,0);
     }
 
     private void calcVerts(){
@@ -85,11 +85,14 @@ public class Water implements IF_SceneObject {
     public void update(float _deltaTime) {
         anim += _deltaTime;
 
+        float waveHeight_1 = 0.8f;
+        float waveHeight_2 = 0.25f;
+
         int index = 0;
         for(int z = 0; z < lengthRes + 1; z++){
             for(int x = 0; x < widthRes + 1; x++){
                 verts[index + 0] = (x * (width / widthRes)) - (width / 2);
-                verts[index + 1] = (float)Math.sin(z + anim) * 0.025f + (float)Math.cos(x+z + anim) * 0.01f;
+                verts[index + 1] = (float)Math.sin(x + anim) * waveHeight_1 + (float)Math.cos((x+z)/2 + anim) * waveHeight_2;
                 verts[index + 2] = z * (length / lengthRes) - (length / 2);
                 index += 3;
             }

@@ -11,6 +11,7 @@ uniform sampler2D lightColor_sampler;
 
 uniform sampler2D diffuseMap_sampler;
 uniform sampler2D glossMap_sampler;
+uniform sampler2D illuminationMap_sampler;
 
 uniform vec3 lightPosition;
 uniform float timeOfDay;
@@ -46,7 +47,13 @@ void main()
     specular = specularFactor * materialReflectance;
     shadingColor += vec4(specular, specular, specular, 1.0);
 
-    vec4 finalColor = textureColor * shadingColor * lightColor;
+
+    vec4 finalColor;
+    if(texture(illuminationMap_sampler, gTexCoord).a > 0.0){
+        finalColor = textureColor;
+    } else {
+        finalColor = textureColor * shadingColor * lightColor;
+    }
 
     fragColor = clamp(finalColor,0,1);
 

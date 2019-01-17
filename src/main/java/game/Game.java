@@ -2,10 +2,12 @@ package game;
 
 import input.KeyboardInput;
 import core.*;
+import input.MouseInput;
 import interfaces.IF_Game;
 import libraries.AudioLibrary;
-import math.Vector3;
 import audio.OpenALAudioEngine;
+import org.joml.Vector2f;
+import org.joml.Vector3f;
 import rendering.DefaultRenderer;
 import utils.Logger;
 
@@ -18,13 +20,16 @@ public class Game implements IF_Game {
     private final OpenALAudioEngine audioEngine;
 
     private Camera camera;
+    private Vector3f cameraInc;
     private Scene[] scenes;
     private Scene activeScene = null;
-    private Vector3 lightPosition = new Vector3(0.0f, 10.0f, -5.0f);
 
     //IN GAME TIME SETTINGS
-    private float timeOfDay = 0.0f; //from 0.0 to 1.0
+    private float timeOfDay = 0.5f; //from 0.0 to 1.0
     private float lengthOfDayInSeconds = 60.0f;
+
+    //LIGHT SETTINGS
+    private Vector3f lightPosition = new Vector3f(0.0f, 10.0f, 5.0f);
 
     //DEBUG_MODE VALUES
     private float deltaTimeSum;
@@ -42,12 +47,7 @@ public class Game implements IF_Game {
         renderer.init();
         audioEngine.init();
         camera = new Camera();
-
-        //TODO: not working correct!
-        camera.getTransform().setPosition(0,-5,-15);
-        camera.getTransform().setRotation(30,0,0);
-
-
+        cameraInc = new Vector3f(0,0,0);
 
         //SET ALL KEYBOARD KEYS TO -1
         KeyboardInput.init();
@@ -64,7 +64,7 @@ public class Game implements IF_Game {
         //CREATE AND ADD OBJECTS TO SCENES
         scenes[0].addSceneObject("Logo", new Logo());
         //scenes[1].addSceneObject("Terrain", new Terrain());
-        scenes[1].addSceneObject("Water", new Water());
+        //scenes[1].addSceneObject("Water", new Water());
         scenes[1].addSceneObject("Car", new Car());
 
     }
@@ -75,32 +75,63 @@ public class Game implements IF_Game {
     }
 
     @Override
-    public void input(float deltaTime)
+    public void input(MouseInput mouseInput)
     {
-        if(KeyboardInput.isKeyPressedOnce(GLFW_KEY_ESCAPE))
-        {
+        if(KeyboardInput.isKeyPressedOnce(GLFW_KEY_ESCAPE)) {
             switchScene(0);
         }
 
-        if(KeyboardInput.isKeyPressedOnce(GLFW_KEY_1))
-        {
+        if(KeyboardInput.isKeyPressedOnce(GLFW_KEY_1)) {
             switchScene(1);
         }
 
-        if(KeyboardInput.isKeyPressedOnce(GLFW_KEY_2))
-        {
+        if(KeyboardInput.isKeyPressedOnce(GLFW_KEY_2)) {
             renderer.switchShader();
+        }
+
+        cameraInc.set(0, 0, 0);
+        if (KeyboardInput.isKeyRepeated(GLFW_KEY_W)) {
+            cameraInc.z = -1;
+        }
+        else if (KeyboardInput.isKeyRepeated(GLFW_KEY_S)) {
+            cameraInc.z = 1;
+        }
+        if (KeyboardInput.isKeyRepeated(GLFW_KEY_A)) {
+            cameraInc.x = -1;
+        }
+        else if (KeyboardInput.isKeyRepeated(GLFW_KEY_D)) {
+            cameraInc.x = 1;
+        }
+        if (KeyboardInput.isKeyRepeated(GLFW_KEY_Q)) {
+            cameraInc.y = -1;
+        }
+        else if (KeyboardInput.isKeyRepeated(GLFW_KEY_E)) {
+            cameraInc.y = 1;
         }
 
     }
 
     @Override
-    public void update(float _deltaTime)
+    public void update(float _deltaTime, MouseInput mouseInput)
     {
-        //UPDATING IN GAME TIME
-        timeOfDay += 1.0/ lengthOfDayInSeconds * _deltaTime;
+        //UPDATE IN GAME TIME
+        //timeOfDay += 1.0/ lengthOfDayInSeconds * _deltaTime;
         if(timeOfDay > 1.0){
             timeOfDay = 0;
+        }
+
+        //UPDATE LIGHT POSITION
+        //lightPosition.set((timeOfDay - 0.5f)*10f,5f, 5f);
+
+        float MOUSE_SENSITIVITY = 0.5f;
+        camera.movePosition(cameraInc.x * _deltaTime,
+                cameraInc.y * _deltaTime,
+                cameraInc.z * _deltaTime);
+
+        // Update camera based on mouse
+        if (mouseInput.isRightButtonPressed()) {
+            Vector2f rotVec = mouseInput.getDisplVec();
+            camera.moveRotation(rotVec.x * MOUSE_SENSITIVITY, rotVec.y * MOUSE_SENSITIVITY, 0);
         }
 
         activeScene.update(_deltaTime);

@@ -8,6 +8,7 @@ out vec3 vWorldPos;
 out vec3 vNorm;
 out vec2 vTexCoord;
 
+
 uniform mat4 modelViewMatrix;
 uniform mat4 projectionMatrix;
 
