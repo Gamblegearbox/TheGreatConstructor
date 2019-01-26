@@ -203,6 +203,7 @@ public class DefaultRenderer {
         //UPLOAD FRAME RELEVANT UNIFORMS HERE
         activeShader.setUniformData("lightPosition", _lightPosition);
         activeShader.setUniformData("timeOfDay", _dayTime);
+        activeShader.setUniformData("viewMatrix", viewMatrix);
 
         //LOADING GRADIENTS
         glActiveTexture(GL_TEXTURE4);
@@ -252,8 +253,8 @@ public class DefaultRenderer {
                 OpenGLMesh mesh = sceneObject.getMesh();
                 totalVerticesInFrame += mesh.getVertexCount();
 
-                Matrix4f modelViewMatrix = transformation.getModelViewMatrix(temp, viewMatrix);
-                activeShader.setUniformData("modelViewMatrix", modelViewMatrix);
+                Matrix4f modelMatrix = transformation.getModelMatrix(temp);
+                activeShader.setUniformData("modelMatrix", modelMatrix);
 
                 glBindVertexArray(mesh.getVaoID());
                 glEnableVertexAttribArray(OpenGLMesh.VERTICES);

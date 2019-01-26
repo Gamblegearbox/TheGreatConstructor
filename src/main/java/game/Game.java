@@ -29,7 +29,7 @@ public class Game implements IF_Game {
     private float lengthOfDayInSeconds = 60.0f;
 
     //LIGHT SETTINGS
-    private Vector3f lightPosition = new Vector3f(0.0f, 10.0f, 5.0f);
+    private Vector3f lightPosition = new Vector3f(-1.0f, 1, 0);
 
     //DEBUG_MODE VALUES
     private float deltaTimeSum;
@@ -47,6 +47,8 @@ public class Game implements IF_Game {
         renderer.init();
         audioEngine.init();
         camera = new Camera();
+        camera.setPosition(62.3574f,33.414f,49.8928f);
+        camera.setRotation(25,-48.1f,0);
         cameraInc = new Vector3f(0,0,0);
 
         //SET ALL KEYBOARD KEYS TO -1
@@ -63,9 +65,11 @@ public class Game implements IF_Game {
 
         //CREATE AND ADD OBJECTS TO SCENES
         scenes[0].addSceneObject("Logo", new Logo());
-        //scenes[1].addSceneObject("Terrain", new Terrain());
-        //scenes[1].addSceneObject("Water", new Water());
-        scenes[1].addSceneObject("Car", new Car());
+        scenes[1].addSceneObject("Terrain", new Terrain());
+        scenes[1].addSceneObject("Water", new Water());
+        scenes[1].addSceneObject("Car_1", new Car(Assets.NSX));
+        scenes[1].addSceneObject("Car_2", new Car(Assets.GTR));
+        scenes[1].getSceneObjectByTag("Car_2").getTransform().setPosition(3f,0,-2);
 
     }
 
@@ -120,13 +124,15 @@ public class Game implements IF_Game {
             timeOfDay = 0;
         }
 
-        //UPDATE LIGHT POSITION
-        //lightPosition.set((timeOfDay - 0.5f)*10f,5f, 5f);
+        //UPDATE LIGHT DIRECTION
+        //TODO: implement fake sunlight movement
 
-        float MOUSE_SENSITIVITY = 0.5f;
-        camera.movePosition(cameraInc.x * _deltaTime,
-                cameraInc.y * _deltaTime,
-                cameraInc.z * _deltaTime);
+        float MOUSE_SENSITIVITY = 0.20f;
+        float CAMERA_SPEED = 15.0f;
+
+        camera.movePosition(cameraInc.x * CAMERA_SPEED * _deltaTime,
+                cameraInc.y * CAMERA_SPEED * _deltaTime,
+                cameraInc.z * CAMERA_SPEED * _deltaTime);
 
         // Update camera based on mouse
         if (mouseInput.isRightButtonPressed()) {

@@ -1,7 +1,7 @@
 #version 330
 
-in vec3 gNorm;
-in vec3 gWorldPos;
+in vec3 gNormal;
+in vec3 gPosition;
 in vec2 gTexCoord;
 
 out vec4 fragColor;
@@ -20,10 +20,10 @@ void main()
 
     if(hasNormalMap) {
         currentNormal = normalize(texture(normalMap_sampler, gTexCoord).rgb * 2.0 - 1.0);
-        currentNormal = normalize(gNorm + currentNormal);
+        currentNormal = normalize(gNormal + currentNormal);
     }
     else {
-        currentNormal = gNorm;
+        currentNormal = gNormal;
     }
 
     float r = (currentNormal.r + 1.0) * 0.5;

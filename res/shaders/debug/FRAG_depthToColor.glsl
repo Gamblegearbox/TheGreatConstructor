@@ -1,7 +1,7 @@
 #version 330
 
-in vec3 gNorm;
-in vec3 gWorldPos;
+in vec3 gNormal;
+in vec3 gPosition;
 in vec2 gTexCoord;
 
 out vec4 fragColor;
@@ -9,7 +9,7 @@ out vec4 fragColor;
 
 void main()
 {
-    float depthRange = 80.0;
+    float depthRange = 100.0;
 
     vec4 tintColor = vec4(1.0,1.0,1.0,1.0);
 

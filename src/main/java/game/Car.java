@@ -28,8 +28,8 @@ public class Car implements IF_SceneObject {
     private OpenALAudioSource audioSecondary;
 
 
-    public Car(){
-        mesh = Assets.NSX;
+    public Car(OpenGLMesh _mesh){
+        mesh = _mesh;
         audioEngine = new OpenALAudioSource();
         audioSecondary = new OpenALAudioSource();
 

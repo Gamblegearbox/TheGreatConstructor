@@ -16,6 +16,9 @@ public class Water implements IF_SceneObject {
     private final float length = 43.3f;
     private final float width = 45f;
 
+    private float waveHeight_1 = 0.6f;
+    private float waveHeight_2 = 0.25f;
+
     private float boundingRadius = 2;
 
     private float[] verts;
@@ -43,7 +46,7 @@ public class Water implements IF_SceneObject {
         for(int z = 0; z < lengthRes + 1; z++){
             for(int x = 0; x < widthRes + 1; x++){
                 verts[index + 0] = (x * (width / widthRes)) - (width / 2);
-                verts[index + 1] = (float)Math.sin(z/2) * 0.1f + (float)Math.cos(x+z) * 0.05f;
+                verts[index + 1] = (float)Math.sin(x + anim) * waveHeight_1 + (float)Math.cos((x+z)/2 + anim) * waveHeight_2;
                 verts[index + 2] = z * (length / lengthRes) - (length / 2);
                 index += 3;
             }
@@ -56,8 +59,8 @@ public class Water implements IF_SceneObject {
         }
 
         for(int i = 0; i < uvCoords.length; i+=2){
-            uvCoords[i] = 0.105f;
-            uvCoords[i+1] = 0.725f;
+            uvCoords[i] = 0.03125f + 0.0625f * 3f;
+            uvCoords[i+1] = 0.03125f + 0.0625f * 3f;
         }
 
         for (int ti = 0, vi = 0, y = 0; y < lengthRes; y++, vi++) {
@@ -83,10 +86,10 @@ public class Water implements IF_SceneObject {
 
     @Override
     public void update(float _deltaTime) {
+
         anim += _deltaTime;
 
-        float waveHeight_1 = 0.8f;
-        float waveHeight_2 = 0.25f;
+
 
         int index = 0;
         for(int z = 0; z < lengthRes + 1; z++){
@@ -98,7 +101,8 @@ public class Water implements IF_SceneObject {
             }
         }
 
-    mesh.updateVertices(verts);
+        mesh.updateVertices(verts);
+
     }
 
     @Override
