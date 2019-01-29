@@ -1,6 +1,6 @@
 #version 330
 
-in vec3 gPosition;
+in vec3 gModelSpacePosition;
 in vec3 gNormal;
 in vec2 gTexCoord;
 

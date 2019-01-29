@@ -29,6 +29,7 @@ public class DefaultRenderer {
     private final Window window;
     private Transformation transformation;
     private Matrix4f projectionMatrix = new Matrix4f();
+    private Matrix4f normalMatrix = new Matrix4f();
 
     //SHADER AND MATERIAL STUFF TODO: put somewhere more global or stick with renderer?
     private final List<ShaderProgram> availableShaders;
