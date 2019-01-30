@@ -13,7 +13,7 @@ public class Car implements IF_SceneObject {
 
     int count = 0;
     int limit = 10000;
-
+    float anim = 0f;
 
     private final int minGear = -1;
     private final int maxGear = 5;
@@ -76,7 +76,8 @@ public class Car implements IF_SceneObject {
         }
 
         */
-
+        anim += 15 * _deltaTime;
+        transform.setRotation(0f,anim,0f);
 
     }
 

@@ -1,7 +1,7 @@
 #version 330
 
 in vec3 gModelSpacePosition;
-in vec3 gNormal;
+in vec3 gModelSpaceNormal;
 in vec2 gTexCoord;
 
 out vec4 fragColor;
@@ -23,7 +23,7 @@ void main()
     vec4 textureColor = texture(diffuseMap_sampler, gTexCoord);
 
     //NORMAL INFORMATION AS BLACK AND WHITE
-    float normalValue = (gNormal.r + gNormal.g + gNormal.b) / 3.0 ;
+    float normalValue = (gModelSpaceNormal.r + gModelSpaceNormal.g + gModelSpaceNormal.b) / 3.0 ;
     vec4 normalAsBlackAndWhite = vec4(normalValue, normalValue, normalValue, 1.0);
 
     //OUT COLOR

@@ -53,9 +53,9 @@ public class Water implements IF_SceneObject {
         }
 
         for(int i = 0; i < normals.length; i+=3){
-            normals[i+0] = 0;
-            normals[i+1] = 1;
-            normals[i+2] = 0;
+            normals[i+0] = 0f;
+            normals[i+1] = 1f;
+            normals[i+2] = 0f;
         }
 
         for(int i = 0; i < uvCoords.length; i+=2){

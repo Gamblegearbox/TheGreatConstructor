@@ -5,7 +5,7 @@ layout (location=1) in vec3 normal;
 layout (location=2) in vec2 uvCoord;
 
 out vec3 vModelSpacePosition;
-out vec3 vNormal;
+out vec3 vModelSpaceNormal;
 out vec2 vTexCoord;
 
 uniform mat4 viewMatrix;
@@ -14,12 +14,17 @@ uniform mat4 modelMatrix;
 
 void main()
 {
-    vec4 modelSpacePos = modelMatrix * vec4(position, 1.0);
-    vec4 viewSpacePos = viewMatrix * modelSpacePos;
+    vec4 vertexModelSpacePos = modelMatrix * vec4(position, 1.0);
+    vec4 vertexViewSpacePos = viewMatrix * vertexModelSpacePos;
 
-    gl_Position = projectionMatrix * viewSpacePos;
+    vec4 normalModelSpacePos = modelMatrix * vec4(normal, 1.0);
+    vec4 normalViewSpacePos = viewMatrix * normalModelSpacePos;
+
+    //OUT
+    vModelSpaceNormal = vec3(modelMatrix * vec4(normal, 0.0));
+    vModelSpacePosition = vertexModelSpacePos.xyz;
     vTexCoord = uvCoord;
 
-    vNormal = normal;
-    vModelSpacePosition = modelSpacePos.xyz;
+    //GL OUT
+    gl_Position = projectionMatrix * vertexViewSpacePos;
 }

@@ -2,13 +2,12 @@
 layout(triangles) in;
 layout(triangle_strip, max_vertices=3) out;
 
-
-in vec3 vNormal[3];
+in vec3 vModelSpaceNormal[3];
 in vec3 vModelSpacePosition[3];
 in vec2 vTexCoord[3];
 
 // output for each vertex emiting
-out vec3 gNormal;
+out vec3 gModelSpaceNormal;
 out vec3 gModelSpacePosition;
 out vec2 gTexCoord;
 
@@ -25,7 +24,7 @@ void main(){
 		// preparing vertex data for emiting
 		gl_Position=gl_in[i].gl_Position;
 		// switch between flat and smooth shading
-		gNormal = enableSmooth == 1 ? vNormal[i] : norm;
+		gModelSpaceNormal = enableSmooth == 1 ? vModelSpaceNormal[i] : norm;
 		gModelSpacePosition=vModelSpacePosition[i];
 		gTexCoord=vTexCoord[i];
 		EmitVertex();

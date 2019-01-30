@@ -1,7 +1,7 @@
 #version 330
 
-in vec3 gNormal;
-in vec3 gPosition;
+in vec3 gModelSpaceNormal;
+in vec3 gModelSpacePosition;
 in vec2 gTexCoord;
 
 out vec4 fragColor;

@@ -69,8 +69,7 @@ public class Game implements IF_Game {
         scenes[1].addSceneObject("Water", new Water());
         scenes[1].addSceneObject("Car_1", new Car(Assets.NSX));
         scenes[1].addSceneObject("Car_2", new Car(Assets.GTR));
-        scenes[1].getSceneObjectByTag("Car_2").getTransform().setPosition(3f,0,-2);
-
+        scenes[1].getSceneObjectByTag("Car_2").getTransform().setPosition(3f,0,-5);
 
     }
 
