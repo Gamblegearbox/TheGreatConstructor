@@ -1,35 +1,20 @@
 import core.CoreLoop;
 import core.EngineOptions;
+import game.Assets;
 import utils.Logger;
 
 import java.io.File;
+import java.util.Scanner;
 
 public class Main {
 
     public static void main(String[] args)
     {
-        String dir = System.getProperty("user.dir");
-        String path = "./res/config/engineOptions.ini";
+        Logger.getInstance().writeln("[" + Main.class.getName() + "] system info:");
+        logSystemInfo();
 
-        try
-        {
-            EngineOptions.loadSettingFromFile(path);
-
-            Logger.getInstance().writeln("[" + Main.class.getName() + "] system info:");
-            logSystemInfo();
-
-            Logger.getInstance().writeln("[" + Main.class.getName() + "] current setting:");
-            EngineOptions.logOptionsStatus();
-
-
-            CoreLoop coreLoop = new CoreLoop();
-            coreLoop.start();
-        }
-        catch(Exception e)
-        {
-            Logger.getInstance().writeln("[" + Main.class.getName() + "] could not load config file under:" + path + " [closing application]");
-            System.exit(-1);
-        }
+        CoreLoop coreLoop = new CoreLoop();
+        coreLoop.start();
     }
 
     public static void logSystemInfo()

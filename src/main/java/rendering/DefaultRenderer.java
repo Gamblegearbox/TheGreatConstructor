@@ -29,7 +29,7 @@ public class DefaultRenderer {
     private final Window window;
     private Transformation transformation;
     private Matrix4f projectionMatrix = new Matrix4f();
-    private Matrix4f normalMatrix = new Matrix4f();
+
 
     //SHADER AND MATERIAL STUFF TODO: put somewhere more global or stick with renderer?
     private final List<ShaderProgram> availableShaders;
@@ -60,7 +60,7 @@ public class DefaultRenderer {
         Logger.getInstance().writeln(">> INITIALISING RENDERER");
         logGpuInfo();
 
-        projectionMatrix = transformation.getProjectionMatrix(EngineOptions.getOptionAsFloat("FOV"), window.getWidth(), window.getHeight(), EngineOptions.getOptionAsFloat("Z_NEAR"), EngineOptions.getOptionAsFloat("Z_FAR"));
+        projectionMatrix = transformation.getProjectionMatrix(EngineOptions.INITIAL_FOV, window.getWidth(), window.getHeight(), EngineOptions.Z_NEAR, EngineOptions.Z_FAR);
 
         materialAtlas = new Material(Assets.ATLAS_COLORS, null, Assets.ATLAS_GLOSS, Assets.ATLAS_EMIT);
         shadingGradient = Assets.GRADIENT_SHADING;
@@ -95,7 +95,7 @@ public class DefaultRenderer {
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-        if(EngineOptions.getOptionAsBoolean("BACK_FACE_CULLING"))
+        if(EngineOptions.BACK_FACE_CULLING)
         {
             glEnable(GL_CULL_FACE);
             glCullFace(GL_BACK);
@@ -105,7 +105,7 @@ public class DefaultRenderer {
             glDisable(GL_CULL_FACE);
         }
 
-        if(EngineOptions.getOptionAsBoolean("SHOW_WIREFRAME"))
+        if(EngineOptions.SHOW_WIREFRAME)
         {
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         }
@@ -186,12 +186,12 @@ public class DefaultRenderer {
         int totalVerticesInFrame = 0;
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-        projectionMatrix = transformation.getProjectionMatrix(EngineOptions.getOptionAsFloat("FOV"), window.getWidth(), window.getHeight(), EngineOptions.getOptionAsFloat("Z_NEAR"), EngineOptions.getOptionAsFloat("Z_FAR"));
+        projectionMatrix = transformation.getProjectionMatrix(_camera.getFieldOfView(), window.getWidth(), window.getHeight(), EngineOptions.Z_NEAR, EngineOptions.Z_FAR);
         activeShader.setUniformData("projectionMatrix", projectionMatrix);
 
         if ( window.isResized() )
         {
-            projectionMatrix = transformation.getProjectionMatrix(EngineOptions.getOptionAsFloat("FOV"), window.getWidth(), window.getHeight(), EngineOptions.getOptionAsFloat("Z_NEAR"), EngineOptions.getOptionAsFloat("Z_FAR"));
+            projectionMatrix = transformation.getProjectionMatrix(_camera.getFieldOfView(), window.getWidth(), window.getHeight(), EngineOptions.Z_NEAR, EngineOptions.Z_FAR);
             activeShader.setUniformData("projectionMatrix", projectionMatrix);
             glViewport(0, 0, window.getWidth(), window.getHeight());
             window.setResized(false);
@@ -214,7 +214,7 @@ public class DefaultRenderer {
 
         /*
         //FILTER OBJECTS FOR FRUSTUM CULLING
-        if(EngineOptions.getOptionAsBoolean("FRUSTUM_CULLING"))
+        if(EngineOptions.FRUSTUM_CULLING)
         {
             //viewMatrix.mul(projectionMatrix, viewProjectionMatrix);
 
@@ -271,7 +271,7 @@ public class DefaultRenderer {
             }
         }
 
-        if(EngineOptions.getOptionAsBoolean("DEBUG_MODE"))
+        if(EngineOptions.DEBUG_MODE)
         {
             Logger.getInstance().logData("VERTEX COUNT", totalVerticesInFrame);
         }

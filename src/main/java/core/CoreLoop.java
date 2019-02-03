@@ -5,6 +5,8 @@ import input.MouseInput;
 import interfaces.IF_Game;
 import utils.Logger;
 
+import java.util.Scanner;
+
 public class CoreLoop implements Runnable{
 
     private final Thread gameLoopThread;
@@ -15,7 +17,7 @@ public class CoreLoop implements Runnable{
     public CoreLoop()
     {
         gameLoopThread = new Thread(this, "GAME_LOOP_THREAD");
-        window = new Window(EngineOptions.WINDOW_TITLE, EngineOptions.getOptionAsInt("WINDOW_WIDTH"), EngineOptions.getOptionAsInt("WINDOW_HEIGHT"));
+        window = new Window(EngineOptions.WINDOW_TITLE, EngineOptions.WINDOW_WIDTH, EngineOptions.WINDOW_HEIGHT);
         mouseInput = new MouseInput();
         game = new Game(window);
     }
@@ -73,7 +75,7 @@ public class CoreLoop implements Runnable{
             double currentTime = System.nanoTime() / 1000_000_000.0;
             double deltaTime = currentTime - lastTime;
 
-            if(EngineOptions.getOptionAsBoolean("DEBUG_MODE"))
+            if(EngineOptions.DEBUG_MODE)
             {
                 deltaTimeSum += deltaTime;
 

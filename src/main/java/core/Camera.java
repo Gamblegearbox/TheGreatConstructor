@@ -8,14 +8,26 @@ public class Camera {
     private final Vector3f position;
     private final Vector3f rotation;
 
-    public Camera(){
+    private float fov;
+
+    public Camera(float _fov){
         position = new Vector3f(0,0,0);
         rotation = new Vector3f(0,0,0);
+        fov = _fov;
     }
 
-    public Camera(Vector3f position, Vector3f rotation) {
+    public Camera(Vector3f position, Vector3f rotation, float _fov) {
         this.position = position;
         this.rotation = rotation;
+        this.fov = _fov;
+    }
+
+    public float getFieldOfView(){
+        return fov;
+    }
+
+    public void setFieldOfView(float _fov){
+        fov = _fov;
     }
 
     public Vector3f getPosition() {

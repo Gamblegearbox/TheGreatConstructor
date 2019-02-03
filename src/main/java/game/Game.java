@@ -46,7 +46,7 @@ public class Game implements IF_Game {
         Logger.getInstance().writeln(">> INITIALISING GAME");
         renderer.init();
         audioEngine.init();
-        camera = new Camera();
+        camera = new Camera(EngineOptions.INITIAL_FOV);
         camera.setPosition(62.3574f,33.414f,49.8928f);
         camera.setRotation(25,-48.1f,0);
         cameraInc = new Vector3f(0,0,0);
@@ -142,11 +142,11 @@ public class Game implements IF_Game {
 
         activeScene.update(_deltaTime);
 
-        if(EngineOptions.getOptionAsBoolean("DEBUG_MODE"))
+        if(EngineOptions.DEBUG_MODE)
         {
             deltaTimeSum += _deltaTime;
 
-            if( deltaTimeSum > EngineOptions.getOptionAsFloat("LOGGING_INTERVAL"))
+            if( deltaTimeSum > EngineOptions.LOGGING_INTERVAL)
             {
                 Logger.getInstance().outputLoggedData();
                 deltaTimeSum = 0;

@@ -8,90 +8,31 @@ import java.util.List;
 
 public class EngineOptions {
 
-    static final String WINDOW_TITLE = "Television 2000";
-    private static final HashMap<String, Float> options = new HashMap<>();
-    private static List<String> configFileContent;
+    public static final boolean DEBUG_MODE = true;
+    public static final boolean LOG_TO_FILE = false;
+    public static final float LOGGING_INTERVAL = 1.0f;
+
+    public static final String WINDOW_TITLE = "Television 2000";
+    public static final int WINDOW_WIDTH = 1280;
+    public static final int WINDOW_HEIGHT = 720;
+
+    public static final int MULTISAMPLING = 4;
+    public static final boolean V_SYNC = false;
+    public static final boolean BACK_FACE_CULLING = true;
+    public static final boolean FRUSTUM_CULLING = true;
+
+    public static final boolean SHOW_WIREFRAME = false;
+
+    public static final float INITIAL_FOV = 30f;
+    public static final float Z_NEAR = 0.1f;
+    public static final float Z_FAR = 150f;
+
     public static final String OPERATING_SYSTEM = System.getProperty("os.name");
 
-    public static boolean getOptionAsBoolean(String _option)
-    {
-        boolean value;
-        if(options.containsKey(_option))
-        {
-            value = options.get(_option) > 0;
-        }
-        else
-        {
-            Logger.getInstance().writeln("Could not find option: " + _option);
-            value = false;
-        }
-
-        return value;
-    }
-
-    public static int getOptionAsInt(String _option)
-    {
-        int value;
-        if(options.containsKey(_option))
-        {
-            value = options.get(_option).intValue();
-        }
-        else
-        {
-            Logger.getInstance().writeln("Could not find option: " + _option);
-            value = 0xdead;
-        }
-
-        return value;
-    }
-
-    public static float getOptionAsFloat(String _option)
-    {
-        float value;
-        if(options.containsKey(_option))
-        {
-            value = options.get(_option);
-        }
-        else
-        {
-            Logger.getInstance().writeln("Could not find option: " + _option);
-            value = 0xdead;
-        }
-
-        return value;
-    }
-
-    public static void logOptionsStatus()
-    {
-        String info = "";
-        for(String line : configFileContent)
-        {
-            info += "\t" + line + "\n";
-        }
-        info += "\n";
-
-        Logger.getInstance().write(info);
-    }
 
     public static void loadSettingFromFile(String _path) throws Exception
     {
-        configFileContent = Utils.readAllLines(_path);
-
-        for(String line : configFileContent)
-        {
-            if(line.startsWith("[") || line.isEmpty())
-            {
-                continue;
-            }
-            else
-            {
-                line = line.replace(" ", "");
-                line = line.replace(";", "");
-
-                String[] keyValue = line.split("=");
-                options.put(keyValue[0], Float.parseFloat(keyValue[1]));
-            }
-        }
+        //TODO: load if user changed settings
     }
 
     public static void saveSettingToFile()

@@ -1,10 +1,7 @@
 package core;
 
-import rendering.Material;
 import interfaces.IF_SceneObject;
-import math.Vector3;
 import utils.Logger;
-import utils.Utils;
 
 import java.util.HashMap;
 import java.util.List;

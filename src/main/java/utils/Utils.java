@@ -22,7 +22,6 @@ public class Utils {
         List<String> result;
 
         result = Files.readAllLines(file.toPath());
-
         return result;
     }
 
