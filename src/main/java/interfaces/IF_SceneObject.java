@@ -1,6 +1,5 @@
 package interfaces;
 
-import rendering.Material;
 import rendering.OpenGLMesh;
 import core.Transform;
 

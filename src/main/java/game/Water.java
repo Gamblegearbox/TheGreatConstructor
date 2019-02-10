@@ -89,8 +89,6 @@ public class Water implements IF_SceneObject {
 
         anim += _deltaTime;
 
-
-
         int index = 0;
         for(int z = 0; z < lengthRes + 1; z++){
             for(int x = 0; x < widthRes + 1; x++){
