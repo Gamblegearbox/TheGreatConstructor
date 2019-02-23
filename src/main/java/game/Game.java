@@ -1,5 +1,9 @@
 package game;
 
+import core.Window;
+import hud.FontTexture;
+import hud.Hud;
+import hud.TextItem;
 import input.KeyboardInput;
 import core.*;
 import input.MouseInput;
@@ -8,8 +12,11 @@ import libraries.AudioLibrary;
 import audio.OpenALAudioEngine;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+import rendering.Camera;
 import rendering.DefaultRenderer;
 import utils.Logger;
+
+import java.awt.*;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -23,13 +30,14 @@ public class Game implements IF_Game {
     private Vector3f cameraInc;
     private Scene[] scenes;
     private Scene activeScene = null;
+    private Hud hud;
 
     //IN GAME TIME SETTINGS
     private float timeOfDay = 0.5f; //from 0.0 to 1.0
-    private float lengthOfDayInSeconds = 60.0f;
+    private float lengthOfDayInSeconds = 30.0f;
 
     //LIGHT SETTINGS
-    private Vector3f lightPosition = new Vector3f(-1.0f, 1, 0);
+    private Vector3f lightPosition = new Vector3f(10, 10, -25);
 
     //DEBUG_MODE VALUES
     private float deltaTimeSum;
@@ -71,6 +79,10 @@ public class Game implements IF_Game {
         scenes[1].addSceneObject("Car_2", new Car(Assets.GTR));
         scenes[1].getSceneObjectByTag("Car_2").getTransform().setPosition(3f,0,-5);
 
+        hud = new Hud();
+        TextItem text = new TextItem("Nacho Nacho", Assets.FONT_CONSOLAS);
+        text.getTransform().setPosition(100f,100f,0.0f);
+        hud.addSceneObject("test", text);
     }
 
     public void start()
@@ -119,7 +131,7 @@ public class Game implements IF_Game {
     public void update(float _deltaTime, MouseInput mouseInput)
     {
         //UPDATE IN GAME TIME
-        //timeOfDay += 1.0/ lengthOfDayInSeconds * _deltaTime;
+        timeOfDay += 1.0/ lengthOfDayInSeconds * _deltaTime;
         if(timeOfDay > 1.0){
             timeOfDay = 0;
         }
@@ -157,7 +169,7 @@ public class Game implements IF_Game {
     @Override
     public void render()
     {
-        renderer.render(activeScene, lightPosition, timeOfDay, camera);
+        renderer.render(activeScene, lightPosition, timeOfDay, camera, hud);
     }
 
     @Override

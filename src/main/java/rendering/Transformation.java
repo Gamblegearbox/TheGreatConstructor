@@ -1,29 +1,38 @@
-package core;
+package rendering;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 public class Transformation {
 
-    private final Matrix4f projectionMatrix;
+    private final Matrix4f projectionMatrixPerspective;
+    private final Matrix4f projectionMatrixOrtho;
     private final Matrix4f viewMatrix;
 
     private final Matrix4f modelViewMatrix;
     private final Matrix4f modelMatrix;
 
     public Transformation(){
-        projectionMatrix = new Matrix4f();
+        projectionMatrixPerspective = new Matrix4f();
+        projectionMatrixOrtho = new Matrix4f();
         viewMatrix = new Matrix4f();
 
         modelViewMatrix = new Matrix4f();
         modelMatrix = new Matrix4f();
     }
 
-    public final Matrix4f getProjectionMatrix(float fov, float width, float height, float zNear, float zFar) {
+    public final Matrix4f getPerspectiveProjectionMatrix(float fov, float width, float height, float zNear, float zFar) {
         float aspectRatio = width / height;
-        projectionMatrix.identity();
-        projectionMatrix.perspective((float) Math.toRadians(fov), aspectRatio, zNear, zFar);
-        return projectionMatrix;
+        projectionMatrixPerspective.identity();
+        projectionMatrixPerspective.perspective((float) Math.toRadians(fov), aspectRatio, zNear, zFar);
+        return projectionMatrixPerspective;
+    }
+
+    public Matrix4f getOrthographicProjectionMatrix(float left, float right, float bottom, float top) {
+        projectionMatrixOrtho.identity();
+        projectionMatrixOrtho.setOrtho2D(left, right, bottom, top);
+
+        return projectionMatrixOrtho;
     }
 
     public Matrix4f getModelViewMatrix(Transform gameItem, Matrix4f viewMatrix) {
@@ -60,4 +69,6 @@ public class Transformation {
         viewMatrix.translate(-cameraPos.x, -cameraPos.y, -cameraPos.z);
         return viewMatrix;
     }
+
+
 }

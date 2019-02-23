@@ -1,7 +1,7 @@
 package utils;
 
 
-import rendering.OpenGLMesh;
+import rendering.Mesh;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
@@ -10,7 +10,7 @@ import java.util.List;
 
 public class OBJLoader {
 
-    public static OpenGLMesh loadMesh(String fileName, float boundingRadius)
+    public static Mesh loadMesh(String fileName, float boundingRadius)
     {
         try {
             List<String> lines = Utils.readAllLines(fileName);
@@ -65,7 +65,7 @@ public class OBJLoader {
         }
     }
 
-    private static OpenGLMesh reorderLists(List<Vector3f> _verticesList, List<Vector2f> _uvCoordsList,
+    private static Mesh reorderLists(List<Vector3f> _verticesList, List<Vector2f> _uvCoordsList,
                                      List<Vector3f> _normalsList, List<Face> _facesList, float boundingRadius)
     {
         List<Integer> indicesList = new ArrayList<>();
@@ -95,7 +95,7 @@ public class OBJLoader {
         int[] indices;          // = new int[indicesList.size()]; <-- redundant!
         indices = indicesList.stream().mapToInt((Integer v) -> v).toArray();
 
-        return new OpenGLMesh(vertices, normals, uvCoords, indices, boundingRadius);
+        return new Mesh(vertices, normals, uvCoords, indices, boundingRadius);
     }
 
     private static void processFaceVertex(IdxGroup indices, List<Vector2f> textCoordList,

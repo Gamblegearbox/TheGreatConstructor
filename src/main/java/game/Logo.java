@@ -1,7 +1,7 @@
 package game;
 
-import rendering.OpenGLMesh;
-import core.Transform;
+import rendering.Mesh;
+import rendering.Transform;
 import interfaces.IF_SceneObject;
 
 public class Logo implements IF_SceneObject {
@@ -10,7 +10,7 @@ public class Logo implements IF_SceneObject {
     float fastTime = 0;
 
     private Transform transform;
-    private OpenGLMesh mesh;
+    private Mesh mesh;
 
     public Logo() {
         transform = new Transform();
@@ -23,7 +23,7 @@ public class Logo implements IF_SceneObject {
     }
 
     @Override
-    public OpenGLMesh getMesh() {
+    public Mesh getMesh() {
         return mesh;
     }
 

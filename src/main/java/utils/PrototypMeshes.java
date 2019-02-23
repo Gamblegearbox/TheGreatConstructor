@@ -1,10 +1,10 @@
 package utils;
 
-import rendering.OpenGLMesh;
+import rendering.Mesh;
 
 public class PrototypMeshes {
 
-    public static OpenGLMesh cube()
+    public static Mesh cube()
     {
         float[] vertices = new float[]{
             0.5f, -0.5f, -0.5f,
@@ -52,10 +52,10 @@ public class PrototypMeshes {
             4,5,1,
         };
 
-        return new OpenGLMesh(vertices, normals, uvCoords, indices, 1);
+        return new Mesh(vertices, normals, uvCoords, indices, 1);
     }
 
-    public static OpenGLMesh triangle()
+    public static Mesh triangle()
     {
         float[] vertices = new float[]{
             0.00f,  0.5f, 0f,
@@ -75,6 +75,6 @@ public class PrototypMeshes {
             0, 1, 2,
         };
 
-        return new OpenGLMesh(vertices, normals, uvCoords, indices, 1);
+        return new Mesh(vertices, normals, uvCoords, indices, 1);
     }
 }

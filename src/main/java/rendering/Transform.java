@@ -1,4 +1,4 @@
-package core;
+package rendering;
 
 
 import org.joml.Vector3f;
@@ -8,7 +8,7 @@ public class Transform {
     private final Vector3f position;
     private final Vector3f scale;
     private final Vector3f rotation;
-    private boolean isVisible;
+
     private boolean isStatic;
 
     public Transform()
@@ -16,18 +16,6 @@ public class Transform {
         position = new Vector3f(0,0,0);
         scale = new Vector3f(1,1,1);
         rotation = new Vector3f(0,0,0);
-
-        setVisibility(true);
-    }
-
-    public void setVisibility(boolean _value)
-    {
-        isVisible = _value;
-    }
-
-    public boolean isVisible()
-    {
-        return isVisible;
     }
 
     public void setIsStatic(boolean _value){

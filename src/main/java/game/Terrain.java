@@ -1,13 +1,13 @@
 package game;
 
-import rendering.OpenGLMesh;
-import core.Transform;
+import rendering.Mesh;
+import rendering.Transform;
 import interfaces.IF_SceneObject;
 
 public class Terrain implements IF_SceneObject {
 
     private Transform transform;
-    private OpenGLMesh mesh;
+    private Mesh mesh;
 
     private float anim = 0;
 
@@ -33,7 +33,7 @@ public class Terrain implements IF_SceneObject {
 
         calcVerts();
 
-        //mesh = new OpenGLMesh(verts, normals, uvCoords, indices, boundingRadius);
+        //mesh = new Mesh(verts, normals, uvCoords, indices, boundingRadius);
         mesh = Assets.ENV_1;
         transform.setPosition(0,0,0);
     }
@@ -78,7 +78,7 @@ public class Terrain implements IF_SceneObject {
     }
 
     @Override
-    public OpenGLMesh getMesh() {
+    public Mesh getMesh() {
         return mesh;
     }
 

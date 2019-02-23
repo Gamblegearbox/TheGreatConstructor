@@ -2,12 +2,14 @@ package rendering;
 
 import core.*;
 import game.Assets;
+import hud.Hud;
+import game.Scene;
+import hud.TextItem;
 import interfaces.IF_SceneObject;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 import utils.Logger;
-import utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,25 +29,27 @@ public class DefaultRenderer {
     private final Vector4f CLEAR_COLOR = new Vector4f(0.1f, 0.1f, 0.1f, 1.0f);
 
     private final Window window;
-    private Transformation transformation;
-    private Matrix4f projectionMatrix = new Matrix4f();
+    private final Transformation transformation;
+    private Matrix4f projectionMatrix3D;
+    private Matrix4f projectionMatrixHUD;
 
+    private final List<ShaderProgram> sceneShaders;
 
-    //SHADER AND MATERIAL STUFF TODO: put somewhere more global or stick with renderer?
-    private final List<ShaderProgram> availableShaders;
-    private ShaderProgram activeShader;
+    private ShaderProgram hudShader;
+    private ShaderProgram activeSceneShader;
     private Material materialAtlas;
-    private Texture shadingGradient;
     private Texture lightColorGradient;
-    private int currentShaderIndex = 0;
+    private int activeSceneShaderIndex = 0;
 
 
     public DefaultRenderer(Window _window)
     {
         this.window = _window;
-        availableShaders = new ArrayList<>();
+        sceneShaders = new ArrayList<>();
         transformation = new Transformation();
 
+        projectionMatrix3D = new Matrix4f();
+        projectionMatrixHUD = new Matrix4f();
 /*
         frustumPlanes = new Vector4f[6];
         for (int i = 0; i < 6; i++)
@@ -55,20 +59,21 @@ public class DefaultRenderer {
         */
     }
 
-    public void init() throws Exception
+    public void init()
     {
         Logger.getInstance().writeln(">> INITIALISING RENDERER");
         logGpuInfo();
 
-        projectionMatrix = transformation.getProjectionMatrix(EngineOptions.INITIAL_FOV, window.getWidth(), window.getHeight(), EngineOptions.Z_NEAR, EngineOptions.Z_FAR);
-
         materialAtlas = new Material(Assets.ATLAS_COLORS, null, Assets.ATLAS_GLOSS, Assets.ATLAS_EMIT);
-        shadingGradient = Assets.GRADIENT_SHADING;
         lightColorGradient = Assets.GRADIENT_LIGHT_COLORS;
+
+        projectionMatrix3D = transformation.getPerspectiveProjectionMatrix(EngineOptions.INITIAL_FOV, window.getWidth(), window.getHeight(), EngineOptions.Z_NEAR, EngineOptions.Z_FAR);
+        projectionMatrixHUD = transformation.getOrthographicProjectionMatrix(0, window.getWidth(), window.getHeight(), 0);
 
         setupOpenGl();
         loadShaders();
-        activateShader(currentShaderIndex);
+
+        activeSceneShader = sceneShaders.get(activeSceneShaderIndex);
     }
 
     public void logGpuInfo()
@@ -105,54 +110,59 @@ public class DefaultRenderer {
             glDisable(GL_CULL_FACE);
         }
 
-        if(EngineOptions.SHOW_WIREFRAME)
-        {
-            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        }
-        else
-        {
-            glPolygonMode(GL_FRONT_FACE, GL_FILL);
-        }
+        glPolygonMode(GL_FRONT_FACE, GL_FILL);
+
 
     }
 
-    private void loadShaders() throws Exception
+    private void loadShaders()
     {
-        String[] shadersToLoad = new String[]{
-                "./res/shaders/VERT.glsl;./res/shaders/GEOM.glsl;./res/shaders/FRAG.glsl",
-                "./res/shaders/VERT.glsl;./res/shaders/GEOM.glsl;./res/shaders/debug/FRAG_normalToColor.glsl",
-                "./res/shaders/VERT.glsl;./res/shaders/GEOM.glsl;./res/shaders/debug/FRAG_depthToColor.glsl"
-        };
+        Assets.SHADER_SCENE.bind();
+        Assets.SHADER_SCENE.setUniformData("diffuseMap_sampler", Texture.DIFFUSE);
+        Assets.SHADER_SCENE.setUniformData("normalMap_sampler", Texture.NORMALS);
+        Assets.SHADER_SCENE.setUniformData("glossMap_sampler", Texture.GLOSS);
+        Assets.SHADER_SCENE.setUniformData("illuminationMap_sampler", Texture.ILLUMINATION);
+        Assets.SHADER_SCENE.setUniformData("lightColor_sampler", Texture.GRADIENT_LIGHT_COLOR);
+        sceneShaders.add(Assets.SHADER_SCENE);
 
-        for(String path : shadersToLoad) {
-            String[] pathTokens = path.split(";");
-            String vertexShaderPath = pathTokens[0];
-            String geometryShaderPath = pathTokens[1];
-            String fragmentShaderPath = pathTokens[2];
+        Assets.SHADER_DEBUG_NORMALS_TO_COLOR.bind();
+        Assets.SHADER_DEBUG_NORMALS_TO_COLOR.setUniformData("normalMap_sampler", Texture.NORMALS);
+        sceneShaders.add(Assets.SHADER_DEBUG_NORMALS_TO_COLOR);
 
-            ShaderProgram shader = new ShaderProgram();
-            shader.createVertexShader(Utils.loadResource(vertexShaderPath));
-            shader.createGeometryShader(Utils.loadResource(geometryShaderPath));
-            shader.createFragmentShader(Utils.loadResource(fragmentShaderPath));
-            shader.link();
+        sceneShaders.add(Assets.SHADER_DEBUG_SOLID_WIREFRAME);
 
-            availableShaders.add(shader);
-        }
+        sceneShaders.add(Assets.SHADER_DEBUG_DEPTH_TO_COLOR);
+
+        Assets.HUD_SHADER.bind();
+        Assets.HUD_SHADER.setUniformData("diffuseMap_sampler", Texture.DIFFUSE);
+        hudShader = Assets.HUD_SHADER;
     }
 
-    private void activateShader(int _index){
-        activeShader = availableShaders.get(_index);
 
-        activeShader.bind();
+    public void switchShader(){
+        activeSceneShaderIndex++;
+        activeSceneShaderIndex %= sceneShaders.size();
+        activeSceneShader = sceneShaders.get(activeSceneShaderIndex);
+    }
 
-        activeShader.setUniformData("diffuseMap_sampler", Texture.DIFFUSE);
-        activeShader.setUniformData("normalMap_sampler", Texture.NORMALS);
-        activeShader.setUniformData("glossMap_sampler", Texture.GLOSS);
-        activeShader.setUniformData("illuminationMap_sampler", Texture.ILLUMINATION);
-        activeShader.setUniformData("shading_sampler", Texture.GRADIENT_SHADING);
-        activeShader.setUniformData("lightColor_sampler", Texture.GRADIENT_LIGHT_COLOR);
+    public void render(Scene _scene, Vector3f _lightPosition, float _dayTime, Camera _camera, Hud _hud) {
 
-        //Upload textures
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+        if ( window.isResized() )
+        {
+            projectionMatrix3D = transformation.getPerspectiveProjectionMatrix(_camera.getFieldOfView(), window.getWidth(), window.getHeight(), EngineOptions.Z_NEAR, EngineOptions.Z_FAR);
+            projectionMatrixHUD = transformation.getOrthographicProjectionMatrix(0, window.getWidth(), window.getHeight(), 0);
+            glViewport(0, 0, window.getWidth(), window.getHeight());
+            window.setResized(false);
+        }
+
+        renderHud(_hud);
+        renderScene(_scene, _lightPosition, _dayTime, _camera);
+    }
+
+    private void renderScene(Scene _scene, Vector3f _lightPosition, float _dayTime, Camera _camera){
+
         if(materialAtlas.getDiffuseMap() != null) {
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, materialAtlas.getDiffuseMap().getID());
@@ -172,46 +182,24 @@ public class DefaultRenderer {
             glActiveTexture(GL_TEXTURE3);
             glBindTexture(GL_TEXTURE_2D, materialAtlas.getIlluminationMap().getID());
         }
+        glActiveTexture(GL_TEXTURE4);
+        glBindTexture(GL_TEXTURE_2D, lightColorGradient.getID());
 
-    }
 
-    public void switchShader(){
-        currentShaderIndex++;
-        currentShaderIndex%=availableShaders.size();
-        activateShader(currentShaderIndex);
-    }
+        int verticesInScene = 0;
 
-    public void render(Scene _scene, Vector3f _lightPosition, float _dayTime, Camera _camera) {
-
-        int totalVerticesInFrame = 0;
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-
-        projectionMatrix = transformation.getProjectionMatrix(_camera.getFieldOfView(), window.getWidth(), window.getHeight(), EngineOptions.Z_NEAR, EngineOptions.Z_FAR);
-        activeShader.setUniformData("projectionMatrix", projectionMatrix);
-
-        if ( window.isResized() )
-        {
-            projectionMatrix = transformation.getProjectionMatrix(_camera.getFieldOfView(), window.getWidth(), window.getHeight(), EngineOptions.Z_NEAR, EngineOptions.Z_FAR);
-            activeShader.setUniformData("projectionMatrix", projectionMatrix);
-            glViewport(0, 0, window.getWidth(), window.getHeight());
-            window.setResized(false);
-        }
+        activeSceneShader.bind();
 
         Matrix4f viewMatrix = transformation.getViewMatrix(_camera);
 
-        Map<String, IF_SceneObject> gameObjects = _scene.getGameObjects();
-
         //UPLOAD FRAME RELEVANT UNIFORMS HERE
-        activeShader.setUniformData("lightPosition", _lightPosition);
-        activeShader.setUniformData("timeOfDay", _dayTime);
-        activeShader.setUniformData("viewMatrix", viewMatrix);
+        activeSceneShader.setUniformData("projectionMatrix", projectionMatrix3D);
+        activeSceneShader.setUniformData("viewMatrix", viewMatrix);
+        activeSceneShader.setUniformData("lightPosition", _lightPosition);
+        activeSceneShader.setUniformData("timeOfDay", _dayTime);
+        activeSceneShader.setUniformData("cameraPosition", _camera.getPosition());
 
-        //LOADING GRADIENTS
-        glActiveTexture(GL_TEXTURE4);
-        glBindTexture(GL_TEXTURE_2D, shadingGradient.getID());
-        glActiveTexture(GL_TEXTURE5);
-        glBindTexture(GL_TEXTURE_2D, lightColorGradient.getID());
-
+        Map<String, IF_SceneObject> gameObjects = _scene.getGameObjects();
         /*
         //FILTER OBJECTS FOR FRUSTUM CULLING
         if(EngineOptions.FRUSTUM_CULLING)
@@ -247,41 +235,93 @@ public class DefaultRenderer {
         //RENDER ALL VISIBLE OBJECTS
         for(IF_SceneObject sceneObject : gameObjects.values())
         {
-            Transform temp = sceneObject.getTransform();
+            Transform transform = sceneObject.getTransform();
+            Mesh mesh = sceneObject.getMesh();
 
-            if(temp.isVisible())
+            if(mesh.isVisible())
             {
-                OpenGLMesh mesh = sceneObject.getMesh();
-                totalVerticesInFrame += mesh.getVertexCount();
+                verticesInScene += mesh.getVertexCount();
 
-                Matrix4f modelMatrix = transformation.getModelMatrix(temp);
-                activeShader.setUniformData("modelMatrix", modelMatrix);
+                Matrix4f modelMatrix = transformation.getModelMatrix(transform);
+                activeSceneShader.setUniformData("modelMatrix", modelMatrix);
 
                 glBindVertexArray(mesh.getVaoID());
-                glEnableVertexAttribArray(OpenGLMesh.VERTICES);
-                glEnableVertexAttribArray(OpenGLMesh.NORMALS);
-                glEnableVertexAttribArray(OpenGLMesh.UV_COORDS);
+                glEnableVertexAttribArray(Mesh.VERTICES);
+                glEnableVertexAttribArray(Mesh.NORMALS);
+                glEnableVertexAttribArray(Mesh.UV_COORDS);
 
                 glDrawElements(GL_TRIANGLES, mesh.getIndicesCount(), GL_UNSIGNED_INT, 0);
 
-                glDisableVertexAttribArray(OpenGLMesh.VERTICES);
-                glDisableVertexAttribArray(OpenGLMesh.NORMALS);
-                glDisableVertexAttribArray(OpenGLMesh.UV_COORDS);
+                glDisableVertexAttribArray(Mesh.VERTICES);
+                glDisableVertexAttribArray(Mesh.NORMALS);
+                glDisableVertexAttribArray(Mesh.UV_COORDS);
                 glBindVertexArray(0);
             }
         }
 
+        activeSceneShader.unbind();
+
         if(EngineOptions.DEBUG_MODE)
         {
-            Logger.getInstance().logData("VERTEX COUNT", totalVerticesInFrame);
+            Logger.getInstance().logData("VERTEX COUNT SCENE", verticesInScene);
+        }
+
+    }
+
+    public void renderHud(Hud _hud){
+
+        //TODO: load texture from hud
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, Assets.FONT_CONSOLAS.getTexture().getID());
+
+        int verticesInHud = 0;
+
+        hudShader.bind();
+        hudShader.setUniformData("fontColor", 1.0f, 1.0f, 1.0f, 1.0f);
+        hudShader.setUniformData("labelColor", 1.0f, 0.0f, 0.0f, 0.5f);
+        hudShader.setUniformData("projectionMatrix", projectionMatrixHUD);
+
+        Map<String, TextItem> hudObjects = _hud.getHudItems();
+
+        for(TextItem hudItem : hudObjects.values()) {
+
+            Mesh mesh = hudItem.getMesh();
+            verticesInHud += mesh.getVertexCount();
+
+            Transform transform = hudItem.getTransform();
+
+            Matrix4f modelMatrix = transformation.getModelMatrix(transform);
+            activeSceneShader.setUniformData("modelMatrix", modelMatrix);
+
+            glBindVertexArray(mesh.getVaoID());
+            glEnableVertexAttribArray(Mesh.VERTICES);
+            glEnableVertexAttribArray(Mesh.NORMALS);
+            glEnableVertexAttribArray(Mesh.UV_COORDS);
+
+            glDrawElements(GL_TRIANGLES, mesh.getIndicesCount(), GL_UNSIGNED_INT, 0);
+
+            glDisableVertexAttribArray(Mesh.VERTICES);
+            glDisableVertexAttribArray(Mesh.NORMALS);
+            glDisableVertexAttribArray(Mesh.UV_COORDS);
+            glBindVertexArray(0);
+        }
+
+        hudShader.unbind();
+
+        if(EngineOptions.DEBUG_MODE)
+        {
+            Logger.getInstance().logData("VERTEX COUNT HUD", verticesInHud);
         }
     }
 
     public void cleanup() {
         Logger.getInstance().writeln(">> CLEANING UP RENDERER");
 
-        for(ShaderProgram shader : availableShaders){
+        hudShader.cleanup();
+
+        for(ShaderProgram shader : sceneShaders){
             shader.cleanup();
         }
+
     }
 }

@@ -1,13 +1,10 @@
 package game;
 
 import audio.OpenALAudioSource;
-import input.KeyboardInput;
 import libraries.AudioLibrary;
-import core.Transform;
-import rendering.OpenGLMesh;
+import rendering.Transform;
+import rendering.Mesh;
 import interfaces.IF_SceneObject;
-
-import static org.lwjgl.glfw.GLFW.*;
 
 public class Car implements IF_SceneObject {
 
@@ -22,13 +19,13 @@ public class Car implements IF_SceneObject {
     private int currentGear = 0;
 
     private Transform transform;
-    private OpenGLMesh mesh;
+    private Mesh mesh;
 
     private OpenALAudioSource audioEngine;
     private OpenALAudioSource audioSecondary;
 
 
-    public Car(OpenGLMesh _mesh){
+    public Car(Mesh _mesh){
         mesh = _mesh;
         audioEngine = new OpenALAudioSource();
         audioSecondary = new OpenALAudioSource();
@@ -42,7 +39,7 @@ public class Car implements IF_SceneObject {
         return transform;
     }
 
-    public OpenGLMesh getMesh() {
+    public Mesh getMesh() {
         return mesh;
     }
 

@@ -1,13 +1,13 @@
 package game;
 
-import rendering.OpenGLMesh;
-import core.Transform;
+import rendering.Mesh;
+import rendering.Transform;
 import interfaces.IF_SceneObject;
 
 public class Water implements IF_SceneObject {
 
     private Transform transform;
-    private OpenGLMesh mesh;
+    private Mesh mesh;
 
     private float anim = 0;
 
@@ -17,7 +17,7 @@ public class Water implements IF_SceneObject {
     private final float width = 45f;
 
     private float waveHeight_1 = 0.6f;
-    private float waveHeight_2 = 0.25f;
+    private float waveHeight_2 = 0.2f;
 
     private float boundingRadius = 2;
 
@@ -36,7 +36,7 @@ public class Water implements IF_SceneObject {
 
         calcVerts();
 
-        mesh = new OpenGLMesh(verts, normals, uvCoords, indices, boundingRadius);
+        mesh = new Mesh(verts, normals, uvCoords, indices, boundingRadius);
         transform.setPosition(20,-3,0);
     }
 
@@ -80,7 +80,7 @@ public class Water implements IF_SceneObject {
     }
 
     @Override
-    public OpenGLMesh getMesh() {
+    public Mesh getMesh() {
         return mesh;
     }
 

@@ -13,7 +13,7 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
 
 
-public class OpenGLMesh {
+public class Mesh {
 
     public static final int VERTICES = 0;
     public static final int NORMALS = 1;
@@ -27,11 +27,11 @@ public class OpenGLMesh {
     private final int vboID_indices;
     private final int vertexCount;
     private final int indicesCount;
-
+    private boolean isVisible;
 
     private FloatBuffer verticesBuffer;
 
-    public OpenGLMesh(float[] _vertices, float[] _normals, float[] _uvCoords, int[] _indices, float _boundingRadius)
+    public Mesh(float[] _vertices, float[] _normals, float[] _uvCoords, int[] _indices, float _boundingRadius)
     {
         boundingRadius = _boundingRadius;
         vertexCount = _vertices.length / 3;
@@ -67,6 +67,18 @@ public class OpenGLMesh {
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
+
+        setVisibility(true);
+    }
+
+    public void setVisibility(boolean _value)
+    {
+        isVisible = _value;
+    }
+
+    public boolean isVisible()
+    {
+        return isVisible;
     }
 
     public void updateVertices(float[] _vertices){

@@ -1,4 +1,4 @@
-package core;
+package rendering;
 
 
 import org.joml.Vector3f;

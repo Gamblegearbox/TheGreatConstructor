@@ -7,7 +7,7 @@ import java.nio.FloatBuffer;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL32.GL_GEOMETRY_SHADER;
 
-class ShaderProgram {
+public class ShaderProgram {
 
     private final int programID;
 
@@ -15,25 +15,64 @@ class ShaderProgram {
     private int geometryShaderId;
     private int fragmentShaderId;
 
-    ShaderProgram() throws Exception
+    public ShaderProgram(String _vertexShaderCode, String _geometryShaderCode, String _fragmentShaderCode)
     {
         programID = glCreateProgram();
 
         if (programID == 0)
         {
-            throw new Exception("Could not create Shader");
+            try {
+                throw new Exception("Could not create Shader");
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        try {
+            createVertexShader(_vertexShaderCode);
+            createGeometryShader(_geometryShaderCode);
+            createFragmentShader(_fragmentShaderCode);
+            link();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
-    void createVertexShader(String _shaderCode) throws Exception {
+    public ShaderProgram(String _vertexShaderCode, String _fragmentShaderCode)
+    {
+        programID = glCreateProgram();
+
+        if (programID == 0)
+        {
+            try {
+                throw new Exception("Could not create Shader");
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        try {
+            createVertexShader(_vertexShaderCode);
+            createFragmentShader(_fragmentShaderCode);
+            link();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void createVertexShader(String _shaderCode) throws Exception {
         vertexShaderId = createShader(_shaderCode, GL_VERTEX_SHADER);
     }
 
-    void createGeometryShader(String _shaderCode) throws Exception{
+    private void createGeometryShader(String _shaderCode) throws Exception{
         geometryShaderId = createShader(_shaderCode, GL_GEOMETRY_SHADER);
     }
 
-    void createFragmentShader(String _shaderCode) throws Exception {
+    private void createFragmentShader(String _shaderCode) throws Exception {
         fragmentShaderId = createShader(_shaderCode, GL_FRAGMENT_SHADER);
     }
 
@@ -58,7 +97,7 @@ class ShaderProgram {
         return shaderId;
     }
 
-    void setUniformData(String _uniformName, Matrix4f _matrix) {
+    public void setUniformData(String _uniformName, Matrix4f _matrix) {
         int uniformLocation = glGetUniformLocation(programID, _uniformName);
 
         /*
@@ -79,33 +118,33 @@ class ShaderProgram {
         }
     }
 
-    void setUniformData(String _uniformName, int _value) {
+    public void setUniformData(String _uniformName, int _value) {
 
         int uniformLocation = glGetUniformLocation(programID, _uniformName);
         glUniform1i(uniformLocation, _value);
     }
 
-    void setUniformData(String _uniformName, float _value) {
+    public void setUniformData(String _uniformName, float _value) {
         int uniformLocation = glGetUniformLocation(programID, _uniformName);
         glUniform1f(uniformLocation, _value);
     }
 
-    void setUniformData(String _uniformName, Vector3f _value) {
+    public void setUniformData(String _uniformName, Vector3f _value) {
         int uniformLocation = glGetUniformLocation(programID, _uniformName);
         glUniform3f(uniformLocation, _value.x, _value.y, _value.z);
     }
 
-    void setUniformData(String _uniformName, float _x, float _y, float _z) {
+    public void setUniformData(String _uniformName, float _x, float _y, float _z) {
         int uniformLocation = glGetUniformLocation(programID, _uniformName);
         glUniform3f(uniformLocation, _x, _y, _z);
     }
 
-    void setUniformData(String _uniformName, float _r, float _g, float _b, float _a) {
+    public void setUniformData(String _uniformName, float _r, float _g, float _b, float _a) {
         int uniformLocation = glGetUniformLocation(programID, _uniformName);
         glUniform4f(uniformLocation, _r, _g, _b, _a);
     }
 
-    void link() throws Exception {
+    private void link() throws Exception {
         glLinkProgram(programID);
         if (glGetProgrami(programID, GL_LINK_STATUS) == 0)
         {
@@ -129,17 +168,17 @@ class ShaderProgram {
 
     }
 
-    void bind()
+    public void bind()
     {
         glUseProgram(programID);
     }
 
-    void unbind()
+    public void unbind()
     {
         glUseProgram(0);
     }
 
-    void cleanup() {
+    public void cleanup() {
         unbind();
         if (programID != 0)
         {

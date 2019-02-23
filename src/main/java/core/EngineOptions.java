@@ -1,10 +1,5 @@
 package core;
 
-import utils.Logger;
-import utils.Utils;
-
-import java.util.HashMap;
-import java.util.List;
 
 public class EngineOptions {
 
@@ -21,10 +16,8 @@ public class EngineOptions {
     public static final boolean BACK_FACE_CULLING = true;
     public static final boolean FRUSTUM_CULLING = true;
 
-    public static final boolean SHOW_WIREFRAME = false;
-
     public static final float INITIAL_FOV = 30f;
-    public static final float Z_NEAR = 0.1f;
+    public static final float Z_NEAR = 0.5f;
     public static final float Z_FAR = 150f;
 
     public static final String OPERATING_SYSTEM = System.getProperty("os.name");

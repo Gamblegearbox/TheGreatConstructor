@@ -1,4 +1,4 @@
-package core;
+package game;
 
 import interfaces.IF_SceneObject;
 import utils.Logger;
@@ -17,7 +17,6 @@ public class Scene {
     public Scene(String _path) throws Exception
     {
         scnFilePath = _path;
-
 
         sceneObjects = new HashMap<>();
         load();

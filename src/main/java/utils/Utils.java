@@ -3,15 +3,21 @@ package utils;
 import org.joml.Vector3f;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
 
 public class Utils {
 
-    public static String loadResource(String fileName) throws Exception
+    public static String loadResource(String fileName)
     {
         File path = new File(fileName);
-        String result = new String(Files.readAllBytes(path.toPath()));
+        String result = null;
+        try {
+            result = new String(Files.readAllBytes(path.toPath()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         return result;
     }
