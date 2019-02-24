@@ -81,7 +81,7 @@ public class Game implements IF_Game {
 
         hud = new Hud();
         TextItem text = new TextItem("Nacho Nacho", Assets.FONT_CONSOLAS);
-        text.getTransform().setPosition(100f,100f,0.0f);
+        text.getTransform().setPosition(50f,50f,0.0f);
         hud.addSceneObject("test", text);
     }
 

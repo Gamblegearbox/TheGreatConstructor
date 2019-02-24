@@ -157,8 +157,8 @@ public class DefaultRenderer {
             window.setResized(false);
         }
 
-        renderHud(_hud);
         renderScene(_scene, _lightPosition, _dayTime, _camera);
+        renderHud(_hud);
     }
 
     private void renderScene(Scene _scene, Vector3f _lightPosition, float _dayTime, Camera _camera){
@@ -291,7 +291,7 @@ public class DefaultRenderer {
             Transform transform = hudItem.getTransform();
 
             Matrix4f modelMatrix = transformation.getModelMatrix(transform);
-            activeSceneShader.setUniformData("modelMatrix", modelMatrix);
+            hudShader.setUniformData("modelMatrix", modelMatrix);
 
             glBindVertexArray(mesh.getVaoID());
             glEnableVertexAttribArray(Mesh.VERTICES);

@@ -10,5 +10,6 @@ uniform vec4 labelColor;
 
 void main()
 {
-    fragColor = fontColor;// * texture(diffuseMap_sampler, vTexCoord);
+
+    fragColor = fontColor * texture(diffuseMap_sampler, vTexCoord);
 }
