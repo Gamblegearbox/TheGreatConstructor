@@ -34,7 +34,7 @@ public class Game implements IF_Game {
 
     //IN GAME TIME SETTINGS
     private float timeOfDay = 0.5f; //from 0.0 to 1.0
-    private float lengthOfDayInSeconds = 30.0f;
+    private float lengthOfDayInSeconds = 3.0f;
 
     //LIGHT SETTINGS
     private Vector3f lightPosition = new Vector3f(10, 10, -25);

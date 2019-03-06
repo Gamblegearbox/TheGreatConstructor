@@ -125,6 +125,14 @@ public class DefaultRenderer {
         Assets.SHADER_SCENE.setUniformData("lightColor_sampler", Texture.GRADIENT_LIGHT_COLOR);
         sceneShaders.add(Assets.SHADER_SCENE);
 
+        //TODO implement water shader (thoughts: shaders bound to meshes? Sort meshes by shader? how to render debug overlay)
+        Assets.SHADER_SCENE_WATER.bind();
+        Assets.SHADER_SCENE.setUniformData("diffuseMap_sampler", Texture.DIFFUSE);
+        Assets.SHADER_SCENE.setUniformData("normalMap_sampler", Texture.NORMALS);
+        Assets.SHADER_SCENE.setUniformData("glossMap_sampler", Texture.GLOSS);
+        Assets.SHADER_SCENE.setUniformData("illuminationMap_sampler", Texture.ILLUMINATION);
+        Assets.SHADER_SCENE.setUniformData("lightColor_sampler", Texture.GRADIENT_LIGHT_COLOR);
+
         Assets.SHADER_DEBUG_NORMALS_TO_COLOR.bind();
         Assets.SHADER_DEBUG_NORMALS_TO_COLOR.setUniformData("normalMap_sampler", Texture.NORMALS);
         sceneShaders.add(Assets.SHADER_DEBUG_NORMALS_TO_COLOR);
@@ -270,10 +278,6 @@ public class DefaultRenderer {
 
     public void renderHud(Hud _hud){
 
-        //TODO: load texture from hud
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, Assets.FONT_CONSOLAS.getTexture().getID());
-
         int verticesInHud = 0;
 
         hudShader.bind();
@@ -292,6 +296,9 @@ public class DefaultRenderer {
 
             Matrix4f modelMatrix = transformation.getModelMatrix(transform);
             hudShader.setUniformData("modelMatrix", modelMatrix);
+
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, hudItem.getFontTexture().getTexture().getID());
 
             glBindVertexArray(mesh.getVaoID());
             glEnableVertexAttribArray(Mesh.VERTICES);

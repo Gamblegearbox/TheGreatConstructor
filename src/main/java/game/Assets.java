@@ -12,8 +12,10 @@ import java.awt.*;
 public class Assets {
 
     //SHADER_CODE_FILES
+
     //VERTEX
     private static final String VERTEX_3D = "./res/shaders/VERTEX_3D.glsl";
+    private static final String VERTEX_WATER = "./res/shaders/VERTEX_WATER.glsl";
     private static final String VERTEX_HUD = "./res/shaders/VERTEX_HUD.glsl";
 
     //GEOMETRY
@@ -29,6 +31,11 @@ public class Assets {
     //SHADERS
     public static final ShaderProgram SHADER_SCENE = new ShaderProgram(
             Utils.loadResource(VERTEX_3D),
+            Utils.loadResource(GEOMETRY_SMOOTH_FLAT_WIRE),
+            Utils.loadResource(FRAGMENT_SCENE));
+
+    public static final ShaderProgram SHADER_SCENE_WATER = new ShaderProgram(
+            Utils.loadResource(VERTEX_WATER),
             Utils.loadResource(GEOMETRY_SMOOTH_FLAT_WIRE),
             Utils.loadResource(FRAGMENT_SCENE));
 
