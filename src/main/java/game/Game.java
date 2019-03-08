@@ -1,7 +1,6 @@
 package game;
 
 import core.Window;
-import hud.FontTexture;
 import hud.Hud;
 import hud.TextItem;
 import input.KeyboardInput;
@@ -15,8 +14,8 @@ import org.joml.Vector3f;
 import rendering.Camera;
 import rendering.DefaultRenderer;
 import utils.Logger;
+import utils.Utils;
 
-import java.awt.*;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -33,8 +32,8 @@ public class Game implements IF_Game {
     private Hud hud;
 
     //IN GAME TIME SETTINGS
-    private float timeOfDay = 0.5f; //from 0.0 to 1.0
-    private float lengthOfDayInSeconds = 3.0f;
+    private float timeOfDay = 0.4f; //from 0.0 to 1.0
+    private float lengthOfDayInSeconds = 60.0f;
 
     //LIGHT SETTINGS
     private Vector3f lightPosition = new Vector3f(10, 10, -25);
@@ -79,10 +78,23 @@ public class Game implements IF_Game {
         scenes[1].addSceneObject("Car_2", new Car(Assets.GTR));
         scenes[1].getSceneObjectByTag("Car_2").getTransform().setPosition(3f,0,-5);
 
+        //HUD ITEMS
+        float HUD_LAYOUT_PADDING_X = 10f;
+        float HUD_LAYOUT_PADDING_Y = 10f;
+        float HUD_ROW_GAP = 5f;
+
         hud = new Hud();
-        TextItem text = new TextItem("Nacho Nacho", Assets.FONT_CONSOLAS);
-        text.getTransform().setPosition(50f,50f,0.0f);
-        hud.addSceneObject("test", text);
+        TextItem text = new TextItem("Loading...", Assets.FONT_CONSOLAS);
+        text.getTransform().setPosition(HUD_LAYOUT_PADDING_X, HUD_LAYOUT_PADDING_Y, 0f);
+        hud.addSceneObject("LoggedData", text);
+
+        text = new TextItem("TIME: ", Assets.FONT_CONSOLAS);
+        text.getTransform().setPosition(HUD_LAYOUT_PADDING_X,HUD_LAYOUT_PADDING_Y + HUD_ROW_GAP + Assets.FONT_CONSOLAS.getHeight(),0f);
+        hud.addSceneObject("timeOfDay", text);
+
+        text = new TextItem("SHADER: ", Assets.FONT_CONSOLAS);
+        text.getTransform().setPosition(HUD_LAYOUT_PADDING_X,HUD_LAYOUT_PADDING_Y + 2*(HUD_ROW_GAP + Assets.FONT_CONSOLAS.getHeight()),0f);
+        hud.addSceneObject("activeShader", text);
     }
 
     public void start()
@@ -153,6 +165,8 @@ public class Game implements IF_Game {
         }
 
         activeScene.update(_deltaTime);
+        hud.getHudItems().get("activeShader").setText("SHADER:" + renderer.getActiveShaderIndex());
+        hud.getHudItems().get("timeOfDay").setText("TIME: " + Utils.convertNormalizedFloatToTime(timeOfDay));
 
         if(EngineOptions.DEBUG_MODE)
         {
@@ -160,7 +174,7 @@ public class Game implements IF_Game {
 
             if( deltaTimeSum > EngineOptions.LOGGING_INTERVAL)
             {
-                Logger.getInstance().outputLoggedData();
+                hud.getHudItems().get("LoggedData").setText(Logger.getInstance().getAllLoggedData());
                 deltaTimeSum = 0;
             }
         }

@@ -33,19 +33,19 @@ public class DefaultRenderer {
     private Matrix4f projectionMatrix3D;
     private Matrix4f projectionMatrixHUD;
 
-    private final List<ShaderProgram> sceneShaders;
+    private final List<ShaderProgram> matCapShaders;
 
     private ShaderProgram hudShader;
-    private ShaderProgram activeSceneShader;
+    private ShaderProgram activeMatCapShader;
     private Material materialAtlas;
     private Texture lightColorGradient;
-    private int activeSceneShaderIndex = 0;
+    private int activeMatCapShaderIndex = 0;
 
 
     public DefaultRenderer(Window _window)
     {
         this.window = _window;
-        sceneShaders = new ArrayList<>();
+        matCapShaders = new ArrayList<>();
         transformation = new Transformation();
 
         projectionMatrix3D = new Matrix4f();
@@ -73,7 +73,7 @@ public class DefaultRenderer {
         setupOpenGl();
         loadShaders();
 
-        activeSceneShader = sceneShaders.get(activeSceneShaderIndex);
+        activeMatCapShader = matCapShaders.get(activeMatCapShaderIndex);
     }
 
     public void logGpuInfo()
@@ -117,13 +117,13 @@ public class DefaultRenderer {
 
     private void loadShaders()
     {
+        //SCENE SHADERS
         Assets.SHADER_SCENE.bind();
         Assets.SHADER_SCENE.setUniformData("diffuseMap_sampler", Texture.DIFFUSE);
         Assets.SHADER_SCENE.setUniformData("normalMap_sampler", Texture.NORMALS);
         Assets.SHADER_SCENE.setUniformData("glossMap_sampler", Texture.GLOSS);
         Assets.SHADER_SCENE.setUniformData("illuminationMap_sampler", Texture.ILLUMINATION);
         Assets.SHADER_SCENE.setUniformData("lightColor_sampler", Texture.GRADIENT_LIGHT_COLOR);
-        sceneShaders.add(Assets.SHADER_SCENE);
 
         //TODO implement water shader (thoughts: shaders bound to meshes? Sort meshes by shader? how to render debug overlay)
         Assets.SHADER_SCENE_WATER.bind();
@@ -133,13 +133,15 @@ public class DefaultRenderer {
         Assets.SHADER_SCENE.setUniformData("illuminationMap_sampler", Texture.ILLUMINATION);
         Assets.SHADER_SCENE.setUniformData("lightColor_sampler", Texture.GRADIENT_LIGHT_COLOR);
 
+        //MAT CAP SHADERS
+        matCapShaders.add(null);
         Assets.SHADER_DEBUG_NORMALS_TO_COLOR.bind();
         Assets.SHADER_DEBUG_NORMALS_TO_COLOR.setUniformData("normalMap_sampler", Texture.NORMALS);
-        sceneShaders.add(Assets.SHADER_DEBUG_NORMALS_TO_COLOR);
+        matCapShaders.add(Assets.SHADER_DEBUG_NORMALS_TO_COLOR);
 
-        sceneShaders.add(Assets.SHADER_DEBUG_SOLID_WIREFRAME);
+        matCapShaders.add(Assets.SHADER_DEBUG_SOLID_WIREFRAME);
 
-        sceneShaders.add(Assets.SHADER_DEBUG_DEPTH_TO_COLOR);
+        matCapShaders.add(Assets.SHADER_DEBUG_DEPTH_TO_COLOR);
 
         Assets.HUD_SHADER.bind();
         Assets.HUD_SHADER.setUniformData("diffuseMap_sampler", Texture.DIFFUSE);
@@ -148,9 +150,9 @@ public class DefaultRenderer {
 
 
     public void switchShader(){
-        activeSceneShaderIndex++;
-        activeSceneShaderIndex %= sceneShaders.size();
-        activeSceneShader = sceneShaders.get(activeSceneShaderIndex);
+        activeMatCapShaderIndex++;
+        activeMatCapShaderIndex %= matCapShaders.size();
+        activeMatCapShader = matCapShaders.get(activeMatCapShaderIndex);
     }
 
     public void render(Scene _scene, Vector3f _lightPosition, float _dayTime, Camera _camera, Hud _hud) {
@@ -196,16 +198,25 @@ public class DefaultRenderer {
 
         int verticesInScene = 0;
 
-        activeSceneShader.bind();
+        //TODO: OBJECT OR MAT CAP SHADER
+        ShaderProgram currentShader;
+        if(activeMatCapShader != null){
+            currentShader = activeMatCapShader;
+        }
+        else{
+            currentShader = Assets.SHADER_SCENE;
+        }
+        currentShader.bind();
+        //TODO:END OF TODO//////////////
 
         Matrix4f viewMatrix = transformation.getViewMatrix(_camera);
 
         //UPLOAD FRAME RELEVANT UNIFORMS HERE
-        activeSceneShader.setUniformData("projectionMatrix", projectionMatrix3D);
-        activeSceneShader.setUniformData("viewMatrix", viewMatrix);
-        activeSceneShader.setUniformData("lightPosition", _lightPosition);
-        activeSceneShader.setUniformData("timeOfDay", _dayTime);
-        activeSceneShader.setUniformData("cameraPosition", _camera.getPosition());
+        currentShader.setUniformData("projectionMatrix", projectionMatrix3D);
+        currentShader.setUniformData("viewMatrix", viewMatrix);
+        currentShader.setUniformData("lightPosition", _lightPosition);
+        currentShader.setUniformData("timeOfDay", _dayTime);
+        currentShader.setUniformData("cameraPosition", _camera.getPosition());
 
         Map<String, IF_SceneObject> gameObjects = _scene.getGameObjects();
         /*
@@ -251,13 +262,14 @@ public class DefaultRenderer {
                 verticesInScene += mesh.getVertexCount();
 
                 Matrix4f modelMatrix = transformation.getModelMatrix(transform);
-                activeSceneShader.setUniformData("modelMatrix", modelMatrix);
+                currentShader.setUniformData("modelMatrix", modelMatrix);
 
                 glBindVertexArray(mesh.getVaoID());
                 glEnableVertexAttribArray(Mesh.VERTICES);
                 glEnableVertexAttribArray(Mesh.NORMALS);
                 glEnableVertexAttribArray(Mesh.UV_COORDS);
 
+                //TODO: add timed steps function
                 glDrawElements(GL_TRIANGLES, mesh.getIndicesCount(), GL_UNSIGNED_INT, 0);
 
                 glDisableVertexAttribArray(Mesh.VERTICES);
@@ -267,7 +279,7 @@ public class DefaultRenderer {
             }
         }
 
-        activeSceneShader.unbind();
+        currentShader.unbind();
 
         if(EngineOptions.DEBUG_MODE)
         {
@@ -321,13 +333,19 @@ public class DefaultRenderer {
         }
     }
 
+    public int getActiveShaderIndex(){
+        return activeMatCapShaderIndex;
+    }
+
     public void cleanup() {
         Logger.getInstance().writeln(">> CLEANING UP RENDERER");
 
         hudShader.cleanup();
 
-        for(ShaderProgram shader : sceneShaders){
-            shader.cleanup();
+        for(ShaderProgram shader : matCapShaders){
+            if(shader != null) {
+                shader.cleanup();
+            }
         }
 
     }

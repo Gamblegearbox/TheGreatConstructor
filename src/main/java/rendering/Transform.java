@@ -80,13 +80,13 @@ public class Transform {
 /*
     public void setRotation(Vector3f _rotation)
     {
-        Conversions.convertEulerToQuaternion(_rotation.x, _rotation.y, _rotation.z, rotation);
+        Utils.convertEulerToQuaternion(_rotation.x, _rotation.y, _rotation.z, rotation);
     }
 */
 /*
     public void setRotation(float _x, float _y, float _z)
     {
-        Conversions.convertEulerToQuaternion(_x, _y, _z, rotation);
+        Utils.convertEulerToQuaternion(_x, _y, _z, rotation);
     }
 */
     public Vector3f getRotation()

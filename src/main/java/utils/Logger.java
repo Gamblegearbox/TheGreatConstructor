@@ -14,11 +14,11 @@ public class Logger {
     private static Logger instance;
 
     private BufferedWriter out;
-    private final Map<String, Integer> logs;
+    private final Map<String, Integer> loggedData;
 
     private Logger()
     {
-        logs = new HashMap<>();
+        loggedData = new HashMap<>();
 
         if (EngineOptions.LOG_TO_FILE)
         {
@@ -53,7 +53,7 @@ public class Logger {
 
     public void logData(String _label, int _logValue)
     {
-        logs.put(_label, _logValue);
+        loggedData.put(_label, _logValue);
     }
 
     public void write(String _log)
@@ -99,10 +99,7 @@ public class Logger {
         {
             try
             {
-                for (Map.Entry e : logs.entrySet())
-                {
-                    out.write(e.getKey() + ": " + e.getValue() + " | ");
-                }
+                out.write(buildLoggedDataString());
                 out.write("\n");
                 out.flush();
             }
@@ -113,12 +110,28 @@ public class Logger {
         }
         else
         {
-            for(Map.Entry e : logs.entrySet())
-            {
-                System.out.print(e.getKey() + ": " + e.getValue() + " | ");
-            }
+            System.out.print(buildLoggedDataString());
             System.out.println();
         }
+    }
+
+    public String getLoggedData(String _label){
+        return _label + ": " + loggedData.get(_label);
+    }
+
+    public String getAllLoggedData(){
+        return buildLoggedDataString();
+    }
+
+    private String buildLoggedDataString(){
+        String result = "";
+
+        for(Map.Entry entry : loggedData.entrySet())
+        {
+            result +=(entry.getKey() + ": " + entry.getValue() + " | ");
+        }
+
+        return result;
     }
 
     public void cleanup()

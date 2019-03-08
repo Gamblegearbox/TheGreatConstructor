@@ -72,7 +72,7 @@ public class Assets {
     public static final Texture GRADIENT_LIGHT_COLORS = new Texture("/TestGameContent/Textures/gradient_lightColor.png");
 
     //FONT TEXTURES
-    public static final Font FONT = new Font("Consolas", Font.PLAIN, 50);
+    public static final Font FONT = new Font("Consolas", Font.PLAIN, 20);
     public static final String CHARSET = "ISO-8859-1";
     public static final FontTexture FONT_CONSOLAS = new FontTexture(FONT, CHARSET);
 }
