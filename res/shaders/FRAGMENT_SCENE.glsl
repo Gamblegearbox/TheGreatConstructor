@@ -30,6 +30,7 @@ void main()
         //DIFFUSE
         vec3 toLightSource = normalize(lightPosition);
         float diffuseFactor = max(dot(gWorldSpaceNormal, toLightSource), 0.0);
+
         colorDiffuse.rgb *= diffuseFactor;
         colorDiffuse.rgb *= colorLight.rgb;
 
@@ -40,7 +41,9 @@ void main()
         vec3 reflectedLight = normalize(reflect(fromLightDir, gWorldSpaceNormal));
         float specularFactor = max(dot(camDirection, reflectedLight), 0.0);
         specularFactor = pow(specularFactor, SPECULAR_POWER);
+
         colorSpecular.rgb *= specularFactor * texture(glossMap_sampler, gTexCoord).a;
+        colorSpecular.rgb *= colorLight.rgb;
     }
 
     fragColor = clamp((colorAmbient + colorSpecular + colorDiffuse),0.0,1.0);

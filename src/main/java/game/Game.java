@@ -30,8 +30,8 @@ public class Game implements IF_Game {
     private Hud hud;
 
     //IN GAME TIME SETTINGS
-    private static final float LENGTH_OF_DAY_IN_SECONDS = 60.0f;
-    private float timeOfDay = 0.4f; //from 0.0 to 1.0
+    private static final float LENGTH_OF_DAY_IN_SECONDS = 20.0f;
+    private float timeOfDay = 0.5f; //from 0.0 to 1.0
 
     //LIGHT SETTINGS
     private final Vector3f lightPosition = new Vector3f(10, 10, -25);

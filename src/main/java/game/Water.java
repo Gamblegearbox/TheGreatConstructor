@@ -13,7 +13,7 @@ public class Water implements IF_SceneItem {
 
     private final int lengthRes = 50;
     private final int widthRes = 50;
-    private final float length = 43.3f;
+    private final float length = 43f;
     private final float width = 45f;
 
     private float boundingRadius = 30;
@@ -22,6 +22,7 @@ public class Water implements IF_SceneItem {
     private float[] normals;
     private float[] uvCoords;
     private int[] indices;
+
 
     public Water(ShaderProgram _shader){
         transform = new Transform();
@@ -87,8 +88,9 @@ public class Water implements IF_SceneItem {
         return shader;
     }
 
+
     @Override
-    public void update(float _deltaTime) {}
+    public void update(float _deltaTime) {    }
 
     @Override
     public void cleanup() {

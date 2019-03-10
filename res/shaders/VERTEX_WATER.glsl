@@ -17,40 +17,52 @@ uniform float anima;
 vec3 sineWave(vec3 _position){
 
     vec3 temp = _position;
-    float AMPLITUDE = 1;
+    float AMPLITUDE = 0.8;
     float AMPLITUDE_2 = 0.3;
     float WAVE_LENGTH = 0.8;
-    float WAVE_LENGTH_2 = 0.3;
-    float SPEED = 1;
-    float SPEED_2 = 3.5;
+    float WAVE_LENGTH_2 = 1.0;
+    float SPEED = 3.5;
+    float SPEED_2 = 2.0;
     temp.y += (AMPLITUDE * sin(WAVE_LENGTH * (SPEED * anima + temp.x)) + (AMPLITUDE_2 * cos(WAVE_LENGTH_2 * (SPEED_2 * anima + temp.x + temp.z))));
 
     return temp;
 }
 
 //WAVE USING GERSTNER WAVES
-vec3 gerstnerWave(vec3 _position){
+vec3 gerstnerWave(vec4 wave, vec3 _position){
     //SOURCE: https://catlikecoding.com/unity/tutorials/flow/waves/
-    vec3 temp = _position;
     float PI = 3.1415926535897932384626433832795;
-    float STEEPNESS = 0.6; //between 0.0 and 1.0
-    float WAVE_LENGTH = 5;
-    float SPEED = 1;
 
-    float k = 2.0 * PI / WAVE_LENGTH;
-    float f = k * temp.x + SPEED * anima;
-    float a = STEEPNESS / k;
+    float steepness = wave.z;
+    float wavelength = wave.w;
 
-    temp.x += a * cos(f);
-    temp.y = a * sin(f);
+    float k = 2.0 * PI / wavelength;
+    float c = sqrt(9.8 / k);
+    vec2 d = normalize(wave.xy);
+    float f = k * dot(d, _position.xz) + c * anima;
+    float a = steepness / k;
 
-    return temp;
+    return vec3(d.x * (a * cos(f)), a * sin(f), d.y * (a * cos(f)));
 }
 
 void main()
 {
-    bool useSineWave = true;
-    vec3 positionWithWave = (useSineWave) ? sineWave(position) : gerstnerWave(position);
+    bool useSineWave = false;
+    vec3 positionWithWave = position;
+
+    if(useSineWave){
+        positionWithWave = sineWave(position);
+    }
+    else{
+        //vec4(dir.x, dir.y, steepness(0.0 - 1.0), wavelength)
+        vec4 wave1 = vec4(0.9, 0.1, 0.2, 2.0);
+        vec4 wave2 = vec4(0.8, 0.2, 0.4, 8.0);
+        vec4 wave3 = vec4(0.7, 1.0, 0.3, 4.0);
+        positionWithWave += gerstnerWave(wave1, position);
+        positionWithWave += gerstnerWave(wave2, position);
+        positionWithWave += gerstnerWave(wave3, position);
+    }
+
 
     vec4 vertexWorldSpacePos = modelMatrix * vec4(positionWithWave, 1.0);
     vec4 vertexViewSpacePos = viewMatrix * vertexWorldSpacePos;
