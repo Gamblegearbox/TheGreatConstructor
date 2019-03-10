@@ -32,6 +32,7 @@ void main()
         float diffuseFactor = max(dot(gWorldSpaceNormal, toLightSource), 0.0);
         colorDiffuse.rgb *= diffuseFactor;
         colorDiffuse.rgb *= colorLight.rgb;
+
         //SPECULAR
         colorSpecular = vec4(1.0, 1.0, 1.0, 1.0);
         vec3 camDirection = normalize(cameraPosition - gWorldSpacePosition);

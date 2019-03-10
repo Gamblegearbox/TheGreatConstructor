@@ -119,13 +119,12 @@ public class Renderer {
         Assets.SHADER_SCENE.setUniformData("illuminationMap_sampler", Texture.RGBA_3);
         Assets.SHADER_SCENE.setUniformData("lightColor_sampler", Texture.AUX_0);
 
-        //TODO implement water shader (thoughts: shaders bound to meshes? Sort meshes by shader? how to render debug overlay)
         Assets.SHADER_SCENE_WATER.bind();
-        Assets.SHADER_SCENE.setUniformData("diffuseMap_sampler", Texture.RGBA_0);
-        Assets.SHADER_SCENE.setUniformData("normalMap_sampler", Texture.RGBA_1);
-        Assets.SHADER_SCENE.setUniformData("glossMap_sampler", Texture.RGBA_2);
-        Assets.SHADER_SCENE.setUniformData("illuminationMap_sampler", Texture.RGBA_3);
-        Assets.SHADER_SCENE.setUniformData("lightColor_sampler", Texture.AUX_0);
+        Assets.SHADER_SCENE_WATER.setUniformData("diffuseMap_sampler", Texture.RGBA_0);
+        Assets.SHADER_SCENE_WATER.setUniformData("normalMap_sampler", Texture.RGBA_1);
+        Assets.SHADER_SCENE_WATER.setUniformData("glossMap_sampler", Texture.RGBA_2);
+        Assets.SHADER_SCENE_WATER.setUniformData("illuminationMap_sampler", Texture.RGBA_3);
+        Assets.SHADER_SCENE_WATER.setUniformData("lightColor_sampler", Texture.AUX_0);
 
         Assets.SHADER_HUD.bind();
         Assets.SHADER_HUD.setUniformData("diffuseMap_sampler", Texture.RGBA_0);
@@ -162,8 +161,6 @@ public class Renderer {
     }
 
     private void renderScene(Scene _scene, Camera _camera, Vector3f _lightPosition, float _dayTime){
-        activateMaterialTextures(sceneMaterial);
-
         frustumCullingCheck(_scene.getSceneItems().values());
 
         ShaderProgram shader;
@@ -180,6 +177,7 @@ public class Renderer {
             shader.setUniformData("cameraPosition", _camera.getPosition());
             shader.setUniformData("anima", anima);
 
+            activateMaterialTextures(sceneMaterial);
             verticesInRenderPass += renderItem(sceneObject, shader);
 
             shader.unbind();
