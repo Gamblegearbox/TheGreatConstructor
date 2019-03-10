@@ -8,6 +8,7 @@ public class Transformation {
     private final Matrix4f projectionMatrixPerspective;
     private final Matrix4f projectionMatrixOrtho;
     private final Matrix4f viewMatrix;
+    private final Matrix4f viewProjectionMatrix;
 
     private final Matrix4f modelViewMatrix;
     private final Matrix4f modelMatrix;
@@ -16,6 +17,7 @@ public class Transformation {
         projectionMatrixPerspective = new Matrix4f();
         projectionMatrixOrtho = new Matrix4f();
         viewMatrix = new Matrix4f();
+        viewProjectionMatrix = new Matrix4f();
 
         modelViewMatrix = new Matrix4f();
         modelMatrix = new Matrix4f();
@@ -33,6 +35,12 @@ public class Transformation {
         projectionMatrixOrtho.setOrtho2D(left, right, bottom, top);
 
         return projectionMatrixOrtho;
+    }
+
+    public Matrix4f getViewProjectionMatrix(){
+        projectionMatrixPerspective.mul(viewMatrix, viewProjectionMatrix);
+
+        return viewProjectionMatrix;
     }
 
     public Matrix4f getModelViewMatrix(Transform gameItem, Matrix4f viewMatrix) {

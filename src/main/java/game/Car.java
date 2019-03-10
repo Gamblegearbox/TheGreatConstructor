@@ -1,12 +1,14 @@
 package game;
 
+import input.KeyboardInput;
 import audio.OpenALAudioSource;
 import libraries.AudioLibrary;
+import rendering.ShaderProgram;
 import rendering.Transform;
 import rendering.Mesh;
-import interfaces.IF_SceneObject;
+import interfaces.IF_SceneItem;
 
-public class Car implements IF_SceneObject {
+public class Car implements IF_SceneItem {
 
     int count = 0;
     int limit = 10000;
@@ -18,20 +20,20 @@ public class Car implements IF_SceneObject {
     private boolean isEngineRunning = false;
     private int currentGear = 0;
 
-    private Transform transform;
-    private Mesh mesh;
+    private final Transform transform;
+    private final ShaderProgram shader;
+    private final Mesh mesh;
 
-    private OpenALAudioSource audioEngine;
-    private OpenALAudioSource audioSecondary;
+    private final OpenALAudioSource audioEngine;
+    private final OpenALAudioSource audioSecondary;
 
 
-    public Car(Mesh _mesh){
+    public Car(Mesh _mesh, ShaderProgram _shader){
+        transform = new Transform();
+        shader = _shader;
         mesh = _mesh;
         audioEngine = new OpenALAudioSource();
         audioSecondary = new OpenALAudioSource();
-
-        transform = new Transform();
-
     }
 
     @Override
@@ -43,6 +45,10 @@ public class Car implements IF_SceneObject {
         return mesh;
     }
 
+    @Override
+    public ShaderProgram getShader(){
+        return shader;
+    }
 
     @Override
     public void update(float _deltaTime){
@@ -71,7 +77,6 @@ public class Car implements IF_SceneObject {
         if(KeyboardInput.isKeyPressedOnce(GLFW_KEY_S)){
             shiftDown();
         }
-
         */
         //anim += 15 * _deltaTime;
         //transform.setRotation(0f,anim,0f);

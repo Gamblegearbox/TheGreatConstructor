@@ -12,17 +12,15 @@ import audio.OpenALAudioEngine;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import rendering.Camera;
-import rendering.DefaultRenderer;
+import rendering.Renderer;
 import utils.Logger;
 import utils.Utils;
-
-
 import static org.lwjgl.glfw.GLFW.*;
 
 
 public class Game implements IF_Game {
 
-    private final DefaultRenderer renderer;
+    private final Renderer renderer;
     private final OpenALAudioEngine audioEngine;
 
     private Camera camera;
@@ -32,24 +30,22 @@ public class Game implements IF_Game {
     private Hud hud;
 
     //IN GAME TIME SETTINGS
+    private static final float LENGTH_OF_DAY_IN_SECONDS = 60.0f;
     private float timeOfDay = 0.4f; //from 0.0 to 1.0
-    private float lengthOfDayInSeconds = 60.0f;
 
     //LIGHT SETTINGS
-    private Vector3f lightPosition = new Vector3f(10, 10, -25);
+    private final Vector3f lightPosition = new Vector3f(10, 10, -25);
 
     //DEBUG_MODE VALUES
     private float deltaTimeSum;
 
-    public Game(Window _window)
-    {
-        renderer =  new DefaultRenderer(_window);
+    public Game(Window _window) {
+        renderer =  new Renderer(_window);
         audioEngine = new OpenALAudioEngine();
     }
 
     @Override
-    public void init() throws Exception
-    {
+    public void init() throws Exception {
         Logger.getInstance().writeln(">> INITIALISING GAME");
         renderer.init();
         audioEngine.init();
@@ -62,7 +58,6 @@ public class Game implements IF_Game {
         KeyboardInput.init();
 
         //LOAD ASSETS
-
         AudioLibrary.loadAudioFiles("./res/TestGameContent/Audio.txt");
 
         //CREATE SCENES
@@ -71,30 +66,26 @@ public class Game implements IF_Game {
         scenes[1] = new Scene("./res/TestGameContent/Scenes/Scene_01.scn");
 
         //CREATE AND ADD OBJECTS TO SCENES
-        scenes[0].addSceneObject("Logo", new Logo());
-        scenes[1].addSceneObject("Terrain", new Terrain());
-        scenes[1].addSceneObject("Water", new Water());
-        scenes[1].addSceneObject("Car_1", new Car(Assets.NSX));
-        scenes[1].addSceneObject("Car_2", new Car(Assets.GTR));
+        scenes[0].addSceneObject("Logo", new Car(Assets.WHEEL_01, Assets.SHADER_SCENE));
+        scenes[1].addSceneObject("Terrain", new Terrain(Assets.SHADER_SCENE));
+        scenes[1].addSceneObject("Water", new Water(Assets.SHADER_SCENE_WATER));
+        scenes[1].addSceneObject("Car_1", new Car(Assets.NSX, Assets.SHADER_SCENE));
+        scenes[1].addSceneObject("Car_2", new Car(Assets.GTR, Assets.SHADER_SCENE));
         scenes[1].getSceneObjectByTag("Car_2").getTransform().setPosition(3f,0,-5);
 
         //HUD ITEMS
-        float HUD_LAYOUT_PADDING_X = 10f;
-        float HUD_LAYOUT_PADDING_Y = 10f;
-        float HUD_ROW_GAP = 5f;
-
         hud = new Hud();
-        TextItem text = new TextItem("Loading...", Assets.FONT_CONSOLAS);
-        text.getTransform().setPosition(HUD_LAYOUT_PADDING_X, HUD_LAYOUT_PADDING_Y, 0f);
+        TextItem text = new TextItem("Logging...", Assets.FONT_CONSOLAS, Assets.SHADER_HUD);
+        text.getTransform().setPosition(Hud.LAYOUT_PADDING_X, Hud.LAYOUT_PADDING_Y, 0f);
         hud.addSceneObject("LoggedData", text);
 
-        text = new TextItem("TIME: ", Assets.FONT_CONSOLAS);
-        text.getTransform().setPosition(HUD_LAYOUT_PADDING_X,HUD_LAYOUT_PADDING_Y + HUD_ROW_GAP + Assets.FONT_CONSOLAS.getHeight(),0f);
+        text = new TextItem("TIME: ", Assets.FONT_CONSOLAS, Assets.SHADER_HUD);
+        text.getTransform().setPosition(Hud.LAYOUT_PADDING_X,Hud.LAYOUT_PADDING_Y + Hud.ROW_GAP + Assets.FONT_CONSOLAS.getHeight(),0f);
         hud.addSceneObject("timeOfDay", text);
 
-        text = new TextItem("SHADER: ", Assets.FONT_CONSOLAS);
-        text.getTransform().setPosition(HUD_LAYOUT_PADDING_X,HUD_LAYOUT_PADDING_Y + 2*(HUD_ROW_GAP + Assets.FONT_CONSOLAS.getHeight()),0f);
-        hud.addSceneObject("activeShader", text);
+        text = new TextItem("MOUSE POS: ", Assets.FONT_CONSOLAS, Assets.SHADER_HUD);
+        text.getTransform().setPosition(Hud.LAYOUT_PADDING_X,Hud.LAYOUT_PADDING_Y + 2 * (Hud.ROW_GAP + Assets.FONT_CONSOLAS.getHeight()),0f);
+        hud.addSceneObject("mousePos", text);
     }
 
     public void start()
@@ -143,7 +134,7 @@ public class Game implements IF_Game {
     public void update(float _deltaTime, MouseInput mouseInput)
     {
         //UPDATE IN GAME TIME
-        timeOfDay += 1.0/ lengthOfDayInSeconds * _deltaTime;
+        timeOfDay += 1.0/ LENGTH_OF_DAY_IN_SECONDS * _deltaTime;
         if(timeOfDay > 1.0){
             timeOfDay = 0;
         }
@@ -165,8 +156,11 @@ public class Game implements IF_Game {
         }
 
         activeScene.update(_deltaTime);
-        hud.getHudItems().get("activeShader").setText("SHADER:" + renderer.getActiveShaderIndex());
         hud.getHudItems().get("timeOfDay").setText("TIME: " + Utils.convertNormalizedFloatToTime(timeOfDay));
+        hud.getHudItems().get("mousePos").setText("MOUSE POS: "
+                + mouseInput.getCurrentPos().x
+                + " | "
+                + mouseInput.getCurrentPos().y);
 
         if(EngineOptions.DEBUG_MODE)
         {
@@ -181,9 +175,9 @@ public class Game implements IF_Game {
     }
 
     @Override
-    public void render()
+    public void render(float _deltaTime)
     {
-        renderer.render(activeScene, lightPosition, timeOfDay, camera, hud);
+        renderer.render(activeScene, hud, camera, lightPosition, timeOfDay, _deltaTime);
     }
 
     @Override

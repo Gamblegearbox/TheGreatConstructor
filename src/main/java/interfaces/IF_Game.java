@@ -7,13 +7,13 @@ public interface IF_Game {
 
     void init() throws Exception;
 
-    void start() throws Exception;
+    void start();
 
-    void input(MouseInput mouseInput);
+    void input(MouseInput _mouseInput);
 
-    void update(float deltaTime, MouseInput mouseInput);
+    void update(float _deltaTime, MouseInput _mouseInput);
 
-    void render();
+    void render(float _deltaTime);
 
     void cleanup();
 }

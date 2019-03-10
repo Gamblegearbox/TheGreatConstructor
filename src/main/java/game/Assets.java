@@ -53,16 +53,15 @@ public class Assets {
             Utils.loadResource(VERTEX_3D),
             Utils.loadResource(FRAGMENT_DEPTH));
 
-    public static final ShaderProgram HUD_SHADER = new ShaderProgram(
+    public static final ShaderProgram SHADER_HUD = new ShaderProgram(
             Utils.loadResource(VERTEX_HUD),
             Utils.loadResource(FRAGMENT_HUD));
-
 
     //MESHES
     public static final Mesh LOGO = OBJLoader.loadMesh(".\\res\\TestGameContent\\Meshes\\ui_logo.obj", 2);
     public static final Mesh NSX = OBJLoader.loadMesh(".\\res\\TestGameContent\\Meshes\\NS_X.obj", 2);
     public static final Mesh GTR = OBJLoader.loadMesh(".\\res\\TestGameContent\\Meshes\\GT_R.obj", 2);
-    public static final Mesh ENV_1 = OBJLoader.loadMesh(".\\res\\TestGameContent\\Meshes\\environment.obj", 10);
+    public static final Mesh ENV_1 = OBJLoader.loadMesh(".\\res\\TestGameContent\\Meshes\\environment.obj", 30);
     public static final Mesh WHEEL_01 = OBJLoader.loadMesh(".\\res\\TestGameContent\\Meshes\\Wheel_01.obj", 1);
 
     //TEXTURES

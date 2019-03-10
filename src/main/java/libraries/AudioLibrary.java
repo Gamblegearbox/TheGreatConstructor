@@ -27,7 +27,6 @@ public class AudioLibrary {
         List<String> fileContent = utils.Utils.readAllLines(_filePath);
         List<String> audioDataFromFile = new ArrayList<>();
 
-
         //PARSE FILE
         for(String line : fileContent){
 
@@ -43,7 +42,6 @@ public class AudioLibrary {
                 audioDataFromFile.add(line);
             }
         }
-
 
         for(int i = 0; i < audioDataFromFile.size(); i++){
 

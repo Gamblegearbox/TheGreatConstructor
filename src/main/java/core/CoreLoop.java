@@ -91,7 +91,7 @@ public class CoreLoop implements Runnable{
 
             input();
             update(dt);
-            render();
+            render(dt);
 
             lastTime = currentTime;
         }
@@ -103,14 +103,14 @@ public class CoreLoop implements Runnable{
         game.input(mouseInput);
     }
 
-    private void update(float deltaTime)
+    private void update(float _deltaTime)
     {
-        game.update(deltaTime, mouseInput);
+        game.update(_deltaTime, mouseInput);
     }
 
-    private void render()
+    private void render(float _deltaTime)
     {
-        game.render();
+        game.render(_deltaTime);
         window.update();
     }
 

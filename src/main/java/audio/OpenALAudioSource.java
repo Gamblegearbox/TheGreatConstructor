@@ -4,7 +4,7 @@ import static org.lwjgl.openal.AL10.*;
 
 public class OpenALAudioSource {
 
-    private int sourceId;
+    private final int sourceId;
 
     public OpenALAudioSource() {
 

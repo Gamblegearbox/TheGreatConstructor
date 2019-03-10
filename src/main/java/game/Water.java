@@ -1,32 +1,29 @@
 package game;
 
 import rendering.Mesh;
+import rendering.ShaderProgram;
 import rendering.Transform;
-import interfaces.IF_SceneObject;
+import interfaces.IF_SceneItem;
 
-public class Water implements IF_SceneObject {
+public class Water implements IF_SceneItem {
 
-    private Transform transform;
+    private final Transform transform;
+    private final ShaderProgram shader;
     private Mesh mesh;
-
-    private float anim = 0;
 
     private final int lengthRes = 50;
     private final int widthRes = 50;
     private final float length = 43.3f;
     private final float width = 45f;
 
-    private float waveHeight_1 = 0.6f;
-    private float waveHeight_2 = 0.2f;
-
-    private float boundingRadius = 2;
+    private float boundingRadius = 30;
 
     private float[] verts;
     private float[] normals;
     private float[] uvCoords;
     private int[] indices;
 
-    public Water(){
+    public Water(ShaderProgram _shader){
         transform = new Transform();
 
         verts = new float[(lengthRes + 1) * (widthRes + 1) * 3];
@@ -38,6 +35,7 @@ public class Water implements IF_SceneObject {
 
         mesh = new Mesh(verts, normals, uvCoords, indices, boundingRadius);
         transform.setPosition(20,-3,0);
+        shader = _shader;
     }
 
     private void calcVerts(){
@@ -46,7 +44,7 @@ public class Water implements IF_SceneObject {
         for(int z = 0; z < lengthRes + 1; z++){
             for(int x = 0; x < widthRes + 1; x++){
                 verts[index + 0] = (x * (width / widthRes)) - (width / 2);
-                verts[index + 1] = (float)Math.sin(x + anim) * waveHeight_1 + (float)Math.cos((x+z)/2 + anim) * waveHeight_2;
+                verts[index + 1] = 0f;
                 verts[index + 2] = z * (length / lengthRes) - (length / 2);
                 index += 3;
             }
@@ -85,23 +83,12 @@ public class Water implements IF_SceneObject {
     }
 
     @Override
-    public void update(float _deltaTime) {
-
-        anim += _deltaTime;
-
-        int index = 0;
-        for(int z = 0; z < lengthRes + 1; z++){
-            for(int x = 0; x < widthRes + 1; x++){
-                verts[index + 0] = (x * (width / widthRes)) - (width / 2);
-                verts[index + 1] = (float)Math.sin(x + anim) * waveHeight_1 + (float)Math.cos((x+z)/2 + anim) * waveHeight_2;
-                verts[index + 2] = z * (length / lengthRes) - (length / 2);
-                index += 3;
-            }
-        }
-
-        mesh.updateVertices(verts);
-
+    public ShaderProgram getShader(){
+        return shader;
     }
+
+    @Override
+    public void update(float _deltaTime) {}
 
     @Override
     public void cleanup() {

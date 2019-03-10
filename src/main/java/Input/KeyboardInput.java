@@ -7,7 +7,7 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public class KeyboardInput extends GLFWKeyCallback{
 
-    private static int[] keyStatus = new int[65536];
+    private static final int[] keyStatus = new int[65536];
 
     @Override
     public void invoke(long _window, int _key, int _scancode, int _action, int _mods)
@@ -23,7 +23,7 @@ public class KeyboardInput extends GLFWKeyCallback{
     public static boolean isKeyPressedOnce(int _key)
     {
         boolean answer = keyStatus[_key] == GLFW_PRESS;
-        if(answer == true){
+        if(answer){
             keyStatus[_key] = -1;
             return true;
         }else{
@@ -34,7 +34,7 @@ public class KeyboardInput extends GLFWKeyCallback{
     public static boolean isKeyReleased(int _key)
     {
         boolean answer = keyStatus[_key] == GLFW_RELEASE;
-        if(answer == true){
+        if(answer){
             keyStatus[_key] = -1;
             return true;
         }else{

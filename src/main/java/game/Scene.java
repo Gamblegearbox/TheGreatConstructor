@@ -1,6 +1,6 @@
 package game;
 
-import interfaces.IF_SceneObject;
+import interfaces.IF_SceneItem;
 import utils.Logger;
 
 import java.util.HashMap;
@@ -11,7 +11,7 @@ public class Scene {
 
     private final String scnFilePath;
 
-    private Map<String, IF_SceneObject> sceneObjects;
+    private final Map<String, IF_SceneItem> sceneObjects;
     private String sceneName;
 
     public Scene(String _path) throws Exception
@@ -46,7 +46,7 @@ public class Scene {
         Logger.getInstance().writeln("> INITIALIZING " + sceneName +  "...");
     }
 
-    public  void addSceneObject(String tag, IF_SceneObject _sceneObject){
+    public  void addSceneObject(String tag, IF_SceneItem _sceneObject){
         sceneObjects.put(tag, _sceneObject);
     }
 
@@ -54,17 +54,17 @@ public class Scene {
         return sceneName;
     }
 
-    public Map<String, IF_SceneObject> getGameObjects()
+    public Map<String, IF_SceneItem> getSceneItems()
     {
         return sceneObjects;
     }
 
-    public IF_SceneObject getSceneObjectByTag(String tag){
+    public IF_SceneItem getSceneObjectByTag(String tag){
         return sceneObjects.get(tag);
     }
 
     public void update(float _deltaTime){
-        for(IF_SceneObject temp: sceneObjects.values()){
+        for(IF_SceneItem temp: sceneObjects.values()){
             temp.update(_deltaTime);
         }
     }
@@ -72,7 +72,7 @@ public class Scene {
     public void cleanup()
     {
         Logger.getInstance().writeln(">>> CLEANING UP " + sceneName);
-        for (IF_SceneObject temp : sceneObjects.values())
+        for (IF_SceneItem temp : sceneObjects.values())
         {
             temp.cleanup();
         }

@@ -1,14 +1,15 @@
 package hud;
 
+import rendering.ShaderProgram;
 import rendering.Transform;
-import interfaces.IF_SceneObject;
+import interfaces.IF_SceneItem;
 import rendering.Mesh;
 
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TextItem implements IF_SceneObject {
+public class TextItem implements IF_SceneItem {
 
     private static final float ZPOS = 0.0f;
     private static final float BOUNDING_RADIUS = 1.0f;
@@ -16,15 +17,17 @@ public class TextItem implements IF_SceneObject {
 
     private final FontTexture fontTexture;
     private final Transform transform;
+    private final ShaderProgram shader;
 
     private Mesh mesh;
     private String text;
 
-    public TextItem(String _text, FontTexture _fontTexture){
+    public TextItem(String _text, FontTexture _fontTexture, ShaderProgram _shader){
         text = _text;
         fontTexture = _fontTexture;
 
         transform = new Transform();
+        shader = _shader;
         mesh = buildMesh();
     }
 
@@ -36,6 +39,11 @@ public class TextItem implements IF_SceneObject {
     @Override
     public Mesh getMesh() {
         return mesh;
+    }
+
+    @Override
+    public ShaderProgram getShader(){
+        return shader;
     }
 
     @Override

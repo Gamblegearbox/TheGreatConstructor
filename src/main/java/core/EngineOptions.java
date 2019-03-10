@@ -23,8 +23,7 @@ public class EngineOptions {
     public static final String OPERATING_SYSTEM = System.getProperty("os.name");
 
 
-    public static void loadSettingFromFile(String _path) throws Exception
-    {
+    public static void loadSettingFromFile(String _path) {
         //TODO: load if user changed settings
     }
 

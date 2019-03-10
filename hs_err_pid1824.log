@@ -79,8 +79,8 @@ Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
 Java frames: (J=compiled Java code, j=interpreted, Vv=VM code)
 j  org.lwjgl.opengl.GL11.nglPushMatrix()V+0
 j  org.lwjgl.opengl.GL11.glPushMatrix()V+0
-j  rendering.DefaultRenderer.renderAxes(Lrendering/Camera;)V+0
-j  rendering.DefaultRenderer.render(Lgame/Scene;Lorg/joml/Vector3f;FLrendering/Camera;Lhud/Hud;)V+18
+j  rendering.Renderer.renderAxes(Lrendering/Camera;)V+0
+j  rendering.Renderer.render(Lgame/Scene;Lorg/joml/Vector3f;FLrendering/Camera;Lhud/Hud;)V+18
 j  game.Game.render()V+24
 j  core.CoreLoop.render()V+4
 j  core.CoreLoop.startGameLoop()V+102

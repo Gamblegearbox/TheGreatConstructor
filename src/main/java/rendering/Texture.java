@@ -12,11 +12,11 @@ import static org.lwjgl.opengl.GL30.glGenerateMipmap;
 public class Texture {
 
 
-    public static final int DIFFUSE = 0;
-    public static final int NORMALS = 1;
-    public static final int GLOSS = 2;
-    public static final int ILLUMINATION = 3;
-    public static final int GRADIENT_LIGHT_COLOR = 4;
+    public static final int RGBA_0 = 0;
+    public static final int RGBA_1 = 1;
+    public static final int RGBA_2 = 2;
+    public static final int RGBA_3 = 3;
+    public static final int AUX_0 = 4;
 
     private final int textureID;
     private int width;

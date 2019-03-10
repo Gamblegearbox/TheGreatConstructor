@@ -11,10 +11,16 @@ out vec2 vTexCoord;
 uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
 uniform mat4 modelMatrix;
+uniform float anima;
 
 void main()
 {
-    vec4 vertexWorldSpacePos = modelMatrix * vec4(position, 1.0);
+    float amplitude = 0.5;
+    float wavelength = 1.0;
+    vec3 pos = position;
+    pos.y += amplitude * sin(wavelength * (anima - pos.x));
+
+    vec4 vertexWorldSpacePos = modelMatrix * vec4(pos, 1.0);
     vec4 vertexViewSpacePos = viewMatrix * vertexWorldSpacePos;
 
     vec4 normalWorldSpacePos = modelMatrix * vec4(normal, 1.0);

@@ -19,9 +19,9 @@ public class FontTexture {
 
 
     private static final String IMAGE_FORMAT = "png";
-    private Font font;
-    private String charsetName;
-    private Map<Character, CharInfo> charMap;
+    private final Font font;
+    private final String charsetName;
+    private final Map<Character, CharInfo> charMap;
     private Texture texture;
     private int width;
     private int height;

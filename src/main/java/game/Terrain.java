@@ -1,12 +1,14 @@
 package game;
 
 import rendering.Mesh;
+import rendering.ShaderProgram;
 import rendering.Transform;
-import interfaces.IF_SceneObject;
+import interfaces.IF_SceneItem;
 
-public class Terrain implements IF_SceneObject {
+public class Terrain implements IF_SceneItem {
 
-    private Transform transform;
+    private final Transform transform;
+    private final ShaderProgram shader;
     private Mesh mesh;
 
     private float anim = 0;
@@ -23,8 +25,9 @@ public class Terrain implements IF_SceneObject {
     private float[] uvCoords;
     private int[] indices;
 
-    public Terrain(){
+    public Terrain(ShaderProgram _shader){
         transform = new Transform();
+        shader = _shader;
 
         verts = new float[(lengthRes + 1) * (widthRes + 1) * 3];
         normals = new float[verts.length];
@@ -80,6 +83,11 @@ public class Terrain implements IF_SceneObject {
     @Override
     public Mesh getMesh() {
         return mesh;
+    }
+
+    @Override
+    public ShaderProgram getShader(){
+        return shader;
     }
 
     @Override

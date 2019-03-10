@@ -18,11 +18,8 @@ out vec3 gDistanceToEdge;
 //TODO:uniform
 const vec2 WIN_SCALE = vec2(1280,720);
 
-
 //REFERENCES
 //SINGLE PASS WIREFRAME: http://strattonbrazil.blogspot.com/2011/09/single-pass-wireframe-rendering_10.html
-
-
 void main(){
     int enableSmooth=0;
     vec3 oa=vWorldSpacePosition[1]-vWorldSpacePosition[0];
