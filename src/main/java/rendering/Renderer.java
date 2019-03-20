@@ -25,7 +25,7 @@ import static org.lwjgl.opengl.GL30.glBindVertexArray;
 public class Renderer {
 
     private static final int NUMBER_OF_FRUSTUM_PLANES = 6;
-    private final Vector4f CLEAR_COLOR = new Vector4f(0.1f, 0.1f, 0.1f, 1.0f);
+    private final Vector4f CLEAR_COLOR = new Vector4f(0.15f, 0.15f, 0.15f, 1.0f);
 
     private final Window window;
     private final Transformation transformation;

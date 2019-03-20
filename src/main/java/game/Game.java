@@ -30,7 +30,7 @@ public class Game implements IF_Game {
     private Hud hud;
 
     //IN GAME TIME SETTINGS
-    private static final float LENGTH_OF_DAY_IN_SECONDS = 20.0f;
+    private static final float LENGTH_OF_DAY_IN_SECONDS = 3600.0f;
     private float timeOfDay = 0.5f; //from 0.0 to 1.0
 
     //LIGHT SETTINGS
@@ -50,8 +50,8 @@ public class Game implements IF_Game {
         renderer.init();
         audioEngine.init();
         camera = new Camera(EngineOptions.INITIAL_FOV);
-        camera.setPosition(62.3574f,33.414f,49.8928f);
-        camera.setRotation(25,-48.1f,0);
+        camera.setPosition(32.3574f,33.414f,59.8928f);
+        camera.setRotation(25,-18.1f,0);
         cameraInc = new Vector3f(0,0,0);
 
         //SET ALL KEYBOARD KEYS TO -1
@@ -68,7 +68,8 @@ public class Game implements IF_Game {
         //CREATE AND ADD OBJECTS TO SCENES
         scenes[0].addSceneObject("Logo", new Car(Assets.WHEEL_01, Assets.SHADER_SCENE));
         scenes[1].addSceneObject("Terrain", new Terrain(Assets.SHADER_SCENE));
-        scenes[1].addSceneObject("Water", new Water(Assets.SHADER_SCENE_WATER));
+        scenes[1].addSceneObject("Water", new Water(45f, 43f, 60, 60, Assets.SHADER_SCENE_WATER));
+        scenes[1].getSceneObjectByTag("Water").getTransform().setPosition(20,-3f,0);
         scenes[1].addSceneObject("Car_1", new Car(Assets.NSX, Assets.SHADER_SCENE));
         scenes[1].addSceneObject("Car_2", new Car(Assets.GTR, Assets.SHADER_SCENE));
         scenes[1].getSceneObjectByTag("Car_2").getTransform().setPosition(3f,0,-5);

@@ -61,7 +61,7 @@ public class OBJLoader {
             return reorderLists(vertices, textures, normals, faces, boundingRadius);
         } catch(Exception e) {
             Logger.getInstance().writeln("Could not load:" + fileName + " --> loading default mesh");
-            return PrototypMeshes.cube();
+            return MeshBuilder.createCube();
         }
     }
 

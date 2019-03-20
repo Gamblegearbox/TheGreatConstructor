@@ -5,21 +5,26 @@ import input.MouseInput;
 import interfaces.IF_Game;
 import utils.Logger;
 
-import java.util.Scanner;
-
 public class CoreLoop implements Runnable{
 
     private final Thread gameLoopThread;
+    private final Thread consoleThread;
+
+    private final Console console;
     private final Window window;
     private final MouseInput mouseInput;
     private final IF_Game game;
 
     public CoreLoop()
     {
-        gameLoopThread = new Thread(this, "GAME_LOOP_THREAD");
         window = new Window(EngineOptions.WINDOW_TITLE, EngineOptions.WINDOW_WIDTH, EngineOptions.WINDOW_HEIGHT);
+        console = new Console();
         mouseInput = new MouseInput();
         game = new Game(window);
+
+        gameLoopThread = new Thread(this, "GAME_LOOP_THREAD");
+        consoleThread = new Thread(console, "CONSOLE");
+
     }
 
     public void start()
@@ -29,10 +34,12 @@ public class CoreLoop implements Runnable{
         if(osName.contains("Mac"))
         {
             gameLoopThread.run();
+            //consoleThread.run();
         }
         else
         {
             gameLoopThread.start();
+            //consoleThread.start();
         }
     }
 
@@ -52,6 +59,7 @@ public class CoreLoop implements Runnable{
         {
             cleanup();
         }
+
     }
 
     private void init() throws Exception

@@ -20,7 +20,7 @@ void main()
 {
     int SPECULAR_POWER = 64;
 
-    vec4 colorAmbient = vec4(0.1,0.1,0.1,1.0);
+    vec4 colorAmbient = vec4(0.15,0.15,0.15,1.0);
     vec4 colorDiffuse = texture(diffuseMap_sampler, gTexCoord);
     vec4 colorLight = texture(lightColor_sampler, vec2(timeOfDay, 0.0));
     vec4 colorSpecular = vec4(0.0, 0.0, 0.0, 1.0);

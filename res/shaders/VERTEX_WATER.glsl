@@ -13,22 +13,19 @@ uniform mat4 projectionMatrix;
 uniform mat4 modelMatrix;
 uniform float anima;
 
-//WAVE USING SINE FUNCTION
-vec3 sineWave(vec3 _position){
 
-    vec3 temp = _position;
-    float AMPLITUDE = 0.8;
-    float AMPLITUDE_2 = 0.3;
-    float WAVE_LENGTH = 0.8;
-    float WAVE_LENGTH_2 = 1.0;
-    float SPEED = 3.5;
-    float SPEED_2 = 2.0;
-    temp.y += (AMPLITUDE * sin(WAVE_LENGTH * (SPEED * anima + temp.x)) + (AMPLITUDE_2 * cos(WAVE_LENGTH_2 * (SPEED_2 * anima + temp.x + temp.z))));
+vec3 sineWave(vec4 _wave, vec3 _position){
 
-    return temp;
+    float AMPLITUDE = _wave.x;
+    float WAVE_LENGTH = _wave.y;
+    float SPEED = _wave.z;
+    float DIRECTION = _wave.w;
+
+    float y = (AMPLITUDE * sin(WAVE_LENGTH * (SPEED * anima + DIRECTION)));
+
+    return vec3(0, y, 0);
 }
 
-//WAVE USING GERSTNER WAVES
 vec3 gerstnerWave(vec4 wave, vec3 _position){
     //SOURCE: https://catlikecoding.com/unity/tutorials/flow/waves/
     float PI = 3.1415926535897932384626433832795;
@@ -45,24 +42,65 @@ vec3 gerstnerWave(vec4 wave, vec3 _position){
     return vec3(d.x * (a * cos(f)), a * sin(f), d.y * (a * cos(f)));
 }
 
+float random1D(float _in){
+    // SOURCE: https://thebookofshaders.com/10/
+    return fract(sin(_in) * 1.0);
+}
+
+float random2D(vec2 _input){
+    // SOURCE: https://thebookofshaders.com/10/
+    return fract(sin(dot(_input, vec2(12.9898,78.233))) * 43758.5453123);
+}
+
+vec3 noise2D(float _height, vec3 _position){
+    // SOURCE: https://thebookofshaders.com/11/
+    vec2 base = _position.xz;
+    vec2 i = floor(base);
+    vec2 f = fract(base);
+
+    //Corner values
+    float a = random2D(i);
+    float b = random2D(i + vec2(1.0, 0.0));
+    float c = random2D(i + vec2(0.0, 1.0));
+    float d = random2D(i + vec2(1.0, 1.0));
+
+    //Cubic interpolation
+    vec2 u = f * f * f * (f *(f * 6.0 - 15.0) + 10.0);
+
+    //Mix
+    float y = mix(a, b, u.x) + (c -a) * u.y * (1.0 - u.x) + (d - b) * u.x * u.y;
+
+    return vec3(0, y * -_height, 0);
+}
+
 void main()
 {
-    bool useSineWave = false;
     vec3 positionWithWave = position;
+    
+    //SINE STUFF
+    /*
+    //vec3(Amplitude, WaveLength, Speed, Direction)
+    vec4 sineWave1 = vec4(0.6, 0.8, 3.5, position.x);
+    vec4 sineWave2 = vec4(0.3, 1.0, 2.0, position.x + position.z);
+    positionWithWave += sineWave(sineWave1, position);
+    positionWithWave += sineWave(sineWave2, position);
+    //*/
 
-    if(useSineWave){
-        positionWithWave = sineWave(position);
-    }
-    else{
-        //vec4(dir.x, dir.y, steepness(0.0 - 1.0), wavelength)
-        vec4 wave1 = vec4(0.9, 0.1, 0.2, 2.0);
-        vec4 wave2 = vec4(0.8, 0.2, 0.4, 8.0);
-        vec4 wave3 = vec4(0.7, 1.0, 0.3, 4.0);
-        positionWithWave += gerstnerWave(wave1, position);
-        positionWithWave += gerstnerWave(wave2, position);
-        positionWithWave += gerstnerWave(wave3, position);
-    }
+    //NOISE STUFF
+    //*
+    positionWithWave += noise2D(1.5, position * 0.3 + anima * 0.5);
+    positionWithWave += noise2D(0.5, position * 0.75 - anima);
+    //*/
 
+    //GERSTNER WAVE STUFF
+    //*
+    //vec4(dir.x, dir.y, steepness(0.0 - 1.0), wavelength)
+    //steepness of all waves should not exeed 1.0
+    vec4 wave1 = vec4(1.0, 0.0, 0.2, 4.0);
+    vec4 wave2 = vec4(0.8, 0.2, 0.5, 8.0);
+    positionWithWave += gerstnerWave(wave1, position);
+    positionWithWave += gerstnerWave(wave2, position);
+    //*/
 
     vec4 vertexWorldSpacePos = modelMatrix * vec4(positionWithWave, 1.0);
     vec4 vertexViewSpacePos = viewMatrix * vertexWorldSpacePos;
