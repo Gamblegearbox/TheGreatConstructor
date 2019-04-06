@@ -1,0 +1,14 @@
+# Blender MTL File: 'veryLowPolyVisualsTest.blend'
+# Material Count: 1
+
+newmtl sceneMat
+Ns 288.235294
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 1
+map_Kd C:\Users\Peter\Documents\GitHub\TheGreatConstructor\res\TestGameContent\Textures\MAP_COLOR.png
+map_Ke C:\\Users\\Peter\\Documents\\GitHub\\TheGreatConstructor\\res\\TestGameContent\\Textures\\MAP_EMIT.png
