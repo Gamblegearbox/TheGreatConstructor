@@ -1,5 +1,7 @@
 package utils;
 
+import game.Assets;
+import game.Game;
 import rendering.Mesh;
 
 public class MeshBuilder {
@@ -78,7 +80,7 @@ public class MeshBuilder {
         return new Mesh(vertices, normals, uvCoords, indices, 1);
     }
 
-    public static Mesh createPlane(float _width, float _length, int _resWidth, int _resLength){
+    public static Mesh createPlane(float _width, float _length, int _resWidth, int _resLength, int _colorCoordX, int _colorCoordY){
 
         float[] verts = new float[(_resLength + 1) * (_resWidth + 1) * 3];
         float[] normals = new float[verts.length];
@@ -102,8 +104,9 @@ public class MeshBuilder {
         }
 
         for(int i = 0; i < uvCoords.length; i+=2){
-            uvCoords[i] = 0.03125f + 0.0625f * 3f;
-            uvCoords[i+1] = 0.03125f + 0.0625f * 11f;
+            float[] atlasCoords = Assets.getUvForColorFromAtlas(_colorCoordX, _colorCoordY);
+            uvCoords[i] = atlasCoords[0];
+            uvCoords[i+1] = atlasCoords[1];
         }
 
         for (int ti = 0, vi = 0, y = 0; y < _resLength; y++, vi++) {

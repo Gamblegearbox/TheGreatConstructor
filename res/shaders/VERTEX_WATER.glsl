@@ -34,7 +34,7 @@ vec3 gerstnerWave(vec4 wave, vec3 _position){
     float wavelength = wave.w;
 
     float k = 2.0 * PI / wavelength;
-    float c = sqrt(9.8 / k);
+    float c = sqrt(3.0 / k);//correct formula: sqrt(9.8 / k); but waves are quit fast
     vec2 d = normalize(wave.xy);
     float f = k * dot(d, _position.xz) + c * anima;
     float a = steepness / k;
@@ -80,24 +80,25 @@ void main()
     //SINE STUFF
     /*
     //vec3(Amplitude, WaveLength, Speed, Direction)
-    vec4 sineWave1 = vec4(0.6, 0.8, 3.5, position.x);
-    vec4 sineWave2 = vec4(0.3, 1.0, 2.0, position.x + position.z);
+    vec4 sineWave1 = vec4(0.15, 0.4, 6.1, position.x);
+    vec4 sineWave2 = vec4(0.1, 0.3, 8.0, position.z);
     positionWithWave += sineWave(sineWave1, position);
     positionWithWave += sineWave(sineWave2, position);
     //*/
 
     //NOISE STUFF
     //*
-    positionWithWave += noise2D(1.5, position * 0.3 + anima * 0.5);
-    positionWithWave += noise2D(0.5, position * 0.75 - anima);
+    float speed = anima * 0.3;
+    positionWithWave += noise2D(0.75, position * 0.2 + speed);
+    positionWithWave += noise2D(0.75, position * 0.2 - speed);
     //*/
 
     //GERSTNER WAVE STUFF
     //*
     //vec4(dir.x, dir.y, steepness(0.0 - 1.0), wavelength)
     //steepness of all waves should not exeed 1.0
-    vec4 wave1 = vec4(1.0, 0.0, 0.2, 4.0);
-    vec4 wave2 = vec4(0.8, 0.2, 0.5, 8.0);
+    vec4 wave1 = vec4(0.5, 0.5, 0.4, 8.0);
+    vec4 wave2 = vec4(0.7, 0.3, 0.4, 8.0);
     positionWithWave += gerstnerWave(wave1, position);
     positionWithWave += gerstnerWave(wave2, position);
     //*/

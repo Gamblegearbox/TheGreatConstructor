@@ -13,7 +13,7 @@ public class Water implements IF_SceneItem {
 
     public Water(float _width, float _length, int _resWidth, int _resLength, ShaderProgram _shader){
         transform = new Transform();
-        mesh = utils.MeshBuilder.createPlane(_width, _length, _resWidth, _resLength);
+        mesh = utils.MeshBuilder.createPlane(_width, _length, _resWidth, _resLength, 3, 11);
 
         shader = _shader;
     }

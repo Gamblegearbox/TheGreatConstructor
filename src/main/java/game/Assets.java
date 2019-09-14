@@ -11,17 +11,15 @@ import java.awt.*;
 
 public class Assets {
 
-    //SHADER_CODE_FILES
-
-    //VERTEX
+    //VERTEX SHADER_CODE_FILES
     private static final String VERTEX_3D = "./res/shaders/VERTEX_3D.glsl";
     private static final String VERTEX_WATER = "./res/shaders/VERTEX_WATER.glsl";
     private static final String VERTEX_HUD = "./res/shaders/VERTEX_HUD.glsl";
 
-    //GEOMETRY
+    //GEOMETRY SHADER_CODE_FILES
     private static final String GEOMETRY_SMOOTH_FLAT_WIRE = "./res/shaders/GEOMETRY_SMOOTH_FLAT_WIRE.glsl";
 
-    //FRAGMENT
+    //FRAGMENT SHADER_CODE_FILES
     private static final String FRAGMENT_SCENE = "./res/shaders/FRAGMENT_SCENE.glsl";
     private static final String FRAGMENT_HUD = "./res/shaders/FRAGMENT_HUD.glsl";
     private static final String FRAGMENT_DEPTH = "./res/shaders/FRAGMENT_DEPTH.glsl";
@@ -70,8 +68,21 @@ public class Assets {
     public static final Texture ATLAS_EMIT = new Texture("/TestGameContent/Textures/MAP_EMIT.png");
     public static final Texture GRADIENT_LIGHT_COLORS = new Texture("/TestGameContent/Textures/gradient_lightColor.png");
 
+    public static final float TEXTURE_ATLAS_BORDER_OFFSET = 0.03125f;
+    public static final float TEXTURE_ATLAS_COLOR_OFFSET = 0.0625f;
+
+    public static float[] uvCoords = new float[2];
+    public static float[] getUvForColorFromAtlas(int _x, int _y){
+
+        uvCoords[0] = Assets.TEXTURE_ATLAS_BORDER_OFFSET + Assets.TEXTURE_ATLAS_COLOR_OFFSET * _x;
+        uvCoords[1] = Assets.TEXTURE_ATLAS_BORDER_OFFSET + Assets.TEXTURE_ATLAS_COLOR_OFFSET * _y;
+
+        return uvCoords;
+    }
+
     //FONT TEXTURES
     public static final Font FONT = new Font("Consolas", Font.PLAIN, 20);
     public static final String CHARSET = "ISO-8859-1";
     public static final FontTexture FONT_CONSOLAS = new FontTexture(FONT, CHARSET);
+
 }
