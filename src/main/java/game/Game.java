@@ -29,11 +29,11 @@ public class Game implements IF_Game {
     private Scene activeScene = null;
     private Hud hud;
 
-    //IN GAME TIME SETTINGS
-    private static final float LENGTH_OF_DAY_IN_SECONDS = 3600.0f;
+    //IN GAME SETTINGS
+    private static final float MOUSE_SENSITIVITY = 0.20f;
+    private static final float CAMERA_SPEED = 15.0f;
+    private static final float LENGTH_OF_DAY_IN_SECONDS = 3600;
     private float timeOfDay = 0.5f; //from 0.0 to 1.0
-
-    //LIGHT SETTINGS
     private final Vector3f lightPosition = new Vector3f(10, 10, -25);
 
     //DEBUG_MODE VALUES
@@ -50,7 +50,7 @@ public class Game implements IF_Game {
         renderer.init();
         audioEngine.init();
         camera = new Camera(EngineOptions.INITIAL_FOV);
-        camera.setPosition(32.3574f,33.414f,59.8928f);
+        camera.setPosition(32.3574f,25.414f,59.8928f);
         camera.setRotation(25,-18.1f,0);
         cameraInc = new Vector3f(0,0,0);
 
@@ -84,8 +84,12 @@ public class Game implements IF_Game {
         text.getTransform().setPosition(Hud.LAYOUT_PADDING_X,Hud.LAYOUT_PADDING_Y + Hud.ROW_GAP + Assets.FONT_CONSOLAS.getHeight(),0f);
         hud.addSceneObject("timeOfDay", text);
 
-        text = new TextItem("MOUSE POS: ", Assets.FONT_CONSOLAS, Assets.SHADER_HUD);
+        text = new TextItem("LIGHT POS: ", Assets.FONT_CONSOLAS, Assets.SHADER_HUD);
         text.getTransform().setPosition(Hud.LAYOUT_PADDING_X,Hud.LAYOUT_PADDING_Y + 2 * (Hud.ROW_GAP + Assets.FONT_CONSOLAS.getHeight()),0f);
+        hud.addSceneObject("lightPos", text);
+
+        text = new TextItem("MOUSE POS: ", Assets.FONT_CONSOLAS, Assets.SHADER_HUD);
+        text.getTransform().setPosition(Hud.LAYOUT_PADDING_X,Hud.LAYOUT_PADDING_Y + 3 * (Hud.ROW_GAP + Assets.FONT_CONSOLAS.getHeight()),0f);
         hud.addSceneObject("mousePos", text);
     }
 
@@ -135,16 +139,10 @@ public class Game implements IF_Game {
     public void update(float _deltaTime, MouseInput mouseInput)
     {
         //UPDATE IN GAME TIME
-        timeOfDay += 1.0/ LENGTH_OF_DAY_IN_SECONDS * _deltaTime;
+        timeOfDay += 1.0 / LENGTH_OF_DAY_IN_SECONDS * _deltaTime;
         if(timeOfDay > 1.0){
             timeOfDay = 0;
         }
-
-        //UPDATE LIGHT DIRECTION
-        //TODO: implement fake sunlight movement
-
-        float MOUSE_SENSITIVITY = 0.20f;
-        float CAMERA_SPEED = 15.0f;
 
         camera.movePosition(cameraInc.x * CAMERA_SPEED * _deltaTime,
                 cameraInc.y * CAMERA_SPEED * _deltaTime,
@@ -158,6 +156,11 @@ public class Game implements IF_Game {
 
         activeScene.update(_deltaTime);
         hud.getHudItems().get("timeOfDay").setText("TIME: " + Utils.convertNormalizedFloatToTime(timeOfDay));
+        hud.getHudItems().get("lightPos").setText("LIGHT POS: "
+                + (int)lightPosition.x
+                + " | "
+                + (int)lightPosition.z);
+
         hud.getHudItems().get("mousePos").setText("MOUSE POS: "
                 + mouseInput.getCurrentPos().x
                 + " | "

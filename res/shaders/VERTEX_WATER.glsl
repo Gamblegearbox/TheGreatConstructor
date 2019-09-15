@@ -1,4 +1,11 @@
-#version 330
+#version 430
+#pragma debug(on)
+#pragma optimize(off)
+
+#define PI 3.141592
+#define USE_SINE 1
+#define USE_NOISE 1
+#define USE_GERSTNER 1
 
 layout (location=0) in vec3 position;
 layout (location=1) in vec3 normal;
@@ -28,7 +35,6 @@ vec3 sineWave(vec4 _wave, vec3 _position){
 
 vec3 gerstnerWave(vec4 wave, vec3 _position){
     //SOURCE: https://catlikecoding.com/unity/tutorials/flow/waves/
-    float PI = 3.1415926535897932384626433832795;
 
     float steepness = wave.z;
     float wavelength = wave.w;
@@ -76,32 +82,28 @@ vec3 noise2D(float _height, vec3 _position){
 void main()
 {
     vec3 positionWithWave = position;
-    
-    //SINE STUFF
-    /*
-    //vec3(Amplitude, WaveLength, Speed, Direction)
-    vec4 sineWave1 = vec4(0.15, 0.4, 6.1, position.x);
-    vec4 sineWave2 = vec4(0.1, 0.3, 8.0, position.z);
+
+    #if USE_SINE == 1
+    //WAVE PARAMTERS: vec4(Amplitude, WaveLength, Speed, Direction)
+    vec4 sineWave1 = vec4(0.5, 0.2, 6.1, position.x);
+    vec4 sineWave2 = vec4(0.5, 0.1, 8.0, position.z);
     positionWithWave += sineWave(sineWave1, position);
     positionWithWave += sineWave(sineWave2, position);
-    //*/
+    #endif
 
-    //NOISE STUFF
-    //*
-    float speed = anima * 0.3;
-    positionWithWave += noise2D(0.75, position * 0.2 + speed);
-    positionWithWave += noise2D(0.75, position * 0.2 - speed);
-    //*/
+    #if USE_NOISE == 1
+    positionWithWave += noise2D(0.25, position * 0.2 - anima * 0.2);
+    positionWithWave += noise2D(0.5, position * 0.15 + anima * 0.55);
+    #endif
 
-    //GERSTNER WAVE STUFF
-    //*
+    #if USE_GERSTNER == 1
     //vec4(dir.x, dir.y, steepness(0.0 - 1.0), wavelength)
     //steepness of all waves should not exeed 1.0
-    vec4 wave1 = vec4(0.5, 0.5, 0.4, 8.0);
-    vec4 wave2 = vec4(0.7, 0.3, 0.4, 8.0);
-    positionWithWave += gerstnerWave(wave1, position);
-    positionWithWave += gerstnerWave(wave2, position);
-    //*/
+    vec4 gerstnerWave1 = vec4(0.65, 0.35, 0.2, 12.0);
+    vec4 gerstnerWave2 = vec4(0.8, 0.2, 0.3, 8.0);
+    positionWithWave += gerstnerWave(gerstnerWave1, position);
+    positionWithWave += gerstnerWave(gerstnerWave2, position);
+    #endif
 
     vec4 vertexWorldSpacePos = modelMatrix * vec4(positionWithWave, 1.0);
     vec4 vertexViewSpacePos = viewMatrix * vertexWorldSpacePos;

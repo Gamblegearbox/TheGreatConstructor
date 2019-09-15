@@ -56,7 +56,6 @@ public class Assets {
             Utils.loadResource(FRAGMENT_HUD));
 
     //MESHES
-    public static final Mesh LOGO = OBJLoader.loadMesh(".\\res\\TestGameContent\\Meshes\\ui_logo.obj", 2);
     public static final Mesh NSX = OBJLoader.loadMesh(".\\res\\TestGameContent\\Meshes\\NS_X.obj", 2);
     public static final Mesh GTR = OBJLoader.loadMesh(".\\res\\TestGameContent\\Meshes\\GT_R.obj", 2);
     public static final Mesh ENV_1 = OBJLoader.loadMesh(".\\res\\TestGameContent\\Meshes\\environment.obj", 30);
