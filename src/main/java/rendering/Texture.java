@@ -16,7 +16,8 @@ public class Texture {
     public static final int RGBA_1 = 1;
     public static final int RGBA_2 = 2;
     public static final int RGBA_3 = 3;
-    public static final int AUX_0 = 4;
+    public static final int RGBA_4 = 4;
+    public static final int RGBA_5 = 5;
 
     private final int textureID;
     private int width;

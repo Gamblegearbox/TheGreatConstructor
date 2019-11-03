@@ -1,7 +1,7 @@
 package rendering;
 
 import core.*;
-import game.Assets;
+import game.Assets_MaterialTest;
 import hud.Hud;
 import game.Scene;
 import hud.TextItem;
@@ -66,7 +66,7 @@ public class Renderer {
         projectionMatrix3D = transformation.getPerspectiveProjectionMatrix(EngineOptions.INITIAL_FOV, window.getWidth(), window.getHeight(), EngineOptions.Z_NEAR, EngineOptions.Z_FAR);
         projectionMatrixHUD = transformation.getOrthographicProjectionMatrix(0, window.getWidth(), window.getHeight(), 0);
 
-        sceneMaterial = new Material(Assets.ATLAS_COLORS, null, Assets.ATLAS_GLOSS, Assets.ATLAS_EMIT, Assets.GRADIENT_LIGHT_COLORS);
+        sceneMaterial = new Material(Assets_MaterialTest.ATLAS_COLORS, Assets_MaterialTest.ATLAS_NORMALS, Assets_MaterialTest.ATLAS_GLOSS, Assets_MaterialTest.ATLAS_EMIT, Assets_MaterialTest.REFLECTION_MAP_DAY, Assets_MaterialTest.GRADIENT_LIGHT_COLORS);
 
         initOpenGl();
         initShaders();
@@ -112,31 +112,26 @@ public class Renderer {
     private void initShaders()
     {
         //SCENE SHADERS
-        Assets.SHADER_SCENE.bind();
-        Assets.SHADER_SCENE.setUniformData("diffuseMap_sampler", Texture.RGBA_0);
-        Assets.SHADER_SCENE.setUniformData("normalMap_sampler", Texture.RGBA_1);
-        Assets.SHADER_SCENE.setUniformData("glossMap_sampler", Texture.RGBA_2);
-        Assets.SHADER_SCENE.setUniformData("illuminationMap_sampler", Texture.RGBA_3);
-        Assets.SHADER_SCENE.setUniformData("lightColor_sampler", Texture.AUX_0);
+        Assets_MaterialTest.SHADER_DEBUG_TEST.bind();
+        Assets_MaterialTest.SHADER_DEBUG_TEST.setUniformData("diffuseMap_sampler", Texture.RGBA_0);
+        Assets_MaterialTest.SHADER_DEBUG_TEST.setUniformData("normalMap_sampler", Texture.RGBA_1);
+        Assets_MaterialTest.SHADER_DEBUG_TEST.setUniformData("glossMap_sampler", Texture.RGBA_2);
+        Assets_MaterialTest.SHADER_DEBUG_TEST.setUniformData("illuminationMap_sampler", Texture.RGBA_3);
+        Assets_MaterialTest.SHADER_DEBUG_TEST.setUniformData("reflectionMap_sampler", Texture.RGBA_4);
+        Assets_MaterialTest.SHADER_DEBUG_TEST.setUniformData("lightColorMap_sampler", Texture.RGBA_5);
+        Assets_MaterialTest.SHADER_DEBUG_TEST.setUniformData("windowSize", EngineOptions.WINDOW_WIDTH, EngineOptions.WINDOW_HEIGHT);
 
-        Assets.SHADER_SCENE_WATER.bind();
-        Assets.SHADER_SCENE_WATER.setUniformData("diffuseMap_sampler", Texture.RGBA_0);
-        Assets.SHADER_SCENE_WATER.setUniformData("normalMap_sampler", Texture.RGBA_1);
-        Assets.SHADER_SCENE_WATER.setUniformData("glossMap_sampler", Texture.RGBA_2);
-        Assets.SHADER_SCENE_WATER.setUniformData("illuminationMap_sampler", Texture.RGBA_3);
-        Assets.SHADER_SCENE_WATER.setUniformData("lightColor_sampler", Texture.AUX_0);
-
-        Assets.SHADER_HUD.bind();
-        Assets.SHADER_HUD.setUniformData("diffuseMap_sampler", Texture.RGBA_0);
+        Assets_MaterialTest.SHADER_HUD.bind();
+        Assets_MaterialTest.SHADER_HUD.setUniformData("diffuseMap_sampler", Texture.RGBA_0);
 
         //MAT CAP SHADERS
-        Assets.SHADER_DEBUG_NORMALS_TO_COLOR.bind();
-        Assets.SHADER_DEBUG_NORMALS_TO_COLOR.setUniformData("normalMap_sampler", Texture.RGBA_1);
+        Assets_MaterialTest.SHADER_DEBUG_NORMALS_TO_COLOR.bind();
+        Assets_MaterialTest.SHADER_DEBUG_NORMALS_TO_COLOR.setUniformData("normalMap_sampler", Texture.RGBA_1);
 
         matCapShaders.add(null); //first entry is null to mark the point when to use object shaders
-        matCapShaders.add(Assets.SHADER_DEBUG_NORMALS_TO_COLOR);
-        matCapShaders.add(Assets.SHADER_DEBUG_SOLID_WIREFRAME);
-        matCapShaders.add(Assets.SHADER_DEBUG_DEPTH_TO_COLOR);
+        matCapShaders.add(Assets_MaterialTest.SHADER_DEBUG_NORMALS_TO_COLOR);
+        matCapShaders.add(Assets_MaterialTest.SHADER_DEBUG_SOLID_WIREFRAME);
+        matCapShaders.add(Assets_MaterialTest.SHADER_DEBUG_DEPTH_TO_COLOR);
     }
 
     public void switchShader(){
@@ -234,9 +229,14 @@ public class Renderer {
             glBindTexture(GL_TEXTURE_2D, _material.getMap_3().getID());
         }
 
-        if(_material.getAuxMap_0() != null) {
+        if(_material.getMap_4() != null) {
             glActiveTexture(GL_TEXTURE4);
-            glBindTexture(GL_TEXTURE_2D, _material.getAuxMap_0().getID());
+            glBindTexture(GL_TEXTURE_2D, _material.getMap_4().getID());
+        }
+
+        if(_material.getMap_5() != null) {
+            glActiveTexture(GL_TEXTURE5);
+            glBindTexture(GL_TEXTURE_2D, _material.getMap_5().getID());
         }
     }
 

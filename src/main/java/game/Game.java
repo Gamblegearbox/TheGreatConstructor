@@ -67,9 +67,9 @@ public class Game implements IF_Game {
 
         //CREATE AND ADD OBJECTS TO SCENES
         scenes[0].addSceneObject("Logo", new Car(Assets.WHEEL_01, Assets.SHADER_SCENE));
-        scenes[1].addSceneObject("Terrain", new Terrain(Assets.SHADER_SCENE));
         scenes[1].addSceneObject("Water", new Water(45f, 43f, 60, 60, Assets.SHADER_SCENE_WATER));
         scenes[1].getSceneObjectByTag("Water").getTransform().setPosition(20,-3f,0);
+        scenes[1].addSceneObject("Terrain", new Terrain(Assets.SHADER_SCENE));
         scenes[1].addSceneObject("Car_1", new Car(Assets.NSX, Assets.SHADER_SCENE));
         scenes[1].addSceneObject("Car_2", new Car(Assets.GTR, Assets.SHADER_SCENE));
         scenes[1].getSceneObjectByTag("Car_2").getTransform().setPosition(3f,0,-5);

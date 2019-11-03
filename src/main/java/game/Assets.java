@@ -26,6 +26,8 @@ public class Assets {
     private static final String FRAGMENT_NORMALS = "./res/shaders/FRAGMENT_NORMALS.glsl";
     private static final String FRAGMENT_SOLID_WIREFRAME = "./res/shaders/FRAGMENT_SOLID_WIREFRAME.glsl";
 
+
+
     //SHADERS
     public static final ShaderProgram SHADER_SCENE = new ShaderProgram(
             Utils.loadResource(VERTEX_3D),
@@ -55,11 +57,23 @@ public class Assets {
             Utils.loadResource(VERTEX_HUD),
             Utils.loadResource(FRAGMENT_HUD));
 
+
+    private static final String TEST_VERTEX = "./res/shaders/FakeFresnel/VERTEX.glsl";
+    private static final String TEST_GEOMETRY = "./res/shaders/FakeFresnel/GEOMETRY.glsl";
+    private static final String TEST_FRAGMENT = "./res/shaders/FakeFresnel/FRAGMENT.glsl";
+    public static final ShaderProgram SHADER_DEBUG_TEST = new ShaderProgram(
+            Utils.loadResource(TEST_VERTEX),
+            Utils.loadResource(TEST_GEOMETRY),
+            Utils.loadResource(TEST_FRAGMENT));
+
+
+
     //MESHES
     public static final Mesh NSX = OBJLoader.loadMesh(".\\res\\TestGameContent\\Meshes\\NS_X.obj", 2);
     public static final Mesh GTR = OBJLoader.loadMesh(".\\res\\TestGameContent\\Meshes\\GT_R.obj", 2);
     public static final Mesh ENV_1 = OBJLoader.loadMesh(".\\res\\TestGameContent\\Meshes\\environment.obj", 30);
     public static final Mesh WHEEL_01 = OBJLoader.loadMesh(".\\res\\TestGameContent\\Meshes\\Wheel_01.obj", 1);
+
 
     //TEXTURES
     public static final Texture ATLAS_COLORS = new Texture("/TestGameContent/Textures/MAP_COLOR.png");
