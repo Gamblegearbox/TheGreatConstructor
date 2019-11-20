@@ -26,53 +26,45 @@ public class Transform {
         return isStatic;
     }
 
-    public void setPosition(Vector3f _position)
-    {
+    public void setPosition(Vector3f _position) {
         position.x = _position.x;
         position.y = _position.y;
         position.z = _position.z;
     }
 
-    public void setPosition(float _x, float _y, float _z)
-    {
+    public void setPosition(float _x, float _y, float _z) {
         position.x = _x;
         position.y = _y;
         position.z = _z;
     }
 
-    public Vector3f getPosition()
-    {
+    public Vector3f getPosition() {
         return position;
     }
 
-    public void setScale(Vector3f _scale)
-    {
+    public void setScale(Vector3f _scale) {
         scale.x = _scale.x;
         scale.y = _scale.y;
         scale.z = _scale.z;
     }
 
-    public void setScale(float _x, float _y, float _z)
-    {
+    public void setScale(float _x, float _y, float _z) {
         scale.x = _x;
         scale.y = _y;
         scale.z = _z;
     }
 
-    public Vector3f getScale()
-    {
+    public Vector3f getScale() {
         return scale;
     }
 
-    public void setRotation(Vector3f _rotation)
-    {
+    public void setRotation(Vector3f _rotation) {
         rotation.x = _rotation.x;
         rotation.y = _rotation.y;
         rotation.z = _rotation.z;
     }
 
-    public void setRotation(float _x, float _y, float _z)
-    {
+    public void setRotation(float _x, float _y, float _z) {
         rotation.x = _x;
         rotation.y = _y;
         rotation.z = _z;
@@ -89,8 +81,7 @@ public class Transform {
         Utils.convertEulerToQuaternion(_x, _y, _z, rotation);
     }
 */
-    public Vector3f getRotation()
-    {
+    public Vector3f getRotation() {
         return rotation;
     }
 

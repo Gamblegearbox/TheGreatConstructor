@@ -60,9 +60,9 @@ public class Assets {
     public static final Mesh GTR = OBJLoader.loadMesh(".\\res\\TestGameContent\\Meshes\\GT_R.obj", 2);
 
     //TEXTURES
-    public static final Texture ATLAS_COLORS = new Texture("/TestGameContent/Textures/MaterialTest/diffuseMap.png");
+    public static final Texture ATLAS_COLORS = new Texture("/TestGameContent/Textures/MAP_COLOR.png");
     public static final Texture ATLAS_NORMALS = new Texture("/TestGameContent/Textures/MaterialTest/normalMap.png");
-    public static final Texture ATLAS_GLOSS = new Texture("/TestGameContent/Textures/MaterialTest/glossMap.png");
+    public static final Texture ATLAS_GLOSS = new Texture("/TestGameContent/Textures/MAP_GLOSS.png");
     public static final Texture ATLAS_EMIT = new Texture("/TestGameContent/Textures/MAP_EMIT.png");
     public static final Texture GRADIENT_LIGHT_COLORS = new Texture("/TestGameContent/Textures/gradient_lightColor.png");
     public static final Texture REFLECTION_MAP_DAY = new Texture("/TestGameContent/Textures/MaterialTest/reflectionMap_day.png");

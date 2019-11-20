@@ -36,11 +36,7 @@ public class SimpleObject implements IF_SceneItem{
     }
 
     @Override
-    public void update(float _deltaTime){
-
-        //rotY += _deltaTime * 10;
-        transform.setRotation(0.0f, rotY, 0.0f);
-    }
+    public void update(float _deltaTime){    }
     public void cleanup()
     {
         mesh.cleanup();

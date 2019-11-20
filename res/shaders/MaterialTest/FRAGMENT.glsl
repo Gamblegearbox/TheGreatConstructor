@@ -47,14 +47,43 @@ vec4 createNormalsColor(vec3 _normal){
 
 void main()
 {
+    int SPECULAR_POWER = 64;
+    vec4 shadow = texture(reflectionMap_sampler, vec2(gl_FragCoord.x, 1-gl_FragCoord.y) / 1024);
+    shadow.rgb *= 0.1;
+    vec4 colorAmbient = vec4(0.0,0.0,0.0,1.0);
+    vec4 colorDiffuse = texture(diffuseMap_sampler, gTexCoord);
+    vec4 colorSpecular = vec4(0.0, 0.0, 0.0, 1.0);
+
+    //if(!(texture(illuminationMap_sampler, gTexCoord).a > 0.1)){
+
+        //DIFFUSE
+        vec3 toLightSource = normalize(lightPosition);
+        float diffuseFactor = max(dot(gNormal_WorldSpace, toLightSource), 0.0);
+
+        //colorDiffuse.rgb *= diffuseFactor;
+
+        //SPECULAR
+        colorSpecular = vec4(1.0, 1.0, 1.0, 1.0);
+        vec3 camDirection = normalize(cameraPosition - gPos_WorldSpace);
+        vec3 fromLightDir = -toLightSource;
+        vec3 reflectedLight = normalize(reflect(fromLightDir, gNormal_WorldSpace));
+        float specularFactor = max(dot(camDirection, reflectedLight), 0.0);
+        specularFactor = pow(specularFactor, SPECULAR_POWER);
+
+        colorSpecular.rgb *= specularFactor * texture(glossMap_sampler, gTexCoord).a;
+
+    //}
+
+    vec4 phong = clamp((colorAmbient + colorSpecular + colorDiffuse),0.0,1.0);
+
     //DIFFUSE
     vec4 tex_Diffuse = texture(diffuseMap_sampler, gTexCoord);
 
-    //ILLUMINATION TODO:
+    //ILLUMINATION
     vec4 tex_Illum = texture(illuminationMap_sampler, gTexCoord);
 
     //NORMALS
-    vec3 textureNormal = normalize(texture(normalMap_sampler, gTexCoord).rgb * 2.0 - 1.0);
+    // vec3 textureNormal = normalize(texture(normalMap_sampler, gTexCoord).rgb * 2.0 - 1.0);
     vec3 normal = normalize(gNormal_WorldSpace.rgb);
 
     //REFLECTION
@@ -74,45 +103,47 @@ void main()
     float reflectionMask = mix(side, front, facing) * tex_Gloss.r;
 
     //SPLIT SCREEN SETTINGS
-    int splitScreenFrationWidth_1 = 150;
-    int splitScreenFrationWidth_2 = 150;
-    int splitScreenFrationWidth_3 = 150;
-    int splitScreenFrationWidth_4 = 150;
-    int splitLineHalfWidth = 2;
+    int splitScreenBorder_1 = 300;
+    int splitScreenBorder_2 = 600;
+    int splitScreenBorder_3 = 900;
+    int splitLineWidth = 4;
 
-    float splitOffset = windowSize.x / splitScreenFrationWidth_1 * 5;
     vec4 splitLineColor = vec4(0.1,0.1,0.1,1.0);
 
-    //SPLIT SCREEN CONTENT
-    if(gl_FragCoord.x < splitScreenFrationWidth_1) {
+    //SPLIT SCREEN CONTENT I
+    if(gl_FragCoord.x < splitScreenBorder_1) {
         fragColor = tex_Diffuse;
-    } else if (gl_FragCoord.x < splitScreenFrationWidth_1 + splitScreenFrationWidth_2) {
-        fragColor = tex_Reflect;
-    } else if (gl_FragCoord.x < splitScreenFrationWidth_1 + splitScreenFrationWidth_2 + splitScreenFrationWidth_3) {
-        float reflectionMask = mix(side, front, facing);
-        fragColor = vec4(reflectionMask, reflectionMask, reflectionMask, 1.0);
-    } else if (gl_FragCoord.x < splitScreenFrationWidth_1 + splitScreenFrationWidth_2 + splitScreenFrationWidth_3 + splitScreenFrationWidth_4) {
-        fragColor = vec4(reflectionMask, reflectionMask, reflectionMask, 1.0);
-    } else {
+
+        if(gl_FragCoord.x > splitScreenBorder_1 - splitLineWidth && gl_FragCoord.x < splitScreenBorder_1){
+            fragColor = splitLineColor;
+        }
+    }
+
+    //SPLIT SCREEN CONTENT II
+    else if (gl_FragCoord.x < splitScreenBorder_2) {
+        float facing = mix(front, side, facing);
+        fragColor = vec4(facing, facing, facing, 1.0);
+
+        if(gl_FragCoord.x > splitScreenBorder_2 - splitLineWidth && gl_FragCoord.x < splitScreenBorder_2) {
+            fragColor = splitLineColor;
+        }
+    }
+
+
+    //SPLIT SCREEN CONTENT III
+    else if (gl_FragCoord.x < splitScreenBorder_3) {
+        fragColor = clamp(mix(shadow,colorDiffuse + colorSpecular,diffuseFactor), 0.0, 1.0);//phong;
+
+        if(gl_FragCoord.x > splitScreenBorder_3 - splitLineWidth && gl_FragCoord.x < splitScreenBorder_3) {
+            fragColor = splitLineColor;
+        }
+    }
+
+    //SPLIT SCREEN CONTENT IV
+    else {
         fragColor = clamp(mix(tex_Diffuse, tex_Reflect, reflectionMask),0.0,1.0);
     }
 
-    //SPLIT SCREEN LINES
-    if(gl_FragCoord.x > splitScreenFrationWidth_1 - splitLineHalfWidth && gl_FragCoord.x < splitScreenFrationWidth_1 + splitLineHalfWidth){
-        fragColor = splitLineColor;
-    }
-
-    if(gl_FragCoord.x > splitScreenFrationWidth_1 + splitScreenFrationWidth_2 - splitLineHalfWidth && gl_FragCoord.x < splitScreenFrationWidth_1 + splitScreenFrationWidth_2 + splitLineHalfWidth) {
-        fragColor = splitLineColor;
-    }
-
-    if(gl_FragCoord.x > splitScreenFrationWidth_1 + splitScreenFrationWidth_2 + splitScreenFrationWidth_3 - splitLineHalfWidth && gl_FragCoord.x < splitScreenFrationWidth_1 + splitScreenFrationWidth_2 + splitScreenFrationWidth_3 + splitLineHalfWidth) {
-        fragColor = splitLineColor;
-    }
-
-    if(gl_FragCoord.x > splitScreenFrationWidth_1 + splitScreenFrationWidth_2 + splitScreenFrationWidth_3 + splitScreenFrationWidth_4 - splitLineHalfWidth && gl_FragCoord.x < splitScreenFrationWidth_1 + splitScreenFrationWidth_2 + splitScreenFrationWidth_3 + splitScreenFrationWidth_4 + splitLineHalfWidth) {
-        fragColor = splitLineColor;
-    }
 }
 
 

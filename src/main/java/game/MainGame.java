@@ -35,13 +35,14 @@ public class MainGame implements IF_Game {
     private static final float CAMERA_SPEED = 5.0f;
     private static final float LENGTH_OF_DAY_IN_SECONDS = 3600;
     private float timeOfDay = 0.5f; //from 0.0 to 1.0
-    private final Vector3f lightPosition = new Vector3f(10, 10, -25);
+    private final Vector3f lightPosition = new Vector3f(10, 10, 10);
 
     //DEBUG_MODE VALUES
     private float deltaTimeSum;
 
     //TEST VALUES
     float rotY = 0.0f;
+    float rotX = 0.0f;
 
     public MainGame(Window _window) {
         renderer =  new Renderer(_window);
@@ -71,10 +72,14 @@ public class MainGame implements IF_Game {
 
         //CREATE AND ADD OBJECTS TO SCENES
         scenes[0].addSceneObject("Test_Sphere0", new SimpleObject(Assets.SPHERE, Assets.SHADER_DEBUG_TEST));
-        scenes[0].getSceneObjectByTag("Test_Sphere0").getTransform().setPosition(0,1.5f,0f);
+        scenes[0].getSceneObjectByTag("Test_Sphere0").getTransform().setPosition(0,2.5f,0f);
 
         scenes[0].addSceneObject("Test_Car0", new SimpleObject(Assets.NSX, Assets.SHADER_DEBUG_TEST));
-        scenes[0].getSceneObjectByTag("Test_Car0").getTransform().setPosition(0,-1.5f,0f);
+        scenes[0].getSceneObjectByTag("Test_Car0").getTransform().setPosition(0,-0.5f,0f);
+
+        scenes[0].addSceneObject("Test_Car1", new SimpleObject(Assets.GTR, Assets.SHADER_DEBUG_TEST));
+        scenes[0].getSceneObjectByTag("Test_Car1").getTransform().setPosition(0,-3f,0f);
+
 
         //HUD ITEMS
         hud = new Hud();
@@ -126,8 +131,6 @@ public class MainGame implements IF_Game {
         else if (KeyboardInput.isKeyRepeated(GLFW_KEY_E)) {
             cameraInc.y = 1;
         }
-
-
     }
 
     @Override
@@ -135,8 +138,20 @@ public class MainGame implements IF_Game {
     {
         //TODO: remove later, just for visuals testing
         if(KeyboardInput.isKeyRepeated(GLFW_KEY_LEFT)){
-            rotY += 10.0f * _deltaTime;
+            rotY -= 40.0f * _deltaTime;
+        } else if (KeyboardInput.isKeyRepeated(GLFW_KEY_RIGHT)){
+            rotY += 40.0f * _deltaTime;
         }
+
+        if(KeyboardInput.isKeyRepeated(GLFW_KEY_UP)){
+            rotX += 40.0f * _deltaTime;
+        } else if (KeyboardInput.isKeyRepeated(GLFW_KEY_DOWN)){
+            rotX -= 40.0f * _deltaTime;
+        }
+
+        scenes[0].getSceneObjectByTag("Test_Car0").getTransform().setRotation(rotX,rotY,0);
+        scenes[0].getSceneObjectByTag("Test_Car1").getTransform().setRotation(rotX,rotY,0);
+        scenes[0].getSceneObjectByTag("Test_Sphere0").getTransform().setRotation(rotX,rotY,0);
 
         //UPDATE IN GAME TIME
         timeOfDay += 1.0 / LENGTH_OF_DAY_IN_SECONDS * _deltaTime;
