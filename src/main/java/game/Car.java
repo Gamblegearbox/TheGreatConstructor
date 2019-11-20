@@ -78,8 +78,8 @@ public class Car implements IF_SceneItem {
             shiftDown();
         }
         */
-        //anim += 15 * _deltaTime;
-        //transform.setRotation(0f,anim,0f);
+        anim += 15 * _deltaTime;
+        transform.setRotation(0f,anim,0f);
 
     }
 

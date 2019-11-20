@@ -11,7 +11,7 @@ public class EngineOptions {
     public static final int WINDOW_WIDTH = 1280;
     public static final int WINDOW_HEIGHT = 720;
 
-    public static final int MULTISAMPLING = 4;
+    public static final int MULTISAMPLING = 0;
     public static final boolean V_SYNC = false;
     public static final boolean BACK_FACE_CULLING = true;
     public static final boolean FRUSTUM_CULLING = true;

@@ -1,10 +1,6 @@
 import core.CoreLoop;
 import core.EngineOptions;
-import game.Assets;
 import utils.Logger;
-
-import java.io.File;
-import java.util.Scanner;
 
 public class Main {
 

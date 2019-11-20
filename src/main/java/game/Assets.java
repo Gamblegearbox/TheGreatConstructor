@@ -26,19 +26,7 @@ public class Assets {
     private static final String FRAGMENT_NORMALS = "./res/shaders/FRAGMENT_NORMALS.glsl";
     private static final String FRAGMENT_SOLID_WIREFRAME = "./res/shaders/FRAGMENT_SOLID_WIREFRAME.glsl";
 
-
-
     //SHADERS
-    public static final ShaderProgram SHADER_SCENE = new ShaderProgram(
-            Utils.loadResource(VERTEX_3D),
-            Utils.loadResource(GEOMETRY_SMOOTH_FLAT_WIRE),
-            Utils.loadResource(FRAGMENT_SCENE));
-
-    public static final ShaderProgram SHADER_SCENE_WATER = new ShaderProgram(
-            Utils.loadResource(VERTEX_WATER),
-            Utils.loadResource(GEOMETRY_SMOOTH_FLAT_WIRE),
-            Utils.loadResource(FRAGMENT_SCENE));
-
     public static final ShaderProgram SHADER_DEBUG_SOLID_WIREFRAME = new ShaderProgram(
             Utils.loadResource(VERTEX_3D),
             Utils.loadResource(GEOMETRY_SMOOTH_FLAT_WIRE),
@@ -57,29 +45,28 @@ public class Assets {
             Utils.loadResource(VERTEX_HUD),
             Utils.loadResource(FRAGMENT_HUD));
 
-
-    private static final String TEST_VERTEX = "./res/shaders/FakeFresnel/VERTEX.glsl";
-    private static final String TEST_GEOMETRY = "./res/shaders/FakeFresnel/GEOMETRY.glsl";
-    private static final String TEST_FRAGMENT = "./res/shaders/FakeFresnel/FRAGMENT.glsl";
+    private static final String TEST_VERTEX = "./res/shaders/MaterialTest/VERTEX.glsl";
+    private static final String TEST_GEOMETRY = "./res/shaders/MaterialTest/GEOMETRY.glsl";
+    private static final String TEST_FRAGMENT = "./res/shaders/MaterialTest/FRAGMENT.glsl";
     public static final ShaderProgram SHADER_DEBUG_TEST = new ShaderProgram(
             Utils.loadResource(TEST_VERTEX),
             Utils.loadResource(TEST_GEOMETRY),
             Utils.loadResource(TEST_FRAGMENT));
 
-
-
     //MESHES
+    public static final Mesh SPHERE = OBJLoader.loadMesh(".\\res\\TestGameContent\\Meshes\\sphere.obj", 1);
+    public static final Mesh CUBE = OBJLoader.loadMesh(".\\res\\TestGameContent\\Meshes\\cube.obj", 1);
     public static final Mesh NSX = OBJLoader.loadMesh(".\\res\\TestGameContent\\Meshes\\NS_X.obj", 2);
     public static final Mesh GTR = OBJLoader.loadMesh(".\\res\\TestGameContent\\Meshes\\GT_R.obj", 2);
-    public static final Mesh ENV_1 = OBJLoader.loadMesh(".\\res\\TestGameContent\\Meshes\\environment.obj", 30);
-    public static final Mesh WHEEL_01 = OBJLoader.loadMesh(".\\res\\TestGameContent\\Meshes\\Wheel_01.obj", 1);
-
 
     //TEXTURES
-    public static final Texture ATLAS_COLORS = new Texture("/TestGameContent/Textures/MAP_COLOR.png");
-    public static final Texture ATLAS_GLOSS = new Texture("/TestGameContent/Textures/MAP_GLOSS.png");
+    public static final Texture ATLAS_COLORS = new Texture("/TestGameContent/Textures/MaterialTest/diffuseMap.png");
+    public static final Texture ATLAS_NORMALS = new Texture("/TestGameContent/Textures/MaterialTest/normalMap.png");
+    public static final Texture ATLAS_GLOSS = new Texture("/TestGameContent/Textures/MaterialTest/glossMap.png");
     public static final Texture ATLAS_EMIT = new Texture("/TestGameContent/Textures/MAP_EMIT.png");
     public static final Texture GRADIENT_LIGHT_COLORS = new Texture("/TestGameContent/Textures/gradient_lightColor.png");
+    public static final Texture REFLECTION_MAP_DAY = new Texture("/TestGameContent/Textures/MaterialTest/reflectionMap_day.png");
+    public static final Texture REFLECTION_MAP_NIGHT = new Texture("/TestGameContent/Textures/MaterialTest/reflectionMap_night.png");
 
     public static final float TEXTURE_ATLAS_BORDER_OFFSET = 0.03125f;
     public static final float TEXTURE_ATLAS_COLOR_OFFSET = 0.0625f;

@@ -1,24 +1,25 @@
 package game;
 
+import audio.OpenALAudioEngine;
+import core.EngineOptions;
 import core.Window;
 import hud.Hud;
 import hud.TextItem;
 import input.KeyboardInput;
-import core.*;
 import input.MouseInput;
 import interfaces.IF_Game;
 import libraries.AudioLibrary;
-import audio.OpenALAudioEngine;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import rendering.Camera;
 import rendering.Renderer;
 import utils.Logger;
 import utils.Utils;
+
 import static org.lwjgl.glfw.GLFW.*;
 
 
-public class Game implements IF_Game {
+public class MainGame implements IF_Game {
 
     private final Renderer renderer;
     private final OpenALAudioEngine audioEngine;
@@ -30,8 +31,8 @@ public class Game implements IF_Game {
     private Hud hud;
 
     //IN GAME SETTINGS
-    private static final float MOUSE_SENSITIVITY = 0.20f;
-    private static final float CAMERA_SPEED = 15.0f;
+    private static final float MOUSE_SENSITIVITY = 0.10f;
+    private static final float CAMERA_SPEED = 5.0f;
     private static final float LENGTH_OF_DAY_IN_SECONDS = 3600;
     private float timeOfDay = 0.5f; //from 0.0 to 1.0
     private final Vector3f lightPosition = new Vector3f(10, 10, -25);
@@ -39,7 +40,10 @@ public class Game implements IF_Game {
     //DEBUG_MODE VALUES
     private float deltaTimeSum;
 
-    public Game(Window _window) {
+    //TEST VALUES
+    float rotY = 0.0f;
+
+    public MainGame(Window _window) {
         renderer =  new Renderer(_window);
         audioEngine = new OpenALAudioEngine();
     }
@@ -50,8 +54,8 @@ public class Game implements IF_Game {
         renderer.init();
         audioEngine.init();
         camera = new Camera(EngineOptions.INITIAL_FOV);
-        camera.setPosition(32.3574f,25.414f,59.8928f);
-        camera.setRotation(25,-18.1f,0);
+        camera.setPosition(0f,0f,15f);
+        camera.setRotation(0,0f,0);
         cameraInc = new Vector3f(0,0,0);
 
         //SET ALL KEYBOARD KEYS TO -1
@@ -61,18 +65,16 @@ public class Game implements IF_Game {
         AudioLibrary.loadAudioFiles("./res/TestGameContent/Audio.txt");
 
         //CREATE SCENES
-        scenes = new Scene[2];
+        scenes = new Scene[1];
         scenes[0] = new Scene("./res/TestGameContent/Scenes/MainMenu.scn");
-        scenes[1] = new Scene("./res/TestGameContent/Scenes/Scene_01.scn");
+
 
         //CREATE AND ADD OBJECTS TO SCENES
-        scenes[0].addSceneObject("Logo", new Car(Assets.WHEEL_01, Assets.SHADER_SCENE));
-        scenes[1].addSceneObject("Water", new Water(45f, 43f, 60, 60, Assets.SHADER_SCENE_WATER));
-        scenes[1].getSceneObjectByTag("Water").getTransform().setPosition(20,-3f,0);
-        scenes[1].addSceneObject("Terrain", new Terrain(Assets.SHADER_SCENE));
-        scenes[1].addSceneObject("Car_1", new Car(Assets.NSX, Assets.SHADER_SCENE));
-        scenes[1].addSceneObject("Car_2", new Car(Assets.GTR, Assets.SHADER_SCENE));
-        scenes[1].getSceneObjectByTag("Car_2").getTransform().setPosition(3f,0,-5);
+        scenes[0].addSceneObject("Test_Sphere0", new SimpleObject(Assets.SPHERE, Assets.SHADER_DEBUG_TEST));
+        scenes[0].getSceneObjectByTag("Test_Sphere0").getTransform().setPosition(0,1.5f,0f);
+
+        scenes[0].addSceneObject("Test_Car0", new SimpleObject(Assets.NSX, Assets.SHADER_DEBUG_TEST));
+        scenes[0].getSceneObjectByTag("Test_Car0").getTransform().setPosition(0,-1.5f,0f);
 
         //HUD ITEMS
         hud = new Hud();
@@ -95,20 +97,12 @@ public class Game implements IF_Game {
 
     public void start()
     {
-        switchScene(1);
+        switchScene(0);
     }
 
     @Override
     public void input(MouseInput mouseInput)
     {
-        if(KeyboardInput.isKeyPressedOnce(GLFW_KEY_ESCAPE)) {
-            switchScene(0);
-        }
-
-        if(KeyboardInput.isKeyPressedOnce(GLFW_KEY_1)) {
-            switchScene(1);
-        }
-
         if(KeyboardInput.isKeyPressedOnce(GLFW_KEY_2)) {
             renderer.switchShader();
         }
@@ -133,11 +127,17 @@ public class Game implements IF_Game {
             cameraInc.y = 1;
         }
 
+
     }
 
     @Override
     public void update(float _deltaTime, MouseInput mouseInput)
     {
+        //TODO: remove later, just for visuals testing
+        if(KeyboardInput.isKeyRepeated(GLFW_KEY_LEFT)){
+            rotY += 10.0f * _deltaTime;
+        }
+
         //UPDATE IN GAME TIME
         timeOfDay += 1.0 / LENGTH_OF_DAY_IN_SECONDS * _deltaTime;
         if(timeOfDay > 1.0){

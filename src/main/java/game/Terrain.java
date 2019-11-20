@@ -36,8 +36,7 @@ public class Terrain implements IF_SceneItem {
 
         calcVerts();
 
-        //mesh = new Mesh(verts, normals, uvCoords, indices, boundingRadius);
-        mesh = Assets.ENV_1;
+        mesh = new Mesh(verts, normals, uvCoords, indices, boundingRadius);
         transform.setPosition(0,0,0);
     }
 

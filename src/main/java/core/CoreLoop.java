@@ -1,6 +1,6 @@
 package core;
 
-import game.MaterialTest;
+import game.MainGame;
 import input.MouseInput;
 import interfaces.IF_Game;
 import utils.Logger;
@@ -20,7 +20,7 @@ public class CoreLoop implements Runnable{
         window = new Window(EngineOptions.WINDOW_TITLE, EngineOptions.WINDOW_WIDTH, EngineOptions.WINDOW_HEIGHT);
         console = new Console();
         mouseInput = new MouseInput();
-        game = new MaterialTest(window);
+        game = new MainGame(window);
 
         gameLoopThread = new Thread(this, "GAME_LOOP_THREAD");
         consoleThread = new Thread(console, "CONSOLE");

@@ -1,7 +1,6 @@
 package utils;
 
 import game.Assets;
-import game.Game;
 import rendering.Mesh;
 
 public class MeshBuilder {
