@@ -66,7 +66,7 @@ public class Renderer {
         projectionMatrix3D = transformation.getPerspectiveProjectionMatrix(EngineOptions.INITIAL_FOV, window.getWidth(), window.getHeight(), EngineOptions.Z_NEAR, EngineOptions.Z_FAR);
         projectionMatrixHUD = transformation.getOrthographicProjectionMatrix(0, window.getWidth(), window.getHeight(), 0);
 
-        sceneMaterial = new Material(Assets.ATLAS_COLORS, Assets.ATLAS_NORMALS, Assets.ATLAS_GLOSS, Assets.ATLAS_EMIT, Assets.REFLECTION_MAP_DAY, Assets.GRADIENT_LIGHT_COLORS);
+        sceneMaterial = new Material(Assets.ATLAS_COLORS, Assets.ATLAS_NORMALS, Assets.ATLAS_GLOSS, Assets.ATLAS_EMIT, Assets.REFLECTION_MAP_DAY, Assets.SHADOW_PATTERN);
 
         initOpenGl();
         initShaders();

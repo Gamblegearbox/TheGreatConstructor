@@ -65,8 +65,9 @@ public class Assets {
     public static final Texture ATLAS_GLOSS = new Texture("/TestGameContent/Textures/MAP_GLOSS.png");
     public static final Texture ATLAS_EMIT = new Texture("/TestGameContent/Textures/MAP_EMIT.png");
     public static final Texture GRADIENT_LIGHT_COLORS = new Texture("/TestGameContent/Textures/gradient_lightColor.png");
-    public static final Texture REFLECTION_MAP_DAY = new Texture("/TestGameContent/Textures/MaterialTest/reflectionMap_day.png");
+    public static final Texture REFLECTION_MAP_DAY = new Texture("/TestGameContent/Textures/reflectionMap.png");
     public static final Texture REFLECTION_MAP_NIGHT = new Texture("/TestGameContent/Textures/MaterialTest/reflectionMap_night.png");
+    public static final Texture SHADOW_PATTERN = new Texture("/TestGameContent/Textures/shadowPattern.png");
 
     public static final float TEXTURE_ATLAS_BORDER_OFFSET = 0.03125f;
     public static final float TEXTURE_ATLAS_COLOR_OFFSET = 0.0625f;
