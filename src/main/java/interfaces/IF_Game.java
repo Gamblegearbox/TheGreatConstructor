@@ -9,8 +9,6 @@ public interface IF_Game {
 
     void start();
 
-    void input(MouseInput _mouseInput);
-
     void update(float _deltaTime, MouseInput _mouseInput);
 
     void render(float _deltaTime);

@@ -12,8 +12,8 @@ public class SimpleObject implements IF_SceneItem{
     private final Transform transform;
     private final ShaderProgram shader;
     private final Mesh mesh;
+    private float glow = 0;
 
-    private float rotY = 0.0f;
 
     public SimpleObject(Mesh _mesh, ShaderProgram _shader){
         transform = new Transform();
@@ -33,6 +33,15 @@ public class SimpleObject implements IF_SceneItem{
     @Override
     public ShaderProgram getShader(){
         return shader;
+    }
+
+    public void setIllumination(float _glow) {
+        glow = _glow;
+    }
+
+    @Override
+    public float getIllumination() {
+        return glow;
     }
 
     @Override

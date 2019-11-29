@@ -1,6 +1,7 @@
 package hud;
 
 import interfaces.IF_Hud;
+import interfaces.IF_HudItem;
 import interfaces.IF_SceneItem;
 import utils.Logger;
 import java.util.HashMap;
@@ -30,7 +31,7 @@ public class Hud implements IF_Hud {
     public void cleanup() {
         Logger.getInstance().writeln(">>> CLEANING UP " + "HUD");
 
-        for (IF_SceneItem temp : hudObjects.values()) {
+        for (IF_HudItem temp : hudObjects.values()) {
             temp.cleanup();
         }
     }

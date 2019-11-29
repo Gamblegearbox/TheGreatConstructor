@@ -1,15 +1,15 @@
 package hud;
 
+import interfaces.IF_HudItem;
 import rendering.ShaderProgram;
 import rendering.Transform;
-import interfaces.IF_SceneItem;
 import rendering.Mesh;
 
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TextItem implements IF_SceneItem {
+public class TextItem implements IF_HudItem {
 
     private static final float ZPOS = 0.0f;
     private static final float BOUNDING_RADIUS = 1.0f;

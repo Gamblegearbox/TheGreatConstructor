@@ -33,7 +33,7 @@ public class MainGame implements IF_Game {
     //IN GAME SETTINGS
     private static final float MOUSE_SENSITIVITY = 0.10f;
     private static final float CAMERA_SPEED = 5.0f;
-    private static final float LENGTH_OF_DAY_IN_SECONDS = 3600;
+    private static final float LENGTH_OF_DAY_IN_SECONDS = 20;
     private float timeOfDay = 0.5f; //from 0.0 to 1.0
     private final Vector3f lightPosition = new Vector3f(10, 10, 10);
 
@@ -43,6 +43,7 @@ public class MainGame implements IF_Game {
     //TEST VALUES
     float rotY = 0.0f;
     float rotX = 0.0f;
+    boolean lightsOn = false;
 
     public MainGame(Window _window) {
         renderer =  new Renderer(_window);
@@ -69,17 +70,12 @@ public class MainGame implements IF_Game {
         scenes = new Scene[1];
         scenes[0] = new Scene("./res/TestGameContent/Scenes/MainMenu.scn");
 
-
         //CREATE AND ADD OBJECTS TO SCENES
         scenes[0].addSceneObject("Test_Sphere0", new SimpleObject(Assets.SPHERE, Assets.SHADER_DEBUG_TEST));
-        scenes[0].getSceneObjectByTag("Test_Sphere0").getTransform().setPosition(0,2.5f,0f);
+        scenes[0].getSceneObjectByTag("Test_Sphere0").getTransform().setPosition(0,3f,0f);
 
-        scenes[0].addSceneObject("Test_Car0", new SimpleObject(Assets.NSX, Assets.SHADER_DEBUG_TEST));
-        scenes[0].getSceneObjectByTag("Test_Car0").getTransform().setPosition(0,-0.5f,0f);
-
-        scenes[0].addSceneObject("Test_Car1", new SimpleObject(Assets.GTR, Assets.SHADER_DEBUG_TEST));
-        scenes[0].getSceneObjectByTag("Test_Car1").getTransform().setPosition(0,-3f,0f);
-
+        scenes[0].addSceneObject("Test_Car1", new SimpleObject(Assets.CTR, Assets.SHADER_DEBUG_TEST));
+        scenes[0].getSceneObjectByTag("Test_Car1").getTransform().setPosition(3,0f,0f);
 
         //HUD ITEMS
         hud = new Hud();
@@ -106,12 +102,67 @@ public class MainGame implements IF_Game {
     }
 
     @Override
-    public void input(MouseInput mouseInput)
+    public void update(float _deltaTime, MouseInput _mouseInput)
     {
         if(KeyboardInput.isKeyPressedOnce(GLFW_KEY_2)) {
             renderer.switchShader();
         }
 
+        updateCamera(_deltaTime, _mouseInput);
+
+        if(_mouseInput.isLeftButtonPressed()){
+            rotX -= _mouseInput.getDisplVec().x / 3.0f;
+            rotY -= _mouseInput.getDisplVec().y / 3.0f;
+        }
+
+        //UPDATE IN GAME TIME
+        //timeOfDay += 1.0 / LENGTH_OF_DAY_IN_SECONDS * _deltaTime;
+
+        if(KeyboardInput.isKeyPressedOnce(GLFW_KEY_3)) {
+            timeOfDay += 1.0 / 24f;
+        }
+
+        //UPDATE LIGHT POS
+        float timeToPosition = timeOfDay * (float)Math.PI * 2f;
+        lightPosition.x = (float)Math.sin(timeToPosition) * 50f;
+        lightPosition.y = (float)Math.abs(Math.cos(timeToPosition)) * 50f + 10f;
+        lightPosition.z = (float)-Math.cos(timeToPosition) * 50f;
+
+        scenes[0].getSceneObjectByTag("Test_Car1").getTransform().setRotation(rotX,rotY,0);
+        scenes[0].getSceneObjectByTag("Test_Sphere0").getTransform().setRotation(rotX,rotY,0);
+
+        if(KeyboardInput.isKeyPressedOnce(GLFW_KEY_L)) {
+            lightsOn = !lightsOn;
+            float illum = lightsOn == true ? 1.0f : 0.0f;
+            scenes[0].getSceneObjectByTag("Test_Car1").setIllumination(illum);
+        }
+
+        activeScene.update(_deltaTime);
+        hud.getHudItems().get("timeOfDay").setText("TIME: " + Utils.convertNormalizedFloatToTime(timeOfDay % 1.0f));
+        hud.getHudItems().get("lightPos").setText("LIGHT POS: "
+                + (int)lightPosition.x
+                + " | "
+                + (int)lightPosition.z);
+
+        hud.getHudItems().get("mousePos").setText("MOUSE POS: "
+                + _mouseInput.getCurrentPos().x
+                + " | "
+                + _mouseInput.getCurrentPos().y);
+
+        if(EngineOptions.DEBUG_MODE)
+        {
+            deltaTimeSum += _deltaTime;
+
+            if( deltaTimeSum > EngineOptions.LOGGING_INTERVAL)
+            {
+                hud.getHudItems().get("LoggedData").setText(Logger.getInstance().getAllLoggedData());
+                deltaTimeSum = 0;
+            }
+        }
+    }
+
+    private void updateCamera(float _deltaTime, MouseInput _mouseInput) {
+        // POSITION
         cameraInc.set(0, 0, 0);
         if (KeyboardInput.isKeyRepeated(GLFW_KEY_W)) {
             cameraInc.z = -1;
@@ -131,72 +182,22 @@ public class MainGame implements IF_Game {
         else if (KeyboardInput.isKeyRepeated(GLFW_KEY_E)) {
             cameraInc.y = 1;
         }
-    }
-
-    @Override
-    public void update(float _deltaTime, MouseInput mouseInput)
-    {
-        //TODO: remove later, just for visuals testing
-        if(KeyboardInput.isKeyRepeated(GLFW_KEY_LEFT)){
-            rotY -= 40.0f * _deltaTime;
-        } else if (KeyboardInput.isKeyRepeated(GLFW_KEY_RIGHT)){
-            rotY += 40.0f * _deltaTime;
-        }
-
-        if(KeyboardInput.isKeyRepeated(GLFW_KEY_UP)){
-            rotX += 40.0f * _deltaTime;
-        } else if (KeyboardInput.isKeyRepeated(GLFW_KEY_DOWN)){
-            rotX -= 40.0f * _deltaTime;
-        }
-
-        scenes[0].getSceneObjectByTag("Test_Car0").getTransform().setRotation(rotX,rotY,0);
-        scenes[0].getSceneObjectByTag("Test_Car1").getTransform().setRotation(rotX,rotY,0);
-        scenes[0].getSceneObjectByTag("Test_Sphere0").getTransform().setRotation(rotX,rotY,0);
-
-        //UPDATE IN GAME TIME
-        timeOfDay += 1.0 / LENGTH_OF_DAY_IN_SECONDS * _deltaTime;
-        if(timeOfDay > 1.0){
-            timeOfDay = 0;
-        }
 
         camera.movePosition(cameraInc.x * CAMERA_SPEED * _deltaTime,
                 cameraInc.y * CAMERA_SPEED * _deltaTime,
                 cameraInc.z * CAMERA_SPEED * _deltaTime);
 
-        // Update camera based on mouse
-        if (mouseInput.isRightButtonPressed()) {
-            Vector2f rotVec = mouseInput.getDisplVec();
+        // ROTATION
+        if (_mouseInput.isRightButtonPressed()) {
+            Vector2f rotVec = _mouseInput.getDisplVec();
             camera.moveRotation(rotVec.x * MOUSE_SENSITIVITY, rotVec.y * MOUSE_SENSITIVITY, 0);
-        }
-
-        activeScene.update(_deltaTime);
-        hud.getHudItems().get("timeOfDay").setText("TIME: " + Utils.convertNormalizedFloatToTime(timeOfDay));
-        hud.getHudItems().get("lightPos").setText("LIGHT POS: "
-                + (int)lightPosition.x
-                + " | "
-                + (int)lightPosition.z);
-
-        hud.getHudItems().get("mousePos").setText("MOUSE POS: "
-                + mouseInput.getCurrentPos().x
-                + " | "
-                + mouseInput.getCurrentPos().y);
-
-        if(EngineOptions.DEBUG_MODE)
-        {
-            deltaTimeSum += _deltaTime;
-
-            if( deltaTimeSum > EngineOptions.LOGGING_INTERVAL)
-            {
-                hud.getHudItems().get("LoggedData").setText(Logger.getInstance().getAllLoggedData());
-                deltaTimeSum = 0;
-            }
         }
     }
 
     @Override
     public void render(float _deltaTime)
     {
-        renderer.render(activeScene, hud, camera, lightPosition, timeOfDay, _deltaTime);
+        renderer.render(activeScene, hud, camera, lightPosition, timeOfDay % 1.0f, _deltaTime);
     }
 
     @Override

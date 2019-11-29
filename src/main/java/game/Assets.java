@@ -58,12 +58,13 @@ public class Assets {
     public static final Mesh CUBE = OBJLoader.loadMesh(".\\res\\TestGameContent\\Meshes\\cube.obj", 1);
     public static final Mesh NSX = OBJLoader.loadMesh(".\\res\\TestGameContent\\Meshes\\NS_X.obj", 2);
     public static final Mesh GTR = OBJLoader.loadMesh(".\\res\\TestGameContent\\Meshes\\GT_R.obj", 2);
+    public static final Mesh CTR = OBJLoader.loadMesh(".\\res\\TestGameContent\\Meshes\\CT_R.obj", 2);
 
     //TEXTURES
-    public static final Texture ATLAS_COLORS = new Texture("/TestGameContent/Textures/MAP_COLOR.png");
+    public static final Texture ATLAS_COLORS = new Texture("/TestGameContent/Textures/Atlas_CarsDiffuse.png");
     public static final Texture ATLAS_NORMALS = new Texture("/TestGameContent/Textures/MaterialTest/normalMap.png");
-    public static final Texture ATLAS_GLOSS = new Texture("/TestGameContent/Textures/MAP_GLOSS.png");
-    public static final Texture ATLAS_EMIT = new Texture("/TestGameContent/Textures/MAP_EMIT.png");
+    public static final Texture ATLAS_MATERIAL_INFO = new Texture("/TestGameContent/Textures/Atlas_CarsMaterialInfo.png");
+
     public static final Texture GRADIENT_LIGHT_COLORS = new Texture("/TestGameContent/Textures/gradient_lightColor.png");
     public static final Texture REFLECTION_MAP_DAY = new Texture("/TestGameContent/Textures/reflectionMap.png");
     public static final Texture REFLECTION_MAP_NIGHT = new Texture("/TestGameContent/Textures/MaterialTest/reflectionMap_night.png");

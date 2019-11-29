@@ -5,6 +5,7 @@ import game.Assets;
 import hud.Hud;
 import game.Scene;
 import hud.TextItem;
+import interfaces.IF_HudItem;
 import interfaces.IF_SceneItem;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -66,7 +67,7 @@ public class Renderer {
         projectionMatrix3D = transformation.getPerspectiveProjectionMatrix(EngineOptions.INITIAL_FOV, window.getWidth(), window.getHeight(), EngineOptions.Z_NEAR, EngineOptions.Z_FAR);
         projectionMatrixHUD = transformation.getOrthographicProjectionMatrix(0, window.getWidth(), window.getHeight(), 0);
 
-        sceneMaterial = new Material(Assets.ATLAS_COLORS, Assets.ATLAS_NORMALS, Assets.ATLAS_GLOSS, Assets.ATLAS_EMIT, Assets.REFLECTION_MAP_DAY, Assets.SHADOW_PATTERN);
+        sceneMaterial = new Material(Assets.ATLAS_COLORS, Assets.ATLAS_NORMALS, Assets.ATLAS_MATERIAL_INFO, Assets.SHADOW_PATTERN, Assets.REFLECTION_MAP_DAY, Assets.GRADIENT_LIGHT_COLORS);
 
         initOpenGl();
         initShaders();
@@ -115,8 +116,8 @@ public class Renderer {
         Assets.SHADER_DEBUG_TEST.bind();
         Assets.SHADER_DEBUG_TEST.setUniformData("diffuseMap_sampler", Texture.RGBA_0);
         Assets.SHADER_DEBUG_TEST.setUniformData("normalMap_sampler", Texture.RGBA_1);
-        Assets.SHADER_DEBUG_TEST.setUniformData("glossMap_sampler", Texture.RGBA_2);
-        Assets.SHADER_DEBUG_TEST.setUniformData("illuminationMap_sampler", Texture.RGBA_3);
+        Assets.SHADER_DEBUG_TEST.setUniformData("materialInfo_sampler", Texture.RGBA_2);
+        Assets.SHADER_DEBUG_TEST.setUniformData("shadowPattern_sampler", Texture.RGBA_3);
         Assets.SHADER_DEBUG_TEST.setUniformData("reflectionMap_sampler", Texture.RGBA_4);
         Assets.SHADER_DEBUG_TEST.setUniformData("lightColorMap_sampler", Texture.RGBA_5);
         Assets.SHADER_DEBUG_TEST.setUniformData("windowSize", EngineOptions.WINDOW_WIDTH, EngineOptions.WINDOW_HEIGHT);
@@ -171,9 +172,10 @@ public class Renderer {
             shader.setUniformData("timeOfDay", _dayTime);
             shader.setUniformData("cameraPosition", _camera.getPosition());
             shader.setUniformData("anima", anima);
+            shader.setUniformData("illumination", sceneObject.getIllumination());
 
             activateMaterialTextures(sceneMaterial);
-            verticesInRenderPass += renderItem(sceneObject, shader);
+            verticesInRenderPass += renderSceneItem(sceneObject, shader);
 
             shader.unbind();
         }
@@ -186,9 +188,9 @@ public class Renderer {
     public void renderHud(Hud _hud){
         ShaderProgram shader;
         int verticesInRenderPass = 0;
-        for(TextItem sceneObject : _hud.getHudItems().values()) {
+        for(TextItem item : _hud.getHudItems().values()) {
 
-            shader = sceneObject.getShader();
+            shader = item.getShader();
             shader.bind();
 
             shader.setUniformData("fontColor", 1.0f, 1.0f, 1.0f, 1.0f);
@@ -196,9 +198,9 @@ public class Renderer {
             shader.setUniformData("projectionMatrix", projectionMatrixHUD);
 
             glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, sceneObject.getFontTexture().getTexture().getID());
+            glBindTexture(GL_TEXTURE_2D, item.getFontTexture().getTexture().getID());
 
-            verticesInRenderPass += renderItem(sceneObject, shader);
+            verticesInRenderPass += renderHudItem(item, shader);
 
             shader.unbind();
         }
@@ -266,11 +268,38 @@ public class Renderer {
         }
     }
 
-    private int renderItem(IF_SceneItem _sceneItem, ShaderProgram _shader){
+    private int renderSceneItem(IF_SceneItem _item, ShaderProgram _shader){
 
         int vertices = 0;
-        Transform transform = _sceneItem.getTransform();
-        Mesh mesh = _sceneItem.getMesh();
+        Transform transform = _item.getTransform();
+        Mesh mesh = _item.getMesh();
+
+        if(mesh.isVisible()) {
+            vertices = mesh.getVertexCount();
+
+            Matrix4f modelMatrix = transformation.getModelMatrix(transform);
+            _shader.setUniformData("modelMatrix", modelMatrix);
+
+            glBindVertexArray(mesh.getVaoID());
+            glEnableVertexAttribArray(Mesh.VERTICES);
+            glEnableVertexAttribArray(Mesh.NORMALS);
+            glEnableVertexAttribArray(Mesh.UV_COORDS);
+
+            glDrawElements(GL_TRIANGLES, mesh.getIndicesCount(), GL_UNSIGNED_INT, 0);
+
+            glDisableVertexAttribArray(Mesh.VERTICES);
+            glDisableVertexAttribArray(Mesh.NORMALS);
+            glDisableVertexAttribArray(Mesh.UV_COORDS);
+            glBindVertexArray(0);
+        }
+        return vertices;
+    }
+
+    private int renderHudItem(IF_HudItem _item, ShaderProgram _shader){
+
+        int vertices = 0;
+        Transform transform = _item.getTransform();
+        Mesh mesh = _item.getMesh();
 
         if(mesh.isVisible()) {
             vertices = mesh.getVertexCount();

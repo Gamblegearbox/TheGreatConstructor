@@ -8,7 +8,6 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public class MouseInput {
 
-
     private final Vector2d previousPos;
     private final Vector2d currentPos;
     private final Vector2f displVec;
@@ -45,7 +44,7 @@ public class MouseInput {
         return currentPos;
     }
 
-    public void input(Window _window) {
+    public void input() {
         displVec.x = 0;
         displVec.y = 0;
         if (previousPos.x > 0 && previousPos.y > 0 && inWindow) {
