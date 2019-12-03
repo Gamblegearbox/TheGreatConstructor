@@ -3,30 +3,39 @@ package game;
 import input.KeyboardInput;
 import audio.OpenALAudioSource;
 import libraries.AudioLibrary;
+import org.joml.Vector3f;
 import rendering.ShaderProgram;
 import rendering.Transform;
 import rendering.Mesh;
 import interfaces.IF_SceneItem;
 
+import static org.lwjgl.glfw.GLFW.*;
+
 public class Car implements IF_SceneItem {
 
-    int count = 0;
-    int limit = 10000;
-    float anim = 0f;
-
-    private final int minGear = -1;
-    private final int maxGear = 5;
-
     private boolean isEngineRunning = false;
-    private int currentGear = 0;
-
+    private float illuminationAmount = 0.0f;
+    private float count = 0;
     private final Transform transform;
     private final ShaderProgram shader;
     private final Mesh mesh;
 
+    //CAR DATA
+    private float accel = 20f;
+    private float maxSpeed = 65f;
+    private float coast = 5f;
+    private float brake = 20f;
+
+    //CAR STATE
+    private float rotY = 0;
+    private float speed = 0;
+    private float angularSpeed = 0;
+    private Vector3f direction;
+    private Vector3f velocity;
+
+    //AUDIO
     private final OpenALAudioSource audioEngine;
     private final OpenALAudioSource audioSecondary;
-
 
     public Car(Mesh _mesh, ShaderProgram _shader){
         transform = new Transform();
@@ -34,6 +43,9 @@ public class Car implements IF_SceneItem {
         mesh = _mesh;
         audioEngine = new OpenALAudioSource();
         audioSecondary = new OpenALAudioSource();
+
+        direction = new Vector3f(0,0,-1);
+        velocity = new Vector3f(0,0,0);
     }
 
     @Override
@@ -41,6 +53,7 @@ public class Car implements IF_SceneItem {
         return transform;
     }
 
+    @Override
     public Mesh getMesh() {
         return mesh;
     }
@@ -51,43 +64,79 @@ public class Car implements IF_SceneItem {
     }
 
     @Override
-    public float getIllumination() {
-        return 0;
+    public float getIlluminationAmount() {
+        return illuminationAmount;
     }
 
     @Override
-    public void setIllumination(float _glow) {
-
+    public void setIlluminationAmount(float _illuminationAmount) {
+        illuminationAmount = _illuminationAmount;
     }
 
     @Override
     public void update(float _deltaTime){
-/*
+
         if(isEngineRunning){
             count++;
 
             if(count % 4000 == 0) {
                 audioEngine.play(AudioLibrary.audioBufferIdMap.get("rotary"));
             }
+        }
 
-            if(KeyboardInput.isKeyPressedOnce(GLFW_KEY_Q)){
-                shutDownEngine();
+        if(KeyboardInput.isKeyPressedOnce(GLFW_KEY_L)) {
+            if(illuminationAmount < 1){
+                illuminationAmount = 1.0f;
+            } else {
+                illuminationAmount = 0.0f;
+            }
+        }
+
+        if(KeyboardInput.isKeyRepeated(GLFW_KEY_UP)){
+            if(speed < maxSpeed) {
+                speed += _deltaTime * accel;
             }
 
-
-        } else if(KeyboardInput.isKeyPressedOnce(GLFW_KEY_E)){
-            startEngine();
+        } else {
+            speed -= _deltaTime * coast;
+            if (speed <= 0.0f){
+                speed = 0.0f;
+            }
         }
 
-
-        if(KeyboardInput.isKeyPressedOnce(GLFW_KEY_W)){
-            shiftUp();
+        if(KeyboardInput.isKeyRepeated(GLFW_KEY_DOWN)){
+            speed -= _deltaTime * brake;
+            if (speed <= 0.0f){
+                speed = 0.0f;
+            }
         }
 
-        if(KeyboardInput.isKeyPressedOnce(GLFW_KEY_S)){
-            shiftDown();
+        if(KeyboardInput.isKeyRepeated(GLFW_KEY_LEFT)){
+            calcAngularSpeed();
+            rotY -= _deltaTime * angularSpeed;
         }
-        */
+
+        if(KeyboardInput.isKeyRepeated(GLFW_KEY_RIGHT)){
+            calcAngularSpeed();
+            rotY += _deltaTime * angularSpeed;
+        }
+
+        float temp = (float)Math.toRadians(rotY);
+        direction.x = (float)Math.sin(temp);
+        direction.z = (float)-Math.cos(temp);
+        direction.normalize();
+
+        direction.mul(speed * _deltaTime, velocity);
+        transform.getPosition().add(velocity);
+        transform.setRotation(0, rotY,0);
+    }
+
+    private void calcAngularSpeed(){
+        if(speed > 25){
+            angularSpeed = 10 * 25 - speed * 2f;
+        } else {
+            angularSpeed = speed * 10;
+        }
     }
 
     private void startEngine(){
@@ -101,32 +150,24 @@ public class Car implements IF_SceneItem {
     }
 
     private void shiftUp(){
-        currentGear++;
+        /*currentGear++;
         audioSecondary.play(AudioLibrary.audioBufferIdMap.get("gearShift"));
 
         if(currentGear > maxGear) {
             currentGear = maxGear;
-        }
+        }*/
     }
 
     private void shiftDown(){
-        currentGear--;
+       /* currentGear--;
         audioSecondary.play(AudioLibrary.audioBufferIdMap.get("gearShift"));
 
         if(currentGear < minGear) {
             currentGear = minGear;
-        }
+        }*/
     }
 
-    private void accellerate(){}
-    private void brake(){}
-
-    private void steer(){}
-
-
-
-    public void cleanup()
-    {
+    public void cleanup() {
         mesh.cleanup();
         audioEngine.cleanup();
         audioSecondary.cleanup();

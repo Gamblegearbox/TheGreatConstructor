@@ -1,7 +1,11 @@
 package rendering;
 
-
+import input.KeyboardInput;
+import input.MouseInput;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
+
+import static org.lwjgl.glfw.GLFW.*;
 
 public class Camera {
 
@@ -9,18 +13,17 @@ public class Camera {
     private final Vector3f rotation;
 
     private float fov;
+    private float sensitivity;
+    private float speed;
 
-    public Camera(float _fov){
+    public Camera(float _fov, float _sensitivity, float _speed){
         position = new Vector3f(0,0,0);
         rotation = new Vector3f(0,0,0);
         fov = _fov;
+        sensitivity = _sensitivity;
+        speed = _speed;
     }
 
-    public Camera(Vector3f position, Vector3f rotation, float _fov) {
-        this.position = position;
-        this.rotation = rotation;
-        this.fov = _fov;
-    }
 
     public float getFieldOfView(){
         return fov;
@@ -66,5 +69,39 @@ public class Camera {
         rotation.x += offsetX;
         rotation.y += offsetY;
         rotation.z += offsetZ;
+    }
+
+    Vector3f cameraInc = new Vector3f(0,0,0);
+    public void update(float _deltaTime, MouseInput _mouseInput){
+        // POSITION
+
+        cameraInc.set(0, 0, 0);
+        if (KeyboardInput.isKeyRepeated(GLFW_KEY_W)) {
+            cameraInc.z = -speed * _deltaTime;
+        }
+        else if (KeyboardInput.isKeyRepeated(GLFW_KEY_S)) {
+            cameraInc.z = speed * _deltaTime;
+        }
+        if (KeyboardInput.isKeyRepeated(GLFW_KEY_A)) {
+            cameraInc.x = -speed * _deltaTime;
+        }
+        else if (KeyboardInput.isKeyRepeated(GLFW_KEY_D)) {
+            cameraInc.x = speed * _deltaTime;
+        }
+        if (KeyboardInput.isKeyRepeated(GLFW_KEY_Q)) {
+            cameraInc.y = -speed * _deltaTime;
+        }
+        else if (KeyboardInput.isKeyRepeated(GLFW_KEY_E)) {
+            cameraInc.y = speed * _deltaTime;
+        }
+
+        movePosition(cameraInc.x,cameraInc.y,cameraInc.z);
+
+        // ROTATION
+        if (_mouseInput.isRightButtonPressed()) {
+            Vector2f rotVec = _mouseInput.getDisplVec();
+            moveRotation(rotVec.x * sensitivity, rotVec.y * sensitivity, 0);
+        }
+
     }
 }

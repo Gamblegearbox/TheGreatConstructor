@@ -31,9 +31,7 @@ public class MainGame implements IF_Game {
     private Hud hud;
 
     //IN GAME SETTINGS
-    private static final float MOUSE_SENSITIVITY = 0.10f;
-    private static final float CAMERA_SPEED = 5.0f;
-    private static final float LENGTH_OF_DAY_IN_SECONDS = 20;
+    private static final float LENGTH_OF_DAY_IN_SECONDS = 60;
     private float timeOfDay = 0.5f; //from 0.0 to 1.0
     private final Vector3f lightPosition = new Vector3f(10, 10, 10);
 
@@ -41,9 +39,7 @@ public class MainGame implements IF_Game {
     private float deltaTimeSum;
 
     //TEST VALUES
-    float rotY = 0.0f;
-    float rotX = 0.0f;
-    boolean lightsOn = false;
+    boolean timePaused = false;
 
     public MainGame(Window _window) {
         renderer =  new Renderer(_window);
@@ -55,9 +51,10 @@ public class MainGame implements IF_Game {
         Logger.getInstance().writeln(">> INITIALISING GAME");
         renderer.init();
         audioEngine.init();
-        camera = new Camera(EngineOptions.INITIAL_FOV);
-        camera.setPosition(0f,0f,15f);
-        camera.setRotation(0,0f,0);
+        camera = new Camera(EngineOptions.INITIAL_FOV, 0.10f, 5.0f);
+        camera.setPosition(0f,22.5f,45f);
+        camera.setRotation(25,0f,0);
+
         cameraInc = new Vector3f(0,0,0);
 
         //SET ALL KEYBOARD KEYS TO -1
@@ -71,11 +68,9 @@ public class MainGame implements IF_Game {
         scenes[0] = new Scene("./res/TestGameContent/Scenes/MainMenu.scn");
 
         //CREATE AND ADD OBJECTS TO SCENES
-        scenes[0].addSceneObject("Test_Sphere0", new SimpleObject(Assets.SPHERE, Assets.SHADER_DEBUG_TEST));
-        scenes[0].getSceneObjectByTag("Test_Sphere0").getTransform().setPosition(0,3f,0f);
+        scenes[0].addSceneObject("Test_Car", new Car(Assets.CTR, Assets.SHADER_DEBUG_TEST));
+        scenes[0].getSceneObjectByTag("Test_Car").getTransform().setPosition(0, 0f, 0);
 
-        scenes[0].addSceneObject("Test_Car1", new SimpleObject(Assets.CTR, Assets.SHADER_DEBUG_TEST));
-        scenes[0].getSceneObjectByTag("Test_Car1").getTransform().setPosition(3,0f,0f);
 
         //HUD ITEMS
         hud = new Hud();
@@ -108,18 +103,15 @@ public class MainGame implements IF_Game {
             renderer.switchShader();
         }
 
-        updateCamera(_deltaTime, _mouseInput);
-
-        if(_mouseInput.isLeftButtonPressed()){
-            rotX -= _mouseInput.getDisplVec().x / 3.0f;
-            rotY -= _mouseInput.getDisplVec().y / 3.0f;
+        //updateCamera(_deltaTime, _mouseInput);
+        camera.update(_deltaTime, _mouseInput);
+        //UPDATE IN GAME TIME
+        if(KeyboardInput.isKeyPressedOnce(GLFW_KEY_3)) {
+            timePaused = !timePaused;
         }
 
-        //UPDATE IN GAME TIME
-        //timeOfDay += 1.0 / LENGTH_OF_DAY_IN_SECONDS * _deltaTime;
-
-        if(KeyboardInput.isKeyPressedOnce(GLFW_KEY_3)) {
-            timeOfDay += 1.0 / 24f;
+        if(!timePaused) {
+            timeOfDay += 1.0 / LENGTH_OF_DAY_IN_SECONDS * _deltaTime;
         }
 
         //UPDATE LIGHT POS
@@ -127,15 +119,6 @@ public class MainGame implements IF_Game {
         lightPosition.x = (float)Math.sin(timeToPosition) * 50f;
         lightPosition.y = (float)Math.abs(Math.cos(timeToPosition)) * 50f + 10f;
         lightPosition.z = (float)-Math.cos(timeToPosition) * 50f;
-
-        scenes[0].getSceneObjectByTag("Test_Car1").getTransform().setRotation(rotX,rotY,0);
-        scenes[0].getSceneObjectByTag("Test_Sphere0").getTransform().setRotation(rotX,rotY,0);
-
-        if(KeyboardInput.isKeyPressedOnce(GLFW_KEY_L)) {
-            lightsOn = !lightsOn;
-            float illum = lightsOn == true ? 1.0f : 0.0f;
-            scenes[0].getSceneObjectByTag("Test_Car1").setIllumination(illum);
-        }
 
         activeScene.update(_deltaTime);
         hud.getHudItems().get("timeOfDay").setText("TIME: " + Utils.convertNormalizedFloatToTime(timeOfDay % 1.0f));
@@ -148,6 +131,7 @@ public class MainGame implements IF_Game {
                 + _mouseInput.getCurrentPos().x
                 + " | "
                 + _mouseInput.getCurrentPos().y);
+
 
         if(EngineOptions.DEBUG_MODE)
         {
@@ -162,7 +146,11 @@ public class MainGame implements IF_Game {
     }
 
     private void updateCamera(float _deltaTime, MouseInput _mouseInput) {
+        //TODO: implement target cam with position interpolation
+        //TODO: put code into camera
+        
         // POSITION
+        /*
         cameraInc.set(0, 0, 0);
         if (KeyboardInput.isKeyRepeated(GLFW_KEY_W)) {
             cameraInc.z = -1;
@@ -187,11 +175,12 @@ public class MainGame implements IF_Game {
                 cameraInc.y * CAMERA_SPEED * _deltaTime,
                 cameraInc.z * CAMERA_SPEED * _deltaTime);
 
+
         // ROTATION
         if (_mouseInput.isRightButtonPressed()) {
             Vector2f rotVec = _mouseInput.getDisplVec();
             camera.moveRotation(rotVec.x * MOUSE_SENSITIVITY, rotVec.y * MOUSE_SENSITIVITY, 0);
-        }
+        }*/
     }
 
     @Override

@@ -172,7 +172,7 @@ public class Renderer {
             shader.setUniformData("timeOfDay", _dayTime);
             shader.setUniformData("cameraPosition", _camera.getPosition());
             shader.setUniformData("anima", anima);
-            shader.setUniformData("illumination", sceneObject.getIllumination());
+            shader.setUniformData("illumination", sceneObject.getIlluminationAmount());
 
             activateMaterialTextures(sceneMaterial);
             verticesInRenderPass += renderSceneItem(sceneObject, shader);

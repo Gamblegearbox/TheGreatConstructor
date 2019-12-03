@@ -18,7 +18,7 @@ public class EngineOptions {
 
     public static final float INITIAL_FOV = 30f;
     public static final float Z_NEAR = 0.5f;
-    public static final float Z_FAR = 150f;
+    public static final float Z_FAR = 500f;
 
     public static final String OPERATING_SYSTEM = System.getProperty("os.name");
 

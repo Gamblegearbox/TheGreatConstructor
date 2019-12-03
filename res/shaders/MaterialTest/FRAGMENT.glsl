@@ -73,7 +73,6 @@ void main()
         shadowPattern.rgb *= colorDiffuse.rgb * diffuseFactor;
 
         //SPECULAR
-
         vec3 camDirection = normalize(cameraPosition - gPos_WorldSpace);
         vec3 fromLightDir = -toLightSource;
         vec3 reflectedLight = normalize(reflect(fromLightDir, gNormal_WorldSpace));
@@ -87,7 +86,6 @@ void main()
     float front = 0.0;
     float side = 1.0;
 
-
     vec3 objToCam = normalize(cameraPosition - gPos_WorldSpace);
     facing = max(dot(objToCam, gNormal_WorldSpace), 0.0);
     facing = pow(facing, FAKE_FRESNEL_POWER);
@@ -98,9 +96,9 @@ void main()
     float reflectionMask = clamp(mix(side, front, facing) * texture(materialInfo_sampler, gTexCoord).r + reflOverride, 0.0,1.0);
 
     //SPLIT SCREEN SETTINGS
-    const int splitScreenBorder_1 = 10;
-    const int splitScreenBorder_2 = 20;
-    const int splitScreenBorder_3 = 30;
+    const int splitScreenBorder_1 = 150;
+    const int splitScreenBorder_2 = 300;
+    const int splitScreenBorder_3 = 450;
     const int splitLineWidth = 4;
     const vec4 splitLineColor = vec4(0.0,0.0,0.0,1.0);
 

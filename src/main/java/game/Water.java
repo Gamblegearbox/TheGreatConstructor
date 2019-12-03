@@ -34,12 +34,12 @@ public class Water implements IF_SceneItem {
     }
 
     @Override
-    public float getIllumination() {
+    public float getIlluminationAmount() {
         return 0;
     }
 
     @Override
-    public void setIllumination(float _glow) {
+    public void setIlluminationAmount(float _glow) {
 
     }
 

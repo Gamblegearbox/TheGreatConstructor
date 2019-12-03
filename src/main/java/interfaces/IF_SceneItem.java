@@ -12,9 +12,9 @@ public interface IF_SceneItem {
 
     ShaderProgram getShader();
 
-    float getIllumination();
+    float getIlluminationAmount();
 
-    void setIllumination(float _glow);
+    void setIlluminationAmount(float _glow);
 
     void update(float _deltaTime);
 

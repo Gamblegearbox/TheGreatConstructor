@@ -35,12 +35,12 @@ public class SimpleObject implements IF_SceneItem{
         return shader;
     }
 
-    public void setIllumination(float _glow) {
+    public void setIlluminationAmount(float _glow) {
         glow = _glow;
     }
 
     @Override
-    public float getIllumination() {
+    public float getIlluminationAmount() {
         return glow;
     }
 
