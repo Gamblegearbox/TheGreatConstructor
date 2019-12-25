@@ -304,6 +304,7 @@ public class Renderer {
         }
     }
 
+    //TODO: list does not fill again once it had 0 objects
     private void fillRenderListWithVisibleItems(Collection<IF_SceneItem> _gameObjects){
         Matrix4f viewProjectionMatrix = transformation.getViewProjectionMatrix();
         renderList.clear();
