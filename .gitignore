@@ -64,9 +64,9 @@ fabric.properties
 
 # End of https://www.gitignore.io/api/intellij
 
+res/TestGameContent/_Resources/ignore/
 target/
 out/
 *.class
 
-!dummyCube.obj
-!defaultMap.png
+
