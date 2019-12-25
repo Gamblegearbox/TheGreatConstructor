@@ -10,6 +10,8 @@ public class Water implements IF_SceneItem {
     private final Transform transform;
     private final ShaderProgram shader;
     private Mesh mesh;
+    private float distanceToCamera;
+    private float opacity = 1.0f;
 
     public Water(float _width, float _length, int _resWidth, int _resLength, ShaderProgram _shader){
         transform = new Transform();
@@ -34,8 +36,28 @@ public class Water implements IF_SceneItem {
     }
 
     @Override
+    public void setDistanceToCamera(float _distance) {
+        distanceToCamera = _distance;
+    }
+
+    @Override
+    public float getDistanceToCamera() {
+        return distanceToCamera;
+    }
+
+    @Override
     public float getIlluminationAmount() {
         return 0;
+    }
+
+    @Override
+    public void setOpacity(float _opacity) {
+        opacity = _opacity;
+    }
+
+    @Override
+    public float getOpacity() {
+        return opacity;
     }
 
     @Override
@@ -50,4 +72,6 @@ public class Water implements IF_SceneItem {
     public void cleanup() {
         mesh.cleanup();
     }
+
+
 }

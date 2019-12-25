@@ -70,14 +70,16 @@ public class Assets {
     public static final Texture REFLECTION_MAP_NIGHT = new Texture("/TestGameContent/Textures/MaterialTest/reflectionMap_night.png");
     public static final Texture SHADOW_PATTERN = new Texture("/TestGameContent/Textures/shadowPattern.png");
 
-    public static final float TEXTURE_ATLAS_BORDER_OFFSET = 0.03125f;
-    public static final float TEXTURE_ATLAS_COLOR_OFFSET = 0.0625f;
+    public static final float TEXTURE_ATLAS_COLOR_U_OFFSET = 1.0f / 16.0f;
+    public static final float TEXTURE_ATLAS_BORDER_U_OFFSET = TEXTURE_ATLAS_COLOR_U_OFFSET * 0.5f;
+    public static final float TEXTURE_ATLAS_COLOR_V_OFFSET = 1.0f / 4.0f;
+    public static final float TEXTURE_ATLAS_BORDER_V_OFFSET = TEXTURE_ATLAS_COLOR_V_OFFSET * 0.5f;
 
     public static float[] uvCoords = new float[2];
     public static float[] getUvForColorFromAtlas(int _x, int _y){
 
-        uvCoords[0] = Assets.TEXTURE_ATLAS_BORDER_OFFSET + Assets.TEXTURE_ATLAS_COLOR_OFFSET * _x;
-        uvCoords[1] = Assets.TEXTURE_ATLAS_BORDER_OFFSET + Assets.TEXTURE_ATLAS_COLOR_OFFSET * _y;
+        uvCoords[0] = Assets.TEXTURE_ATLAS_BORDER_U_OFFSET + Assets.TEXTURE_ATLAS_COLOR_U_OFFSET * _x;
+        uvCoords[1] = Assets.TEXTURE_ATLAS_BORDER_V_OFFSET + Assets.TEXTURE_ATLAS_COLOR_V_OFFSET * _y;
 
         return uvCoords;
     }

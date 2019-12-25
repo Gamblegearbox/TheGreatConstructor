@@ -8,12 +8,13 @@ import hud.TextItem;
 import input.KeyboardInput;
 import input.MouseInput;
 import interfaces.IF_Game;
+import interfaces.IF_SceneItem;
 import libraries.AudioLibrary;
-import org.joml.Vector2f;
 import org.joml.Vector3f;
 import rendering.Camera;
 import rendering.Renderer;
 import utils.Logger;
+import utils.MeshBuilder;
 import utils.Utils;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -25,7 +26,6 @@ public class MainGame implements IF_Game {
     private final OpenALAudioEngine audioEngine;
 
     private Camera camera;
-    private Vector3f cameraInc;
     private Scene[] scenes;
     private Scene activeScene = null;
     private Hud hud;
@@ -39,7 +39,7 @@ public class MainGame implements IF_Game {
     private float deltaTimeSum;
 
     //TEST VALUES
-    boolean timePaused = false;
+    boolean timePaused = true;
 
     public MainGame(Window _window) {
         renderer =  new Renderer(_window);
@@ -51,11 +51,9 @@ public class MainGame implements IF_Game {
         Logger.getInstance().writeln(">> INITIALISING GAME");
         renderer.init();
         audioEngine.init();
-        camera = new Camera(EngineOptions.INITIAL_FOV, 0.10f, 5.0f);
+        camera = new Camera(EngineOptions.INITIAL_FOV, 0.20f, 15.0f);
         camera.setPosition(0f,22.5f,45f);
         camera.setRotation(25,0f,0);
-
-        cameraInc = new Vector3f(0,0,0);
 
         //SET ALL KEYBOARD KEYS TO -1
         KeyboardInput.init();
@@ -68,9 +66,15 @@ public class MainGame implements IF_Game {
         scenes[0] = new Scene("./res/TestGameContent/Scenes/MainMenu.scn");
 
         //CREATE AND ADD OBJECTS TO SCENES
-        scenes[0].addSceneObject("Test_Car", new Car(Assets.CTR, Assets.SHADER_DEBUG_TEST));
-        scenes[0].getSceneObjectByTag("Test_Car").getTransform().setPosition(0, 0f, 0);
+        IF_SceneItem item = new Car(Assets.CTR, Assets.SHADER_DEBUG_TEST);
+        scenes[0].addSceneObject("Test_Car", item);
 
+        for(int i = 0; i < 50; i++){
+            item = new SimpleObject(MeshBuilder.createTriangle(1+i,3+i), Assets.SHADER_DEBUG_TEST);
+            item.getTransform().setPosition(5f,0.5f,i);
+            item.setOpacity(0.5f);
+            scenes[0].addSceneObject("test_" + i, item);
+        }
 
         //HUD ITEMS
         hud = new Hud();
@@ -105,6 +109,7 @@ public class MainGame implements IF_Game {
 
         //updateCamera(_deltaTime, _mouseInput);
         camera.update(_deltaTime, _mouseInput);
+
         //UPDATE IN GAME TIME
         if(KeyboardInput.isKeyPressedOnce(GLFW_KEY_3)) {
             timePaused = !timePaused;
@@ -143,44 +148,6 @@ public class MainGame implements IF_Game {
                 deltaTimeSum = 0;
             }
         }
-    }
-
-    private void updateCamera(float _deltaTime, MouseInput _mouseInput) {
-        //TODO: implement target cam with position interpolation
-        //TODO: put code into camera
-        
-        // POSITION
-        /*
-        cameraInc.set(0, 0, 0);
-        if (KeyboardInput.isKeyRepeated(GLFW_KEY_W)) {
-            cameraInc.z = -1;
-        }
-        else if (KeyboardInput.isKeyRepeated(GLFW_KEY_S)) {
-            cameraInc.z = 1;
-        }
-        if (KeyboardInput.isKeyRepeated(GLFW_KEY_A)) {
-            cameraInc.x = -1;
-        }
-        else if (KeyboardInput.isKeyRepeated(GLFW_KEY_D)) {
-            cameraInc.x = 1;
-        }
-        if (KeyboardInput.isKeyRepeated(GLFW_KEY_Q)) {
-            cameraInc.y = -1;
-        }
-        else if (KeyboardInput.isKeyRepeated(GLFW_KEY_E)) {
-            cameraInc.y = 1;
-        }
-
-        camera.movePosition(cameraInc.x * CAMERA_SPEED * _deltaTime,
-                cameraInc.y * CAMERA_SPEED * _deltaTime,
-                cameraInc.z * CAMERA_SPEED * _deltaTime);
-
-
-        // ROTATION
-        if (_mouseInput.isRightButtonPressed()) {
-            Vector2f rotVec = _mouseInput.getDisplVec();
-            camera.moveRotation(rotVec.x * MOUSE_SENSITIVITY, rotVec.y * MOUSE_SENSITIVITY, 0);
-        }*/
     }
 
     @Override

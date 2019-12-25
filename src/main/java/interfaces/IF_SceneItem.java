@@ -4,7 +4,7 @@ import rendering.Mesh;
 import rendering.ShaderProgram;
 import rendering.Transform;
 
-public interface IF_SceneItem {
+public interface IF_SceneItem{
 
     Transform getTransform();
 
@@ -12,9 +12,17 @@ public interface IF_SceneItem {
 
     ShaderProgram getShader();
 
-    float getIlluminationAmount();
+    void setDistanceToCamera(float _distance);
+
+    float getDistanceToCamera();
 
     void setIlluminationAmount(float _glow);
+
+    float getIlluminationAmount();
+
+    void setOpacity(float _opacity);
+
+    float getOpacity();
 
     void update(float _deltaTime);
 

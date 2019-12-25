@@ -14,6 +14,7 @@ import utils.Logger;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -32,7 +33,9 @@ public class Renderer {
     private final Transformation transformation;
     private final List<ShaderProgram> matCapShaders;
     private final Vector4f[] frustumPlanes;
+    private final DistanceCompare distanceCompare = new DistanceCompare();
 
+    private ArrayList<IF_SceneItem> renderList;
     private Matrix4f projectionMatrix3D;
     private Matrix4f projectionMatrixHUD;
 
@@ -57,6 +60,8 @@ public class Renderer {
         {
             frustumPlanes[i] = new Vector4f();
         }
+
+        renderList = new ArrayList<>();
     }
 
     public void init()
@@ -157,14 +162,18 @@ public class Renderer {
     }
 
     private void renderScene(Scene _scene, Camera _camera, Vector3f _lightPosition, float _dayTime){
-        frustumCullingCheck(_scene.getSceneItems().values());
+        fillRenderListWithVisibleItems(_scene.getSceneItems().values());
+        updateDistanceToCam(_camera);
+        Collections.sort(renderList, distanceCompare);
 
-        ShaderProgram shader;
+        System.out.println("ScnList: " + _scene.getSceneItems().values().size() + " | RList: " + renderList.size());
+
+        ShaderProgram shader = (activeMatCapShader != null) ? activeMatCapShader : Assets.SHADER_DEBUG_TEST;
+        shader.bind();
+        activateMaterialTextures(sceneMaterial);
+
         int verticesInRenderPass = 0;
-        for(IF_SceneItem sceneObject : _scene.getSceneItems().values()) {
-
-            shader = (activeMatCapShader != null) ? activeMatCapShader : sceneObject.getShader();
-            shader.bind();
+        for(IF_SceneItem sceneItem : renderList) {
 
             shader.setUniformData("projectionMatrix", projectionMatrix3D);
             shader.setUniformData("viewMatrix", transformation.getViewMatrix(_camera));
@@ -172,13 +181,13 @@ public class Renderer {
             shader.setUniformData("timeOfDay", _dayTime);
             shader.setUniformData("cameraPosition", _camera.getPosition());
             shader.setUniformData("anima", anima);
-            shader.setUniformData("illumination", sceneObject.getIlluminationAmount());
+            shader.setUniformData("illumination", sceneItem.getIlluminationAmount());
+            shader.setUniformData("opacity", sceneItem.getOpacity());
 
-            activateMaterialTextures(sceneMaterial);
-            verticesInRenderPass += renderSceneItem(sceneObject, shader);
-
-            shader.unbind();
+            verticesInRenderPass += renderSceneItem(sceneItem, shader);
         }
+
+        shader.unbind();
 
         if(EngineOptions.DEBUG_MODE) {
             Logger.getInstance().logData("VERTEX COUNT SCENE", verticesInRenderPass);
@@ -208,6 +217,59 @@ public class Renderer {
         if(EngineOptions.DEBUG_MODE) {
             Logger.getInstance().logData("VERTEX COUNT HUD", verticesInRenderPass);
         }
+    }
+
+    private int renderSceneItem(IF_SceneItem _item, ShaderProgram _shader){
+
+        int vertices = 0;
+        Transform transform = _item.getTransform();
+        Mesh mesh = _item.getMesh();
+
+        vertices = mesh.getVertexCount();
+
+        Matrix4f modelMatrix = transformation.getModelMatrix(transform);
+        _shader.setUniformData("modelMatrix", modelMatrix);
+
+        glBindVertexArray(mesh.getVaoID());
+        glEnableVertexAttribArray(Mesh.VERTICES);
+        glEnableVertexAttribArray(Mesh.NORMALS);
+        glEnableVertexAttribArray(Mesh.UV_COORDS);
+
+        glDrawElements(GL_TRIANGLES, mesh.getIndicesCount(), GL_UNSIGNED_INT, 0);
+
+        glDisableVertexAttribArray(Mesh.VERTICES);
+        glDisableVertexAttribArray(Mesh.NORMALS);
+        glDisableVertexAttribArray(Mesh.UV_COORDS);
+        glBindVertexArray(0);
+
+        return vertices;
+    }
+
+    private int renderHudItem(IF_HudItem _item, ShaderProgram _shader){
+
+        int vertices = 0;
+        Transform transform = _item.getTransform();
+        Mesh mesh = _item.getMesh();
+
+        if(mesh.isVisible()) {
+            vertices = mesh.getVertexCount();
+
+            Matrix4f modelMatrix = transformation.getModelMatrix(transform);
+            _shader.setUniformData("modelMatrix", modelMatrix);
+
+            glBindVertexArray(mesh.getVaoID());
+            glEnableVertexAttribArray(Mesh.VERTICES);
+            glEnableVertexAttribArray(Mesh.NORMALS);
+            glEnableVertexAttribArray(Mesh.UV_COORDS);
+
+            glDrawElements(GL_TRIANGLES, mesh.getIndicesCount(), GL_UNSIGNED_INT, 0);
+
+            glDisableVertexAttribArray(Mesh.VERTICES);
+            glDisableVertexAttribArray(Mesh.NORMALS);
+            glDisableVertexAttribArray(Mesh.UV_COORDS);
+            glBindVertexArray(0);
+        }
+        return vertices;
     }
 
     private void activateMaterialTextures(Material _material){
@@ -242,84 +304,43 @@ public class Renderer {
         }
     }
 
-    private void frustumCullingCheck(Collection<IF_SceneItem> gameObjects){
-        if(EngineOptions.FRUSTUM_CULLING)
-        {
-            Matrix4f viewProjectionMatrix = transformation.getViewProjectionMatrix();
+    private void fillRenderListWithVisibleItems(Collection<IF_SceneItem> _gameObjects){
+        Matrix4f viewProjectionMatrix = transformation.getViewProjectionMatrix();
+        renderList.clear();
 
-            //UPDATE FRUSTUM PLANES TODO: Add option to freeze update (don't update the planes)
-            for(int i = 0; i < NUMBER_OF_FRUSTUM_PLANES; i++) {
-                viewProjectionMatrix.frustumPlane(i, frustumPlanes[i]);
+        for(int i = 0; i < NUMBER_OF_FRUSTUM_PLANES; i++) {
+            viewProjectionMatrix.frustumPlane(i, frustumPlanes[i]);
+        }
+
+        for(IF_SceneItem sceneObject : _gameObjects) {
+            if(sceneObject.getOpacity() < 0.001f || !sceneObject.getMesh().isVisible()) {
+                continue;
             }
-
-            for(IF_SceneItem sceneObject : gameObjects) {
-                //IS OBJECT INSIDE FRUSTUM?
-                Vector3f position = sceneObject.getTransform().getPosition();
-                boolean isInsideFrustum = true;
-                for (int i = 0; i < NUMBER_OF_FRUSTUM_PLANES; i++) {
-                    Vector4f plane = frustumPlanes[i];
-                    if (plane.x * position.x + plane.y * position.y + plane.z * position.z + plane.w <= -sceneObject.getMesh().getBoundingRadius() ) {
-                        isInsideFrustum = false;
-                    }
+            //IS OBJECT INSIDE FRUSTUM?
+            Vector3f position = sceneObject.getTransform().getPosition();
+            boolean isInFrustum = true;
+            for (int i = 0; i < NUMBER_OF_FRUSTUM_PLANES; i++) {
+                Vector4f plane = frustumPlanes[i];
+                if (plane.x * position.x + plane.y * position.y + plane.z * position.z + plane.w <= -sceneObject.getMesh().getBoundingRadius()) {
+                    isInFrustum = false;
                 }
+            }
 
-                sceneObject.getMesh().setVisibility(isInsideFrustum);
+            if (isInFrustum) {
+                renderList.add(sceneObject);
+            }
+
+        }
+    }
+
+    private void updateDistanceToCam(Camera _camera){
+        if(EngineOptions.TRANSPARENCY_SORT) {
+            for(IF_SceneItem sceneObject : renderList) {
+                //distance = Camera - object
+                float distance = _camera.getPosition().distance(sceneObject.getTransform().getPosition());
+                sceneObject.setDistanceToCamera(distance);
             }
         }
-    }
-
-    private int renderSceneItem(IF_SceneItem _item, ShaderProgram _shader){
-
-        int vertices = 0;
-        Transform transform = _item.getTransform();
-        Mesh mesh = _item.getMesh();
-
-        if(mesh.isVisible()) {
-            vertices = mesh.getVertexCount();
-
-            Matrix4f modelMatrix = transformation.getModelMatrix(transform);
-            _shader.setUniformData("modelMatrix", modelMatrix);
-
-            glBindVertexArray(mesh.getVaoID());
-            glEnableVertexAttribArray(Mesh.VERTICES);
-            glEnableVertexAttribArray(Mesh.NORMALS);
-            glEnableVertexAttribArray(Mesh.UV_COORDS);
-
-            glDrawElements(GL_TRIANGLES, mesh.getIndicesCount(), GL_UNSIGNED_INT, 0);
-
-            glDisableVertexAttribArray(Mesh.VERTICES);
-            glDisableVertexAttribArray(Mesh.NORMALS);
-            glDisableVertexAttribArray(Mesh.UV_COORDS);
-            glBindVertexArray(0);
-        }
-        return vertices;
-    }
-
-    private int renderHudItem(IF_HudItem _item, ShaderProgram _shader){
-
-        int vertices = 0;
-        Transform transform = _item.getTransform();
-        Mesh mesh = _item.getMesh();
-
-        if(mesh.isVisible()) {
-            vertices = mesh.getVertexCount();
-
-            Matrix4f modelMatrix = transformation.getModelMatrix(transform);
-            _shader.setUniformData("modelMatrix", modelMatrix);
-
-            glBindVertexArray(mesh.getVaoID());
-            glEnableVertexAttribArray(Mesh.VERTICES);
-            glEnableVertexAttribArray(Mesh.NORMALS);
-            glEnableVertexAttribArray(Mesh.UV_COORDS);
-
-            glDrawElements(GL_TRIANGLES, mesh.getIndicesCount(), GL_UNSIGNED_INT, 0);
-
-            glDisableVertexAttribArray(Mesh.VERTICES);
-            glDisableVertexAttribArray(Mesh.NORMALS);
-            glDisableVertexAttribArray(Mesh.UV_COORDS);
-            glBindVertexArray(0);
-        }
-        return vertices;
     }
 
     public void cleanup() {

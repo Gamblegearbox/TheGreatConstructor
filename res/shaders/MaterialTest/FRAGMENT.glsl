@@ -26,6 +26,7 @@ uniform vec3 lightPosition;
 uniform float timeOfDay;
 uniform vec3 cameraPosition;
 uniform float illumination;
+uniform float opacity;
 
 vec2 getReflectionUV(vec3 _smpDir){
     vec2 smpUV;
@@ -138,6 +139,7 @@ void main()
         //shaded.rgb *= diffuseFactor;
         vec4 reflection = tex_Reflect + colorSpecular;
         fragColor = clamp(mix(shaded, reflection, reflectionMask),0.0,1.0);
+        fragColor.a = opacity;
     }
 
 }

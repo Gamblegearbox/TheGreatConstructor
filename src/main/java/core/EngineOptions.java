@@ -14,7 +14,7 @@ public class EngineOptions {
     public static final int MULTISAMPLING = 0;
     public static final boolean V_SYNC = false;
     public static final boolean BACK_FACE_CULLING = true;
-    public static final boolean FRUSTUM_CULLING = true;
+    public static final boolean TRANSPARENCY_SORT = true;
 
     public static final float INITIAL_FOV = 30f;
     public static final float Z_NEAR = 0.5f;

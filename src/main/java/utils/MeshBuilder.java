@@ -56,7 +56,7 @@ public class MeshBuilder {
         return new Mesh(vertices, normals, uvCoords, indices, 1);
     }
 
-    public static Mesh createTriangle()
+    public static Mesh createTriangle(int _colorCoordX, int _colorCoordY)
     {
         float[] vertices = new float[]{
             0.00f,  0.5f, 0f,
@@ -71,6 +71,12 @@ public class MeshBuilder {
         };
 
         float[] uvCoords = new float[vertices.length / 3 * 2];
+
+        for(int i = 0; i < uvCoords.length; i+=2){
+            float[] atlasCoords = Assets.getUvForColorFromAtlas(_colorCoordX, _colorCoordY);
+            uvCoords[i] = atlasCoords[0];
+            uvCoords[i+1] = atlasCoords[1];
+        }
 
         int[] indices = new int[]{
             0, 1, 2,
