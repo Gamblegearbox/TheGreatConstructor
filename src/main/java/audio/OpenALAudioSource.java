@@ -34,7 +34,6 @@ public class OpenALAudioSource {
     }
 
     public void cleanup(){
-
         alDeleteSources(sourceId);
     }
 

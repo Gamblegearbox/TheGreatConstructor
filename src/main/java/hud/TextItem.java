@@ -65,7 +65,6 @@ public class TextItem implements IF_HudItem {
         this.mesh = buildMesh();
     }
 
-
     private Mesh buildMesh(){
 
         List<Float> positionsList = new ArrayList();
@@ -142,4 +141,5 @@ public class TextItem implements IF_HudItem {
     public void cleanup() {
         mesh.cleanup();
     }
+
 }

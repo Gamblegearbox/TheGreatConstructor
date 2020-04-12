@@ -1,11 +1,12 @@
 package rendering;
 
+import abstracts.GameState;
 import core.*;
 import game.Assets;
-import hud.Hud;
-import game.Scene;
 import hud.TextItem;
+import interfaces.IF_GameState;
 import interfaces.IF_HudItem;
+import interfaces.IF_HudState;
 import interfaces.IF_SceneItem;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -39,7 +40,7 @@ public class Renderer {
     private Matrix4f projectionMatrix3D;
     private Matrix4f projectionMatrixHUD;
 
-    //private ShaderProgram hudShader;
+    private ShaderProgram hudShader;
     private ShaderProgram activeMatCapShader;
     private Material sceneMaterial;
 
@@ -146,7 +147,7 @@ public class Renderer {
         activeMatCapShader = matCapShaders.get(activeMatCapShaderIndex);
     }
 
-    public void render(Scene _scene, Hud _hud, Camera _camera, Vector3f _lightPosition, float _dayTime, float _deltaTime) {
+    public void render(IF_GameState _scene, IF_HudState _hud, IF_HudState _debugHud, Camera _camera, Vector3f _lightPosition, float _dayTime, float _deltaTime) {
         anima += _deltaTime;
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
@@ -159,14 +160,18 @@ public class Renderer {
 
         renderScene(_scene, _camera, _lightPosition, _dayTime);
         renderHud(_hud);
+
+        if(EngineOptions.DEBUG_MODE){
+            renderHud(_debugHud);
+        }
     }
 
-    private void renderScene(Scene _scene, Camera _camera, Vector3f _lightPosition, float _dayTime){
+    private void renderScene(IF_GameState _scene, Camera _camera, Vector3f _lightPosition, float _dayTime){
         fillRenderListWithVisibleItems(_scene.getSceneItems().values());
         updateDistanceToCam(_camera);
         Collections.sort(renderList, distanceCompare);
 
-        System.out.println("ScnList: " + _scene.getSceneItems().values().size() + " | RList: " + renderList.size());
+        //System.out.println("ScnList: " + _scene.getSceneItems().values().size() + " | RList: " + renderList.size());
 
         ShaderProgram shader = (activeMatCapShader != null) ? activeMatCapShader : Assets.SHADER_DEBUG_TEST;
         shader.bind();
@@ -194,7 +199,7 @@ public class Renderer {
         }
     }
 
-    public void renderHud(Hud _hud){
+    public void renderHud(IF_HudState _hud){
         ShaderProgram shader;
         int verticesInRenderPass = 0;
         for(TextItem item : _hud.getHudItems().values()) {
@@ -337,8 +342,8 @@ public class Renderer {
     private void updateDistanceToCam(Camera _camera){
         if(EngineOptions.TRANSPARENCY_SORT) {
             for(IF_SceneItem sceneObject : renderList) {
-                //distance = Camera - object
                 float distance = _camera.getPosition().distance(sceneObject.getTransform().getPosition());
+
                 sceneObject.setDistanceToCamera(distance);
             }
         }

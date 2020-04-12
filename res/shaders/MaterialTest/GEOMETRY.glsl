@@ -34,7 +34,7 @@ const vec2 WIN_SCALE = vec2(1280,720);
 //REFERENCES
 //SINGLE PASS WIREFRAME: http://strattonbrazil.blogspot.com/2011/09/single-pass-wireframe-rendering_10.html
 void main(){
-    int enableSmooth=1;
+    int enableSmooth=0;
     vec3 oa = vPos_WorldSpace[1] - vPos_WorldSpace[0];
     vec3 ob = vPos_WorldSpace[2] - vPos_WorldSpace[0];
     vec3 normal_Flatshading = normalize(cross(oa, ob));

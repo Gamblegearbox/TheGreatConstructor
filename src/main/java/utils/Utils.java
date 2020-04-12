@@ -57,9 +57,9 @@ public class Utils {
     }
 
     public static String convertNormalizedFloatToTime(float _value){
-        float timaeValue = _value * 24f;
-        int hours = (int)timaeValue;
-        float minutes = (timaeValue - hours) * 60;
+        float timeValue = _value * 24f;
+        int hours = (int)timeValue;
+        float minutes = (timeValue - hours) * 60;
         float seconds = (minutes - (int)minutes) * 60;
 
         return addLeadingZero(hours) + ":"

@@ -3,6 +3,8 @@ package core;
 
 public class EngineOptions {
 
+    public static final String OPERATING_SYSTEM = System.getProperty("os.name");
+
     public static final boolean DEBUG_MODE = true;
     public static final boolean LOG_TO_FILE = false;
     public static final float LOGGING_INTERVAL = 1.0f;
@@ -20,8 +22,9 @@ public class EngineOptions {
     public static final float Z_NEAR = 0.5f;
     public static final float Z_FAR = 500f;
 
-    public static final String OPERATING_SYSTEM = System.getProperty("os.name");
-
+    public static final float LAYOUT_PADDING_X = 10f;
+    public static final float LAYOUT_PADDING_Y = 10f;
+    public static final float ROW_GAP = 5f;
 
     public static void loadSettingFromFile(String _path) {
         //TODO: load if user changed settings

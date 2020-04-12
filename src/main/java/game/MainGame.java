@@ -3,40 +3,42 @@ package game;
 import audio.OpenALAudioEngine;
 import core.EngineOptions;
 import core.Window;
-import hud.Hud;
-import hud.TextItem;
+import gameStates.MainGameScene;
+import gameStates.TitleScreen;
+import hudStates.DebugHud;
+import hudStates.InGameHud;
+import hudStates.TitleScreenHud;
 import input.KeyboardInput;
 import input.MouseInput;
 import interfaces.IF_Game;
-import interfaces.IF_SceneItem;
+import interfaces.IF_GameState;
+import interfaces.IF_HudState;
 import libraries.AudioLibrary;
 import org.joml.Vector3f;
 import rendering.Camera;
 import rendering.Renderer;
 import utils.Logger;
-import utils.MeshBuilder;
 import utils.Utils;
 
 import static org.lwjgl.glfw.GLFW.*;
-
 
 public class MainGame implements IF_Game {
 
     private final Renderer renderer;
     private final OpenALAudioEngine audioEngine;
+    private final Window window;
 
     private Camera camera;
-    private Scene[] scenes;
-    private Scene activeScene = null;
-    private Hud hud;
+    private IF_GameState[] gameStates;
+    private IF_GameState activeGameState = null;
+    private IF_HudState debugHud;
+    private IF_HudState[] hudStates;
+    private IF_HudState activeHudState = null;
 
-    //IN GAME SETTINGS
+    //IN GAME
     private static final float LENGTH_OF_DAY_IN_SECONDS = 60;
     private float timeOfDay = 0.5f; //from 0.0 to 1.0
     private final Vector3f lightPosition = new Vector3f(10, 10, 10);
-
-    //DEBUG_MODE VALUES
-    private float deltaTimeSum;
 
     //TEST VALUES
     boolean timePaused = true;
@@ -44,6 +46,7 @@ public class MainGame implements IF_Game {
     public MainGame(Window _window) {
         renderer =  new Renderer(_window);
         audioEngine = new OpenALAudioEngine();
+        window = _window;
     }
 
     @Override
@@ -52,8 +55,8 @@ public class MainGame implements IF_Game {
         renderer.init();
         audioEngine.init();
         camera = new Camera(EngineOptions.INITIAL_FOV, 0.20f, 15.0f);
-        camera.setPosition(0f,22.5f,45f);
-        camera.setRotation(25,0f,0);
+        camera.setPosition(45,45,45);
+        camera.setRotation(35,-45,0);
 
         //SET ALL KEYBOARD KEYS TO -1
         KeyboardInput.init();
@@ -61,43 +64,23 @@ public class MainGame implements IF_Game {
         //LOAD ASSETS
         AudioLibrary.loadAudioFiles("./res/TestGameContent/Audio.txt");
 
-        //CREATE SCENES
-        scenes = new Scene[1];
-        scenes[0] = new Scene("./res/TestGameContent/Scenes/MainMenu.scn");
+        //CREATE GAME STATES
+        gameStates = new IF_GameState[2];
+        gameStates[0] = new TitleScreen();
+        gameStates[1] = new MainGameScene();
 
-        //CREATE AND ADD OBJECTS TO SCENES
-        IF_SceneItem item = new Car(Assets.CTR, Assets.SHADER_DEBUG_TEST);
-        scenes[0].addSceneObject("Test_Car", item);
-
-        for(int i = 0; i < 50; i++){
-            item = new SimpleObject(MeshBuilder.createTriangle(1+i,3+i), Assets.SHADER_DEBUG_TEST);
-            item.getTransform().setPosition(5f,0.5f,i);
-            item.setOpacity(0.5f);
-            scenes[0].addSceneObject("test_" + i, item);
-        }
-
-        //HUD ITEMS
-        hud = new Hud();
-        TextItem text = new TextItem("Logging...", Assets.FONT_CONSOLAS, Assets.SHADER_HUD);
-        text.getTransform().setPosition(Hud.LAYOUT_PADDING_X, Hud.LAYOUT_PADDING_Y, 0f);
-        hud.addSceneObject("LoggedData", text);
-
-        text = new TextItem("TIME: ", Assets.FONT_CONSOLAS, Assets.SHADER_HUD);
-        text.getTransform().setPosition(Hud.LAYOUT_PADDING_X,Hud.LAYOUT_PADDING_Y + Hud.ROW_GAP + Assets.FONT_CONSOLAS.getHeight(),0f);
-        hud.addSceneObject("timeOfDay", text);
-
-        text = new TextItem("LIGHT POS: ", Assets.FONT_CONSOLAS, Assets.SHADER_HUD);
-        text.getTransform().setPosition(Hud.LAYOUT_PADDING_X,Hud.LAYOUT_PADDING_Y + 2 * (Hud.ROW_GAP + Assets.FONT_CONSOLAS.getHeight()),0f);
-        hud.addSceneObject("lightPos", text);
-
-        text = new TextItem("MOUSE POS: ", Assets.FONT_CONSOLAS, Assets.SHADER_HUD);
-        text.getTransform().setPosition(Hud.LAYOUT_PADDING_X,Hud.LAYOUT_PADDING_Y + 3 * (Hud.ROW_GAP + Assets.FONT_CONSOLAS.getHeight()),0f);
-        hud.addSceneObject("mousePos", text);
+        //CREATE HUD STATES
+        debugHud = new DebugHud();
+        hudStates = new IF_HudState[2];
+        hudStates[0] = new TitleScreenHud();
+        hudStates[1] = new InGameHud();
+        //hudStates[1] = null; //ESC Menu
+        //hudStates[2] = null; //GAME OVER MENU
     }
 
-    public void start()
-    {
+    public void start() {
         switchScene(0);
+        switchHud(0);
     }
 
     @Override
@@ -107,7 +90,6 @@ public class MainGame implements IF_Game {
             renderer.switchShader();
         }
 
-        //updateCamera(_deltaTime, _mouseInput);
         camera.update(_deltaTime, _mouseInput);
 
         //UPDATE IN GAME TIME
@@ -125,42 +107,31 @@ public class MainGame implements IF_Game {
         lightPosition.y = (float)Math.abs(Math.cos(timeToPosition)) * 50f + 10f;
         lightPosition.z = (float)-Math.cos(timeToPosition) * 50f;
 
-        activeScene.update(_deltaTime);
-        hud.getHudItems().get("timeOfDay").setText("TIME: " + Utils.convertNormalizedFloatToTime(timeOfDay % 1.0f));
-        hud.getHudItems().get("lightPos").setText("LIGHT POS: "
-                + (int)lightPosition.x
-                + " | "
-                + (int)lightPosition.z);
+        activeGameState.update(_deltaTime, this);
 
-        hud.getHudItems().get("mousePos").setText("MOUSE POS: "
-                + _mouseInput.getCurrentPos().x
-                + " | "
-                + _mouseInput.getCurrentPos().y);
-
-
-        if(EngineOptions.DEBUG_MODE)
-        {
-            deltaTimeSum += _deltaTime;
-
-            if( deltaTimeSum > EngineOptions.LOGGING_INTERVAL)
-            {
-                hud.getHudItems().get("LoggedData").setText(Logger.getInstance().getAllLoggedData());
-                deltaTimeSum = 0;
-            }
+        //HUD STUFF
+        if(EngineOptions.DEBUG_MODE){
+            debugHud.update(_deltaTime);
         }
+        activeHudState.update(_deltaTime);
+
+        //TMP until data is provided in a better way
+        MainGameScene gameScene = (MainGameScene) gameStates[1];
+        hudStates[1].getItemByTag("timeOfDay").setText("TIME OF DAY: " + Utils.convertNormalizedFloatToTime(timeOfDay % 1.0f));
+        hudStates[1].getItemByTag("distance").setText("DISTANCE: " + gameScene.getDrivenDistance());
+        hudStates[1].getItemByTag("lapTime").setText("LAP TIME: " + gameScene.getLapTime());
+        hudStates[1].getItemByTag("lastLap").setText("LAST LAP: " + gameScene.getLastLap());
     }
 
     @Override
-    public void render(float _deltaTime)
-    {
-        renderer.render(activeScene, hud, camera, lightPosition, timeOfDay % 1.0f, _deltaTime);
+    public void render(float _deltaTime) {
+        renderer.render(activeGameState, activeHudState, debugHud, camera, lightPosition, timeOfDay % 1.0f, _deltaTime);
     }
 
     @Override
-    public void cleanup()
-    {
+    public void cleanup() {
         Logger.getInstance().writeln(">> CLEANING UP GAME");
-        for(Scene temp : scenes)
+        for(IF_GameState temp : gameStates)
         {
             temp.cleanup();
         }
@@ -169,9 +140,15 @@ public class MainGame implements IF_Game {
         audioEngine.cleanup();
     }
 
-    private void switchScene(int index)
-    {
-        activeScene = scenes[index];
-        Logger.getInstance().writeln("> LOADING " + activeScene.getSceneName() +  "...");
+    public void switchScene(int _index) {
+        activeGameState = gameStates[_index];
+        Logger.getInstance().writeln("> LOADING " + activeGameState.getClass().getSimpleName() +  "...");
+    }
+    public void switchHud(int _index) {
+        activeHudState = hudStates[_index];
+        Logger.getInstance().writeln("> LOADING " + activeHudState.getClass().getSimpleName() +  "...");
+    }
+    public void quit(){
+        glfwSetWindowShouldClose(window.getWindowHandle(),true);
     }
 }

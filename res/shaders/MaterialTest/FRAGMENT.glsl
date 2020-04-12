@@ -97,9 +97,9 @@ void main()
     float reflectionMask = clamp(mix(side, front, facing) * texture(materialInfo_sampler, gTexCoord).r + reflOverride, 0.0,1.0);
 
     //SPLIT SCREEN SETTINGS
-    const int splitScreenBorder_1 = 150;
-    const int splitScreenBorder_2 = 300;
-    const int splitScreenBorder_3 = 450;
+    const int splitScreenBorder_1 = 50;
+    const int splitScreenBorder_2 = 100;
+    const int splitScreenBorder_3 = 150;
     const int splitLineWidth = 4;
     const vec4 splitLineColor = vec4(0.0,0.0,0.0,1.0);
 
