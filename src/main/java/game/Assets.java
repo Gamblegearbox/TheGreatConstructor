@@ -54,7 +54,8 @@ public class Assets {
             Utils.loadResource(TEST_FRAGMENT));
 
     //MESHES
-    public static final Mesh SPHERE = OBJLoader.loadMesh(".\\res\\TestGameContent\\Meshes\\sphere.obj", 1);
+    public static final Mesh BANNER = OBJLoader.loadMesh(".\\res\\TestGameContent\\Meshes\\banner.obj", 1);
+    public static final Mesh BANNER_NIGHT_LIGHT = OBJLoader.loadMesh(".\\res\\TestGameContent\\Meshes\\bannerNightLight.obj", 1);
     public static final Mesh CUBE = OBJLoader.loadMesh(".\\res\\TestGameContent\\Meshes\\cube.obj", 1);
     public static final Mesh NSX = OBJLoader.loadMesh(".\\res\\TestGameContent\\Meshes\\NS_X.obj", 2);
     public static final Mesh GTR = OBJLoader.loadMesh(".\\res\\TestGameContent\\Meshes\\GT_R.obj", 2);

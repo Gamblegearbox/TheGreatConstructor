@@ -4,6 +4,7 @@ import input.KeyboardInput;
 import audio.OpenALAudioSource;
 import libraries.AudioLibrary;
 import org.joml.Vector3f;
+import org.lwjgl.system.CallbackI;
 import rendering.ShaderProgram;
 import rendering.Transform;
 import rendering.Mesh;
@@ -157,6 +158,10 @@ public class Car implements IF_SceneItem {
         transform.setRotation(0, rotY,0);
     }
 
+    public Vector3f getDirection(){
+        return direction;
+    }
+
     private void calcAngularSpeed(){
         if(speed > 25){
             angularSpeed = 10 * 25 - speed * 2f;
@@ -193,6 +198,9 @@ public class Car implements IF_SceneItem {
         }*/
     }
 
+
+
+    @Override
     public void cleanup() {
         mesh.cleanup();
         audioEngine.cleanup();

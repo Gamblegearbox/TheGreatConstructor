@@ -1,5 +1,7 @@
 package rendering;
 
+import cameras.FreeFlyCamera;
+import cameras.SimpleCamera;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
@@ -65,7 +67,7 @@ public class Transformation {
         return modelMatrix;
     }
 
-    public Matrix4f getViewMatrix(Camera camera) {
+    public Matrix4f getViewMatrix(SimpleCamera camera) {
         Vector3f cameraPos = camera.getPosition();
         Vector3f rotation = camera.getRotation();
 

@@ -1,11 +1,14 @@
 package gameStates;
 
+import cameras.SimpleCamera;
+import core.EngineOptions;
 import game.Assets;
-import game.MainGame;
+import game.GameStateManager;
 import game.SimpleObject;
 import input.KeyboardInput;
 import interfaces.IF_GameState;
 import interfaces.IF_SceneItem;
+import cameras.FreeFlyCamera;
 import utils.Logger;
 
 import java.util.HashMap;
@@ -19,9 +22,13 @@ public class TitleScreen implements IF_GameState {
     private final Map<String, IF_SceneItem> sceneObjects;
     private SimpleObject titleCar;
     private float rotationSpeed;
+    private final SimpleCamera camera;
 
     public TitleScreen() {
         sceneObjects = new HashMap<>();
+        camera = new SimpleCamera(EngineOptions.INITIAL_FOV);
+        camera.setPosition(15,15,15);
+        camera.setRotation(35,-45,0);
         init();
     }
 
@@ -33,20 +40,20 @@ public class TitleScreen implements IF_GameState {
     }
 
     @Override
-    public void update(float _deltaTime, MainGame _game){
+    public void update(float _engineDeltaTime, float _gameDeltaTime){
         for(IF_SceneItem temp: sceneObjects.values()){
-            temp.update(_deltaTime);
+            temp.update(_engineDeltaTime);
         }
 
-        titleCar.getTransform().getRotation().y += _deltaTime * rotationSpeed;
+        titleCar.getTransform().getRotation().y += _engineDeltaTime * rotationSpeed;
 
         if(KeyboardInput.isKeyPressedOnce(GLFW_KEY_SPACE)) {
-            _game.switchHud(1);
-            _game.switchScene(1);
+            GameStateManager.getInstance().changeHudState(1);
+            GameStateManager.getInstance().changeGameState(1);
         }
 
         if(KeyboardInput.isKeyPressedOnce(GLFW_KEY_ESCAPE)) {
-            _game.quit();
+            GameStateManager.getInstance().quitGame();
         }
     }
 
@@ -68,4 +75,8 @@ public class TitleScreen implements IF_GameState {
         return sceneObjects.get(_tag);
     }
 
+    @Override
+    public SimpleCamera getCamera(){
+        return camera;
+    }
 }

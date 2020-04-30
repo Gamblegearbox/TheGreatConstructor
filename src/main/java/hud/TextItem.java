@@ -28,7 +28,7 @@ public class TextItem implements IF_HudItem {
 
         transform = new Transform();
         shader = _shader;
-        mesh = buildMesh();
+        buildMesh();
     }
 
     @Override
@@ -62,10 +62,10 @@ public class TextItem implements IF_HudItem {
     public void setText(String _text){
         this.text = _text;
         this.mesh.cleanup();
-        this.mesh = buildMesh();
+        buildMesh();
     }
 
-    private Mesh buildMesh(){
+    private void buildMesh(){
 
         List<Float> positionsList = new ArrayList();
         List<Float> uvCoordsList = new ArrayList();
@@ -134,7 +134,7 @@ public class TextItem implements IF_HudItem {
         }
 
         //TODO: replace with update mesh data! put "new" into contructor!
-        return new Mesh(positions, normals, uvCoords, indices, BOUNDING_RADIUS);
+        mesh = new Mesh(positions, normals, uvCoords, indices, BOUNDING_RADIUS);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package rendering;
 
-import abstracts.GameState;
+import cameras.FreeFlyCamera;
+import cameras.SimpleCamera;
 import core.*;
 import game.Assets;
 import hud.TextItem;
@@ -147,18 +148,19 @@ public class Renderer {
         activeMatCapShader = matCapShaders.get(activeMatCapShaderIndex);
     }
 
-    public void render(IF_GameState _scene, IF_HudState _hud, IF_HudState _debugHud, Camera _camera, Vector3f _lightPosition, float _dayTime, float _deltaTime) {
+    public void render(IF_GameState _scene, IF_HudState _hud, IF_HudState _debugHud, Vector3f _lightPosition, float _dayTime, float _deltaTime) {
         anima += _deltaTime;
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+        SimpleCamera camera = _scene.getCamera();
 
         if ( window.isResized() ) {
-            projectionMatrix3D = transformation.getPerspectiveProjectionMatrix(_camera.getFieldOfView(), window.getWidth(), window.getHeight(), EngineOptions.Z_NEAR, EngineOptions.Z_FAR);
+            projectionMatrix3D = transformation.getPerspectiveProjectionMatrix(camera.getFieldOfView(), window.getWidth(), window.getHeight(), EngineOptions.Z_NEAR, EngineOptions.Z_FAR);
             projectionMatrixHUD = transformation.getOrthographicProjectionMatrix(0, window.getWidth(), window.getHeight(), 0);
             glViewport(0, 0, window.getWidth(), window.getHeight());
             window.setResized(false);
         }
 
-        renderScene(_scene, _camera, _lightPosition, _dayTime);
+        renderScene(_scene, camera, _lightPosition, _dayTime);
         renderHud(_hud);
 
         if(EngineOptions.DEBUG_MODE){
@@ -166,7 +168,7 @@ public class Renderer {
         }
     }
 
-    private void renderScene(IF_GameState _scene, Camera _camera, Vector3f _lightPosition, float _dayTime){
+    private void renderScene(IF_GameState _scene, SimpleCamera _camera, Vector3f _lightPosition, float _dayTime){
         fillRenderListWithVisibleItems(_scene.getSceneItems().values());
         updateDistanceToCam(_camera);
         Collections.sort(renderList, distanceCompare);
@@ -339,7 +341,7 @@ public class Renderer {
         }
     }
 
-    private void updateDistanceToCam(Camera _camera){
+    private void updateDistanceToCam(SimpleCamera _camera){
         if(EngineOptions.TRANSPARENCY_SORT) {
             for(IF_SceneItem sceneObject : renderList) {
                 float distance = _camera.getPosition().distance(sceneObject.getTransform().getPosition());

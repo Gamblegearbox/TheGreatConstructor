@@ -10,7 +10,7 @@ public class SimpleObject implements IF_SceneItem{
     private final Transform transform;
     private final ShaderProgram shader;
     private final Mesh mesh;
-    private float glow = 0;
+    private float illuminationAmount = 1;
     private float distanceToCamera;
     private float opacity = 1.0f;
 
@@ -46,12 +46,12 @@ public class SimpleObject implements IF_SceneItem{
     }
 
     public void setIlluminationAmount(float _glow) {
-        glow = _glow;
+        illuminationAmount = _glow;
     }
 
     @Override
     public float getIlluminationAmount() {
-        return glow;
+        return illuminationAmount;
     }
 
     @Override

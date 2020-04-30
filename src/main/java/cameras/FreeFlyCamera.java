@@ -1,4 +1,4 @@
-package rendering;
+package cameras;
 
 import input.KeyboardInput;
 import input.MouseInput;
@@ -7,7 +7,7 @@ import org.joml.Vector3f;
 
 import static org.lwjgl.glfw.GLFW.*;
 
-public class Camera {
+public class FreeFlyCamera {
 
     private final Vector3f position;
     private final Vector3f rotation;
@@ -16,7 +16,7 @@ public class Camera {
     private float sensitivity;
     private float speed;
 
-    public Camera(float _fov, float _sensitivity, float _speed){
+    public FreeFlyCamera(float _fov, float _sensitivity, float _speed){
         position = new Vector3f(0,0,0);
         rotation = new Vector3f(0,0,0);
         fov = _fov;
@@ -41,6 +41,12 @@ public class Camera {
         position.x = x;
         position.y = y;
         position.z = z;
+    }
+
+    public void setPosition(Vector3f _pos) {
+        position.x = _pos.x;
+        position.y = _pos.y;
+        position.z = _pos.z;
     }
 
     public void movePosition(float offsetX, float offsetY, float offsetZ) {

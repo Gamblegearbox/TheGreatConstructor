@@ -18,33 +18,28 @@ public class Logger {
 
     private Logger()
     {
+        writeln(">> CREATING LOGGER [SINGLETON]");
         loggedData = new HashMap<>();
 
-        if (EngineOptions.LOG_TO_FILE)
-        {
+        if (EngineOptions.LOG_TO_FILE) {
             File logFile = new File("EngineLogFile.txt");
 
-            try
-            {
-                if (!logFile.exists())
-                {
+            try {
+                if (!logFile.exists()) {
                     logFile.createNewFile();
                 }
 
                 out = new BufferedWriter(new FileWriter(logFile, true));
                 out.write("ENGINE START: " + Calendar.getInstance().getTime() + "\n\n");
             }
-            catch(Exception e)
-            {
+            catch(Exception e) {
                 e.printStackTrace();
             }
         }
     }
 
-    public static Logger getInstance()
-    {
-        if(instance == null)
-        {
+    public static Logger getInstance() {
+        if(instance == null) {
             instance = new Logger();
         }
 
@@ -56,10 +51,8 @@ public class Logger {
         loggedData.put(_label, _logValue);
     }
 
-    public void write(String _log)
-    {
-        if (EngineOptions.LOG_TO_FILE)
-        {
+    public void write(String _log) {
+        if (EngineOptions.LOG_TO_FILE) {
             try {
                 out.write(_log);
                 out.flush();
@@ -67,49 +60,38 @@ public class Logger {
                 e.printStackTrace();
             }
         }
-        else
-        {
+        else {
             System.out.print(_log);
         }
     }
 
-    public void writeln(String _log)
-    {
-        if (EngineOptions.LOG_TO_FILE)
-        {
-            try
-            {
+    public void writeln(String _log) {
+        if (EngineOptions.LOG_TO_FILE) {
+            try {
                 out.write(_log + "\n");
                 out.flush();
             }
-            catch (Exception e)
-            {
+            catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        else
-        {
+        else {
             System.out.println(_log);
         }
     }
 
-    public void outputLoggedData()
-    {
-        if (EngineOptions.LOG_TO_FILE)
-        {
-            try
-            {
+    public void outputLoggedData() {
+        if (EngineOptions.LOG_TO_FILE) {
+            try {
                 out.write(buildLoggedDataString());
                 out.write("\n");
                 out.flush();
             }
-            catch (Exception e)
-            {
+            catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        else
-        {
+        else {
             System.out.print(buildLoggedDataString());
             System.out.println();
         }
@@ -126,18 +108,15 @@ public class Logger {
     private String buildLoggedDataString(){
         String result = "";
 
-        for(Map.Entry entry : loggedData.entrySet())
-        {
+        for(Map.Entry entry : loggedData.entrySet()) {
             result +=(entry.getKey() + ": " + entry.getValue() + " | ");
         }
 
         return result;
     }
 
-    public void cleanup()
-    {
-        if (EngineOptions.LOG_TO_FILE)
-        {
+    public void cleanup() {
+        if (EngineOptions.LOG_TO_FILE) {
             try {
                 out.write("\n");
                 out.close();

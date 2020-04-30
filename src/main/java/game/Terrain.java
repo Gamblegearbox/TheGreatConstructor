@@ -50,7 +50,7 @@ public class Terrain implements IF_SceneItem {
 
         int index = 0;
 
-        float amplitude = 0.3f;
+        float amplitude = 0.05f;
         float frequency = 1f;
 
         for(int z = 0; z < lengthRes + 1; z++){

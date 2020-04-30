@@ -19,7 +19,6 @@ public class Mesh {
     public static final int NORMALS = 1;
     public static final int UV_COORDS = 2;
 
-    private final float boundingRadius;
     private final int vaoID;
     private final int vboID_vertices;
     private final int vboID_normals;
@@ -28,11 +27,14 @@ public class Mesh {
     private final int vertexCount;
     private final int indicesCount;
     private boolean isVisible;
+    private float boundingRadius;
 
     private FloatBuffer verticesBuffer;
+    private FloatBuffer uvBuffer;
+    private FloatBuffer normalsBuffer;
+    private IntBuffer indicesBuffer;
 
-    public Mesh(float[] _vertices, float[] _normals, float[] _uvCoords, int[] _indices, float _boundingRadius)
-    {
+    public Mesh(float[] _vertices, float[] _normals, float[] _uvCoords, int[] _indices, float _boundingRadius) {
         boundingRadius = _boundingRadius;
         vertexCount = _vertices.length / 3;
         indicesCount = _indices.length;
@@ -41,29 +43,19 @@ public class Mesh {
         glBindVertexArray(vaoID);
 
         vboID_vertices = glGenBuffers();
-        verticesBuffer = BufferUtils.createFloatBuffer(_vertices.length);
         updateVertices(_vertices);
         glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
 
         vboID_normals = glGenBuffers();
-        FloatBuffer normalsBuffer = BufferUtils.createFloatBuffer(_normals.length);
-        normalsBuffer.put(_normals).flip();
-        glBindBuffer(GL_ARRAY_BUFFER, vboID_normals);
-        glBufferData(GL_ARRAY_BUFFER, normalsBuffer, GL_STATIC_DRAW);
+        updateNormals(_normals);
         glVertexAttribPointer(1, 3, GL_FLOAT, false, 0, 0);
 
         vboID_uvCoords = glGenBuffers();
-        FloatBuffer uvBuffer = BufferUtils.createFloatBuffer(_uvCoords.length);
-        uvBuffer.put(_uvCoords).flip();
-        glBindBuffer(GL_ARRAY_BUFFER, vboID_uvCoords);
-        glBufferData(GL_ARRAY_BUFFER, uvBuffer, GL_STATIC_DRAW);
+        updateUVCoords(_uvCoords);
         glVertexAttribPointer(2, 2, GL_FLOAT, false, 0, 0);
 
         vboID_indices = glGenBuffers();
-        IntBuffer indicesBuffer = BufferUtils.createIntBuffer(_indices.length);
-        indicesBuffer.put(_indices).flip();
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboID_indices);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL_STATIC_DRAW);
+        updateIndices(_indices);
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
@@ -81,10 +73,49 @@ public class Mesh {
         return isVisible;
     }
 
-    public void updateVertices(float[] _vertices){
+    private void updateVertices(float[] _vertices){
+        verticesBuffer = BufferUtils.createFloatBuffer(_vertices.length);
         verticesBuffer.put(_vertices).flip();
         glBindBuffer(GL_ARRAY_BUFFER, vboID_vertices);
         glBufferData(GL_ARRAY_BUFFER, verticesBuffer, GL_STATIC_DRAW);
+    }
+
+    private void updateUVCoords(float[] _uvCoords){
+        uvBuffer = BufferUtils.createFloatBuffer(_uvCoords.length);
+        uvBuffer.put(_uvCoords).flip();
+        glBindBuffer(GL_ARRAY_BUFFER, vboID_uvCoords);
+        glBufferData(GL_ARRAY_BUFFER, uvBuffer, GL_STATIC_DRAW);
+    }
+
+    private void updateNormals(float[] _normals){
+        normalsBuffer = BufferUtils.createFloatBuffer(_normals.length);
+        normalsBuffer.put(_normals).flip();
+        glBindBuffer(GL_ARRAY_BUFFER, vboID_normals);
+        glBufferData(GL_ARRAY_BUFFER, normalsBuffer, GL_STATIC_DRAW);
+    }
+
+    private void updateIndices(int[] _indices){
+        indicesBuffer = BufferUtils.createIntBuffer(_indices.length);
+        indicesBuffer.put(_indices).flip();
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboID_indices);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL_STATIC_DRAW);
+    }
+
+    private void updateBoundingRadius(float _radius){
+        boundingRadius = _radius;
+    }
+
+    public void updateMeshData(float[] _vertices, float[] _normals, float[] _uvCoords, int[] _indices, float _boundingRadius){
+        glBindVertexArray(vaoID);
+
+        updateVertices(_vertices);
+        updateNormals(_normals);
+        updateUVCoords(_uvCoords);
+        updateIndices(_indices);
+        updateBoundingRadius(_boundingRadius);
+
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
     }
 
     public int getVaoID()

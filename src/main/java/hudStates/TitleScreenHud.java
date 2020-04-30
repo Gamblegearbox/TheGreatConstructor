@@ -2,7 +2,6 @@ package hudStates;
 
 import core.EngineOptions;
 import game.Assets;
-import game.MainGame;
 import hud.TextItem;
 import interfaces.IF_HudItem;
 import interfaces.IF_HudState;
@@ -34,7 +33,7 @@ public class TitleScreenHud implements IF_HudState {
     public void init() {
         TextItem text = new TextItem(">>> PRESS SPACE TO START <<<", Assets.FONT_CONSOLAS, Assets.SHADER_HUD);
         text.getTransform().setPosition((EngineOptions.WINDOW_WIDTH / 2.0f) - 150,
-                                        EngineOptions.WINDOW_HEIGHT / 2.0f + 50, 0f);
+                                        EngineOptions.WINDOW_HEIGHT / 2.0f + 100, 0f);
         hudObjects.put("pressToStart", text);
     }
 

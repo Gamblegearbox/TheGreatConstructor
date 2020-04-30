@@ -2,7 +2,6 @@ package hudStates;
 
 import core.EngineOptions;
 import game.Assets;
-import game.MainGame;
 import hud.TextItem;
 import interfaces.IF_HudItem;
 import interfaces.IF_HudState;

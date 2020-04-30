@@ -1,5 +1,4 @@
 package interfaces;
-import game.MainGame;
 import hud.TextItem;
 import java.util.Map;
 
