@@ -76,7 +76,7 @@ public class Assets {
     public static final float TEXTURE_ATLAS_COLOR_V_OFFSET = 1.0f / 4.0f;
     public static final float TEXTURE_ATLAS_BORDER_V_OFFSET = TEXTURE_ATLAS_COLOR_V_OFFSET * 0.5f;
 
-    public static float[] uvCoords = new float[2];
+    public static final float[] uvCoords = new float[2];
     public static float[] getUvForColorFromAtlas(int _x, int _y){
 
         uvCoords[0] = Assets.TEXTURE_ATLAS_BORDER_U_OFFSET + Assets.TEXTURE_ATLAS_COLOR_U_OFFSET * _x;

@@ -14,21 +14,21 @@ public class Terrain implements IF_SceneItem {
 
     private final Transform transform;
     private final ShaderProgram shader;
-    private Mesh mesh;
+    private final Mesh mesh;
     private float distanceToCamera;
     private float opacity = 1.0f;
-    private Random random = new Random();
+    private final Random random = new Random();
 
     private final int lengthRes = 64;
     private final int widthRes = 64;
     private final float length = 50;
     private final float width = 50;
-    private float boundingRadius = length;
+    private final float boundingRadius = length;
 
-    private float[] verts;
-    private float[] normals;
-    private float[] uvCoords;
-    private int[] indices;
+    private final float[] verts;
+    private final float[] normals;
+    private final float[] uvCoords;
+    private final int[] indices;
 
     public Terrain(ShaderProgram _shader){
         transform = new Transform();

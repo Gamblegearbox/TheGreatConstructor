@@ -31,16 +31,9 @@ public class CoreLoop implements Runnable{
     {
         String osName = EngineOptions.OPERATING_SYSTEM;
 
-        if(osName.contains("Mac"))
-        {
-            gameLoopThread.run();
-            //consoleThread.run();
-        }
-        else
-        {
-            gameLoopThread.start();
-            //consoleThread.start();
-        }
+        gameLoopThread.start();
+        //consoleThread.start();
+
     }
 
     @Override
@@ -69,8 +62,7 @@ public class CoreLoop implements Runnable{
         game.init();
     }
 
-    private void startGameLoop() throws Exception
-    {
+    private void startGameLoop() {
         Logger.getInstance().writeln("> STARTING GAME LOOP");
 
         game.start();

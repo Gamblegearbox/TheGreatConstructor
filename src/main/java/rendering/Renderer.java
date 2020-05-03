@@ -1,6 +1,5 @@
 package rendering;
 
-import cameras.FreeFlyCamera;
 import cameras.SimpleCamera;
 import core.*;
 import game.Assets;
@@ -16,7 +15,6 @@ import utils.Logger;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -37,7 +35,7 @@ public class Renderer {
     private final Vector4f[] frustumPlanes;
     private final DistanceCompare distanceCompare = new DistanceCompare();
 
-    private ArrayList<IF_SceneItem> renderList;
+    private final ArrayList<IF_SceneItem> renderList;
     private Matrix4f projectionMatrix3D;
     private Matrix4f projectionMatrixHUD;
 
@@ -171,7 +169,7 @@ public class Renderer {
     private void renderScene(IF_GameState _scene, SimpleCamera _camera, Vector3f _lightPosition, float _dayTime){
         fillRenderListWithVisibleItems(_scene.getSceneItems().values());
         updateDistanceToCam(_camera);
-        Collections.sort(renderList, distanceCompare);
+        renderList.sort(distanceCompare);
 
         //System.out.println("ScnList: " + _scene.getSceneItems().values().size() + " | RList: " + renderList.size());
 
@@ -228,7 +226,7 @@ public class Renderer {
 
     private int renderSceneItem(IF_SceneItem _item, ShaderProgram _shader){
 
-        int vertices = 0;
+        int vertices;
         Transform transform = _item.getTransform();
         Mesh mesh = _item.getMesh();
 

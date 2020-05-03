@@ -11,7 +11,7 @@ import java.util.List;
 
 public class TextItem implements IF_HudItem {
 
-    private static final float ZPOS = 0.0f;
+    private static final float Z_POS = 0.0f;
     private static final float BOUNDING_RADIUS = 1.0f;
     private static final int VERTICES_PER_QUAD = 4;
 
@@ -81,7 +81,7 @@ public class TextItem implements IF_HudItem {
             // VERTEX TOP LEFT
             positionsList.add(startX);                           //x
             positionsList.add(0.0f);                             //y
-            positionsList.add(ZPOS);                             //z
+            positionsList.add(Z_POS);                             //z
             uvCoordsList.add((float)charInfo.getStartX() / (float) fontTexture.getWidth());
             uvCoordsList.add(0.0f);
             indicesList.add(i*VERTICES_PER_QUAD);
@@ -89,7 +89,7 @@ public class TextItem implements IF_HudItem {
             // VERTEX BOTTOM LEFT
             positionsList.add(startX);                           //x
             positionsList.add((float)fontTexture.getHeight());   //y
-            positionsList.add(ZPOS);                             //z
+            positionsList.add(Z_POS);                             //z
             uvCoordsList.add((float)charInfo.getStartX() / (float) fontTexture.getWidth());
             uvCoordsList.add(1.0f);
             indicesList.add(i*VERTICES_PER_QUAD + 1);
@@ -97,7 +97,7 @@ public class TextItem implements IF_HudItem {
             // VERTEX BOTTOM RIGHT
             positionsList.add(startX + charInfo.getWidth());     //x
             positionsList.add((float)fontTexture.getHeight());   //y
-            positionsList.add(ZPOS);                             //z
+            positionsList.add(Z_POS);                             //z
             uvCoordsList.add((float)(charInfo.getStartX() + charInfo.getWidth() )/ (float)fontTexture.getWidth());
             uvCoordsList.add(1.0f);
             indicesList.add(i*VERTICES_PER_QUAD + 2);
@@ -105,7 +105,7 @@ public class TextItem implements IF_HudItem {
             // VERTEX TOP RIGHT
             positionsList.add(startX + charInfo.getWidth());     //x
             positionsList.add(0.0f);                             //y
-            positionsList.add(ZPOS);                             //z
+            positionsList.add(Z_POS);                             //z
             uvCoordsList.add((float)(charInfo.getStartX() + charInfo.getWidth() ) / (float)fontTexture.getWidth());
             uvCoordsList.add(0.0f);
             indicesList.add(i*VERTICES_PER_QUAD + 3);
@@ -133,7 +133,7 @@ public class TextItem implements IF_HudItem {
             indices[i] = indicesList.get(i);
         }
 
-        //TODO: replace with update mesh data! put "new" into contructor!
+        //TODO: replace with update mesh data! put "new" into constructor!
         mesh = new Mesh(positions, normals, uvCoords, indices, BOUNDING_RADIUS);
     }
 

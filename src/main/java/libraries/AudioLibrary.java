@@ -42,9 +42,9 @@ public class AudioLibrary {
             }
         }
 
-        for(int i = 0; i < audioDataFromFile.size(); i++){
+        for (String s : audioDataFromFile) {
 
-            String[] line = audioDataFromFile.get(i).split("=");
+            String[] line = s.split("=");
             String objectData = line[line.length - 1];
 
             String[] objectDataTokens = objectData.split(";");
@@ -67,7 +67,7 @@ public class AudioLibrary {
         IntBuffer sampleRateBuffer = stackMallocInt(1);
         ShortBuffer rawAudioBuffer = stb_vorbis_decode_filename(_path, channelsBuffer, sampleRateBuffer);
 
-        //Retreive the extra information that was stored in the buffers by the function
+        //Retrieve the extra information that was stored in the buffers by the function
         int channels = channelsBuffer.get();
         int sampleRate = sampleRateBuffer.get();
 

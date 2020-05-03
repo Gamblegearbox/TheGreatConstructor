@@ -16,14 +16,14 @@ import java.util.Map;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_SPACE;
 
-public class TitleScreen implements IF_GameState {
+public class ChooseCarScreen implements IF_GameState {
 
     private final Map<String, IF_SceneItem> sceneObjects;
     private SimpleObject titleCar;
     private float rotationSpeed;
     private final SimpleCamera camera;
 
-    public TitleScreen() {
+    public ChooseCarScreen() {
         sceneObjects = new HashMap<>();
         camera = new SimpleCamera(EngineOptions.INITIAL_FOV);
         camera.setPosition(15,15,15);

@@ -50,10 +50,10 @@ public class EscMenuHud implements IF_HudState {
         float yStart = EngineOptions.WINDOW_HEIGHT / 2.0f - 2f * (fontHeight + gap);
 
         TextItem text;
-        for(int i = 0; i < menuCommands.length; i++){
-            text = new TextItem(menuCommands[i], Assets.FONT_CONSOLAS, Assets.SHADER_HUD);
+        for (String menuCommand : menuCommands) {
+            text = new TextItem(menuCommand, Assets.FONT_CONSOLAS, Assets.SHADER_HUD);
             text.getTransform().setPosition(xStart, yStart + hudObjects.size() * (gap + fontHeight), 0f);
-            hudObjects.put(menuCommands[i], text);
+            hudObjects.put(menuCommand, text);
         }
         text = new TextItem(">>", Assets.FONT_CONSOLAS, Assets.SHADER_HUD);
         Vector3f firstItemPosition = hudObjects.get(menuCommands[0]).getTransform().getPosition();

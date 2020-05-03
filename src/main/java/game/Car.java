@@ -4,7 +4,6 @@ import input.KeyboardInput;
 import audio.OpenALAudioSource;
 import libraries.AudioLibrary;
 import org.joml.Vector3f;
-import org.lwjgl.system.CallbackI;
 import rendering.ShaderProgram;
 import rendering.Transform;
 import rendering.Mesh;
@@ -24,17 +23,17 @@ public class Car implements IF_SceneItem {
     private float opacity = 1.0f;
 
     //CAR DATA
-    private float accel = 20f;
-    private float maxSpeed = 65f;
-    private float coast = 5f;
-    private float brake = 20f;
+    private final float acceleration = 20f;
+    private final float maxSpeed = 65f;
+    private final float coast = 5f;
+    private final float brake = 20f;
 
     //CAR STATE
     private float rotY = 0;
     private float speed = 0;
     private float angularSpeed = 0;
-    private Vector3f direction;
-    private Vector3f velocity;
+    private final Vector3f direction;
+    private final Vector3f velocity;
 
     //AUDIO
     private final OpenALAudioSource audioEngine;
@@ -121,7 +120,7 @@ public class Car implements IF_SceneItem {
 
         if(KeyboardInput.isKeyRepeated(GLFW_KEY_UP)){
             if(speed < maxSpeed) {
-                speed += _deltaTime * accel;
+                speed += _deltaTime * acceleration;
             }
 
         } else {

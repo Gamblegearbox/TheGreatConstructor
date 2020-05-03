@@ -9,7 +9,7 @@ public class Water implements IF_SceneItem {
 
     private final Transform transform;
     private final ShaderProgram shader;
-    private Mesh mesh;
+    private final Mesh mesh;
     private float distanceToCamera;
     private float opacity = 1.0f;
 

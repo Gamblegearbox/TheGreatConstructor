@@ -1,6 +1,5 @@
 package rendering;
 
-import cameras.FreeFlyCamera;
 import cameras.SimpleCamera;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -8,7 +7,7 @@ import org.joml.Vector3f;
 public class Transformation {
 
     private final Matrix4f projectionMatrixPerspective;
-    private final Matrix4f projectionMatrixOrtho;
+    private final Matrix4f projectionMatrixOrthographic;
     private final Matrix4f viewMatrix;
     private final Matrix4f viewProjectionMatrix;
 
@@ -17,7 +16,7 @@ public class Transformation {
 
     public Transformation(){
         projectionMatrixPerspective = new Matrix4f();
-        projectionMatrixOrtho = new Matrix4f();
+        projectionMatrixOrthographic = new Matrix4f();
         viewMatrix = new Matrix4f();
         viewProjectionMatrix = new Matrix4f();
 
@@ -33,10 +32,10 @@ public class Transformation {
     }
 
     public Matrix4f getOrthographicProjectionMatrix(float left, float right, float bottom, float top) {
-        projectionMatrixOrtho.identity();
-        projectionMatrixOrtho.setOrtho2D(left, right, bottom, top);
+        projectionMatrixOrthographic.identity();
+        projectionMatrixOrthographic.setOrtho2D(left, right, bottom, top);
 
-        return projectionMatrixOrtho;
+        return projectionMatrixOrthographic;
     }
 
     public Matrix4f getViewProjectionMatrix(){

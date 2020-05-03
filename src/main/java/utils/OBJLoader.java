@@ -113,7 +113,7 @@ public class OBJLoader {
             texCoordArr[posIndex * 2 + 1] = 1 - textCoord.y;
         }
         if (indices.idxVecNormal >= 0) {
-            // Reorder vectornormals
+            // Reorder vector normals
             Vector3f vecNorm = normList.get(indices.idxVecNormal);
             normArr[posIndex * 3] = vecNorm.x;
             normArr[posIndex * 3 + 1] = vecNorm.y;
@@ -126,7 +126,7 @@ public class OBJLoader {
         /**
          * List of idxGroup groups for a face triangle (3 vertices per face).
          */
-        private IdxGroup[] idxGroups = new IdxGroup[3];
+        private IdxGroup[] idxGroups;
 
         Face(String v1, String v2, String v3)
         {

@@ -13,8 +13,8 @@ public class FreeFlyCamera {
     private final Vector3f rotation;
 
     private float fov;
-    private float sensitivity;
-    private float speed;
+    private final float sensitivity;
+    private final float speed;
 
     public FreeFlyCamera(float _fov, float _sensitivity, float _speed){
         position = new Vector3f(0,0,0);
@@ -77,7 +77,7 @@ public class FreeFlyCamera {
         rotation.z += offsetZ;
     }
 
-    Vector3f cameraInc = new Vector3f(0,0,0);
+    final Vector3f cameraInc = new Vector3f(0,0,0);
     public void update(float _deltaTime, MouseInput _mouseInput){
         // POSITION
 

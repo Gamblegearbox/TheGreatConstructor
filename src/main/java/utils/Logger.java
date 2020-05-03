@@ -106,13 +106,13 @@ public class Logger {
     }
 
     private String buildLoggedDataString(){
-        String result = "";
+        StringBuilder result = new StringBuilder();
 
         for(Map.Entry entry : loggedData.entrySet()) {
-            result +=(entry.getKey() + ": " + entry.getValue() + " | ");
+            result.append(entry.getKey()).append(": ").append(entry.getValue()).append(" | ");
         }
 
-        return result;
+        return result.toString();
     }
 
     public void cleanup() {

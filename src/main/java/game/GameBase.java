@@ -3,7 +3,7 @@ package game;
 import audio.OpenALAudioEngine;
 import core.EngineOptions;
 import core.Window;
-import gameStates.GameScene;
+import gameStates.GameScreen;
 import gameStates.TitleScreen;
 import hudStates.*;
 import input.KeyboardInput;
@@ -67,7 +67,7 @@ public class GameBase implements IF_Game {
         //CREATE GAME STATES
         gameStates = new IF_GameState[2];
         gameStates[TITLE_SCREEN] = new TitleScreen();
-        gameStates[GAME_SCENE] = new GameScene();
+        gameStates[GAME_SCENE] = new GameScreen();
 
         //CREATE HUD STATES
         debugHud = new DebugHud();
@@ -113,7 +113,7 @@ public class GameBase implements IF_Game {
         activeHudState.update(_engineDeltaTime);
 
         //TMP until data is provided in a better way
-        GameScene gameScene = (GameScene) gameStates[1];
+        GameScreen gameScene = (GameScreen) gameStates[1];
         hudStates[IN_GAME_HUD].getItemByTag("timeOfDay").setText("TIME OF DAY: " + Utils.convertNormalizedFloatToTime(timeOfDay % 1.0f));
         hudStates[IN_GAME_HUD].getItemByTag("distance").setText("DISTANCE: " + gameScene.getDrivenDistance());
         hudStates[IN_GAME_HUD].getItemByTag("lapTime").setText("LAP TIME: " + gameScene.getLapTime());
@@ -153,7 +153,7 @@ public class GameBase implements IF_Game {
     public void reset(){
         gameStates = new IF_GameState[2];
         gameStates[TITLE_SCREEN] = new TitleScreen();
-        gameStates[GAME_SCENE] = new GameScene();
+        gameStates[GAME_SCENE] = new GameScreen();
 
         debugHud = new DebugHud();
         hudStates = new IF_HudState[4];

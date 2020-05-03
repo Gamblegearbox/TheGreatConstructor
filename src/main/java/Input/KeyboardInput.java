@@ -2,6 +2,8 @@ package input;
 
 import org.lwjgl.glfw.GLFWKeyCallback;
 
+import java.util.Arrays;
+
 import static org.lwjgl.glfw.GLFW.*;
 
 
@@ -43,10 +45,7 @@ public class KeyboardInput extends GLFWKeyCallback{
     }
 
     public static void init(){
-
-        for(int i = 0; i < keyStatus.length; i++){
-            keyStatus[i] = -1;
-        }
+        Arrays.fill(keyStatus, -1);
     }
 
 }

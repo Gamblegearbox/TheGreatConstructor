@@ -5,7 +5,6 @@ import java.util.Scanner;
 
 public class Console implements Runnable {
 
-    private boolean isRunning;
     private final Scanner scanner;
 
     public Console(){
@@ -20,7 +19,7 @@ public class Console implements Runnable {
     private void startConsoleLoop()
     {
         Logger.getInstance().writeln("# STARTING CONSOLE LOOP");
-        isRunning = true;
+        boolean isRunning = true;
 
         while(isRunning)
         {

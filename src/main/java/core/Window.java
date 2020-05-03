@@ -78,13 +78,13 @@ public class Window {
         glfwSetKeyCallback(windowHandle, keyCallback = new KeyboardInput());
 
         // Get the resolution of the primary monitor
-        GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+        GLFWVidMode videoMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 
         // Center our window
         glfwSetWindowPos(
                 windowHandle,
-                (vidmode.width() - width) / 2,
-                (vidmode.height() - height) / 2
+                (videoMode.width() - width) / 2,
+                (videoMode.height() - height) / 2
         );
 
         // Make the OpenGL context current

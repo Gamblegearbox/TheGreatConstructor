@@ -14,7 +14,7 @@ import java.util.Map;
 
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
 
-public class GameScene implements IF_GameState {
+public class GameScreen implements IF_GameState {
 
     private final Map<String, IF_SceneItem> sceneObjects;
     private Car playerCar;
@@ -24,7 +24,7 @@ public class GameScene implements IF_GameState {
     private final SimpleCamera camera;
     private final Vector3f cameraOffset;
 
-    public GameScene() {
+    public GameScreen() {
         sceneObjects = new HashMap<>();
         camera = new SimpleCamera(EngineOptions.INITIAL_FOV);
         camera.setPosition(45,45,45);
@@ -95,7 +95,7 @@ public class GameScene implements IF_GameState {
                 GameStateManager.getInstance().changeHudState(GameBase.FINISHED_HUD);
             }
         }
-        else if(playerCar.getTransform().getPosition().z < sceneObjects.get("startLine").getTransform().getPosition().z) { //TODO: triggerbox here
+        else if(playerCar.getTransform().getPosition().z < sceneObjects.get("startLine").getTransform().getPosition().z) { //TODO: trigger box here
             raceStarted = true;
         }
 
