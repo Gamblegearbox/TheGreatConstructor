@@ -39,7 +39,7 @@ public class GameScreen implements IF_GameState {
         float trackLength = 500;
         int bannerRows = 10;
         IF_SceneItem temp;
-        playerCar = new Car(Assets.CTR, Assets.SHADER_DEBUG_TEST);
+        playerCar = new Car(Assets.CT_R, Assets.SHADER_DEBUG_TEST);
         playerCar.getTransform().setPosition(0,0,5);
         sceneObjects.put("testCar", playerCar );
         temp = new SimpleObject(MeshBuilder.createPlane(20,1f,1,1,0,2), Assets.SHADER_DEBUG_TEST);

@@ -3,6 +3,7 @@ package game;
 import audio.OpenALAudioEngine;
 import core.EngineOptions;
 import core.Window;
+import gameStates.ChooseCarScreen;
 import gameStates.GameScreen;
 import gameStates.TitleScreen;
 import hudStates.*;
@@ -38,6 +39,8 @@ public class GameBase implements IF_Game {
 
     public static final int TITLE_SCREEN = 0;
     public static final int GAME_SCENE = 1;
+    public static final int CHOOSE_CAR_SCREEN = 2;
+
 
     public static final int TITLE_SCREEN_HUD = 0;
     public static final int IN_GAME_HUD = 1;
@@ -65,9 +68,10 @@ public class GameBase implements IF_Game {
         AudioLibrary.loadAudioFiles("./res/TestGameContent/Audio.txt");
 
         //CREATE GAME STATES
-        gameStates = new IF_GameState[2];
+        gameStates = new IF_GameState[3];
         gameStates[TITLE_SCREEN] = new TitleScreen();
         gameStates[GAME_SCENE] = new GameScreen();
+        gameStates[CHOOSE_CAR_SCREEN] = new ChooseCarScreen();
 
         //CREATE HUD STATES
         debugHud = new DebugHud();

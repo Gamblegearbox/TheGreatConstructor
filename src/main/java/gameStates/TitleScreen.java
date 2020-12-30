@@ -33,7 +33,7 @@ public class TitleScreen implements IF_GameState {
 
     @Override
     public void init() {
-        sceneObjects.put("testCar", new SimpleObject(Assets.CTR, Assets.SHADER_DEBUG_TEST) );
+        sceneObjects.put("testCar", new SimpleObject(Assets.CT_R, Assets.SHADER_DEBUG_TEST) );
         titleCar = (SimpleObject) getItemByTag("testCar");
         rotationSpeed = 10.0f;
     }
@@ -48,7 +48,7 @@ public class TitleScreen implements IF_GameState {
 
         if(KeyboardInput.isKeyPressedOnce(GLFW_KEY_SPACE)) {
             GameStateManager.getInstance().changeHudState(1);
-            GameStateManager.getInstance().changeGameState(1);
+            GameStateManager.getInstance().changeGameState(2);
         }
 
         if(KeyboardInput.isKeyPressedOnce(GLFW_KEY_ESCAPE)) {

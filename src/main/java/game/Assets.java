@@ -57,9 +57,10 @@ public class Assets {
     public static final Mesh BANNER = OBJLoader.loadMesh(".\\res\\TestGameContent\\Meshes\\banner.obj", 1);
     public static final Mesh BANNER_NIGHT_LIGHT = OBJLoader.loadMesh(".\\res\\TestGameContent\\Meshes\\bannerNightLight.obj", 1);
     public static final Mesh CUBE = OBJLoader.loadMesh(".\\res\\TestGameContent\\Meshes\\cube.obj", 1);
-    public static final Mesh NSX = OBJLoader.loadMesh(".\\res\\TestGameContent\\Meshes\\NS_X.obj", 2);
-    public static final Mesh GTR = OBJLoader.loadMesh(".\\res\\TestGameContent\\Meshes\\GT_R.obj", 2);
-    public static final Mesh CTR = OBJLoader.loadMesh(".\\res\\TestGameContent\\Meshes\\CT_R.obj", 2);
+    public static final Mesh NS_X = OBJLoader.loadMesh(".\\res\\TestGameContent\\Meshes\\NS_X.obj", 2);
+    public static final Mesh GT_R = OBJLoader.loadMesh(".\\res\\TestGameContent\\Meshes\\GT_R.obj", 2);
+    public static final Mesh CT_R = OBJLoader.loadMesh(".\\res\\TestGameContent\\Meshes\\CT_R.obj", 2);
+    public static final Mesh RX_S = OBJLoader.loadMesh(".\\res\\TestGameContent\\Meshes\\RX_S.obj", 2);
 
     //TEXTURES
     public static final Texture ATLAS_COLORS = new Texture("/TestGameContent/Textures/Atlas_CarsDiffuse.png");
